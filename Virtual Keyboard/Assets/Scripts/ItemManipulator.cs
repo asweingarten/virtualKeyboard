@@ -17,8 +17,8 @@ public class ItemManipulator : MonoBehaviour
 	}
 
 	// Update is called once per frame
-	void Update ()
-	{
+	void Update () {
+		if (selectedItem == null) return;
 		translateItem ();
 		rotateItem();
 		scaleItem();
@@ -35,7 +35,8 @@ public class ItemManipulator : MonoBehaviour
 
 		Vector translation = currentFrame.Translation (oldFrame);
 		Vector3 unityTranslationVector = calculateUnityTranslationVector (translation);
-		selectedItem.transform.Translate (unityTranslationVector);
+		selectedItem.GetComponent<TransformationManager>().translate(unityTranslationVector);
+		// selectedItem.transform.Translate (unityTranslationVector);
 	}
 
 	void rotateItem() {
@@ -44,7 +45,9 @@ public class ItemManipulator : MonoBehaviour
 		float leapRotationAngle = currentFrame.RotationAngle(prevFrame, Vector.YAxis); 
 
 		float unityRotationAngle = leapRotationAngle * (180f/Mathf.PI);
-		selectedItem.transform.Rotate(new Vector3(0f, unityRotationAngle, 0f));
+
+		selectedItem.GetComponent<TransformationManager>().rotate(unityRotationAngle);
+		// selectedItem.transform.Rotate(new Vector3(0f, unityRotationAngle, 0f));
 	}
 
 	void scaleItem() {
@@ -52,7 +55,9 @@ public class ItemManipulator : MonoBehaviour
 		Frame prevFrame = controller.Frame (5);
 		float leapScaleFactor = 0.001f*(currentFrame.ScaleFactor(prevFrame)-1f);
 		Vector3 scalingVector = new Vector3(leapScaleFactor, leapScaleFactor, leapScaleFactor);
-		selectedItem.transform.localScale += (scalingVector);
+
+		selectedItem.GetComponent<TransformationManager>().scale(leapScaleFactor);
+		// selectedItem.transform.localScale += (scalingVector);
 	}
 
 	Vector3 calculateUnityTranslationVector(Vector vec) {
