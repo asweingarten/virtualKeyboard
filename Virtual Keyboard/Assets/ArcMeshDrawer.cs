@@ -19,19 +19,11 @@ public class ArcMeshDrawer : MonoBehaviour {
 	private Vector3[] normals;
 	private Vector2[] uv;
 	void Start () {
-		//lineRenderer = new LineRenderer ();
-		/*mesh = gameObject.GetComponent<Mesh> ();
-		if (mesh == null) {
-			mesh = gameObject.AddComponent<Mesh> ();
-		}*/
-		/*mesh = new Mesh ();
-		meshFilter = gameObject.GetComponent<MeshFilter> ();
-		Debug.Log (meshFilter);
-		meshFilter.mesh = mesh;*/
-		//meshFilter.s
+		//calculateSizes ();
+		calculateMesh ();
+	}
 
-		//size =  (int)Mathf.Round((((2 * Mathf.PI) / (float)numArcs) / arcLength));
-
+	private void calculateSizes() {	
 		vertices = new Vector3[size+1];
 		triangles = new int[3*(size-1)];
 		
@@ -42,9 +34,6 @@ public class ArcMeshDrawer : MonoBehaviour {
 			uv[i] = new Vector2(0, 0);
 		for (int i = 0; i < normals.Length; i++)
 			normals[i] = new Vector3(0, 1, 0);
-
-		calculateMesh ();
-		//triangleMesh ();
 	}
 
 	public void triangleMesh() {
@@ -54,6 +43,7 @@ public class ArcMeshDrawer : MonoBehaviour {
 	}
 
 	public void calculateMesh () {
+		calculateSizes ();
 		float 	r = 3f,
 		x = 1f,
 		y = 0f,
