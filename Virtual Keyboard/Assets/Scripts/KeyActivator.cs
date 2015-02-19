@@ -21,6 +21,7 @@ public class KeyActivator : MonoBehaviour
 		{
 			textMesh = children.GetComponent<TextMesh>();
 			baseColor = textMesh.color;
+			textMesh.text = keyId;
 		}
 
 	}
