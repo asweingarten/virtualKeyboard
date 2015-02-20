@@ -13,7 +13,7 @@ public class MenuItemSelection : MonoBehaviour {
 		get {
 			return globallySelectedObject;
 		}
-		set {
+		private set {
 			lock (selectedObjectLock) {
 				globallySelectedObject = value;
 			}
