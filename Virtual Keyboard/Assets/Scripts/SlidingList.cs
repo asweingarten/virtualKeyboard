@@ -30,19 +30,39 @@ public class SlidingList : MonoBehaviour {
 		base_scale = listOfItems.parent.transform.localScale;
 
 		items = new List<InnerListItem> ();
+
+		Transform buttons = transform.Find ("Buttons");
 		
-		addButton = transform.Find ("AddButton").gameObject;
-		upArrow = transform.Find ("UpArrow").gameObject;
-		downArrow = transform.Find ("DownArrow").gameObject;
+		addButton = buttons.Find ("AddButton").gameObject;
+		upArrow = buttons.Find ("UpArrow").gameObject;
+		downArrow = buttons.Find ("DownArrow").gameObject;
 		
 		MenuItemSelection.OnMenuItemHold += HandleOnMenuItemHeld;
-
-		Debug.Log(transformList.Count);
+		MenuItemSelection.OnMenuItemGainedFocus += HandleOnMenuItemGainedFocus;
+		MenuItemSelection.OnMenuItemLostFocus += HandleOnMenuItemLostFocus;
 
 		createNewListItem ("blahblah");
 		createNewListItem ("blahblah 2");
 		createNewListItem ("blahblah 3");
 		slide_list_increment (-2);
+	}
+
+	void HandleOnMenuItemLostFocus (GameObject selectedItem)
+	{
+		if (selectedItem == addButton || selectedItem == upArrow || selectedItem == downArrow) {
+			GameObject listItemText = selectedItem.transform.Find ("List_Item_Text").gameObject;
+			TextMesh textMesh = listItemText.GetComponent<TextMesh>();
+			textMesh.color = Color.blue;
+		}
+	}
+
+	void HandleOnMenuItemGainedFocus (GameObject selectedItem)
+	{
+		if (selectedItem == addButton || selectedItem == upArrow || selectedItem == downArrow) {
+			GameObject listItemText = selectedItem.transform.Find ("List_Item_Text").gameObject;
+			TextMesh textMesh = listItemText.GetComponent<TextMesh>();
+			textMesh.color = Color.yellow;
+		}
 	}
 
 	void HandleOnMenuItemHeld (GameObject selectedItem)
@@ -61,11 +81,11 @@ public class SlidingList : MonoBehaviour {
 	}
 
 	void handleUpArrow() {
-		slide_list_increment(1);
+		slide_list_increment(-1);
 	}
 
 	void handleDownArrow() {
-		slide_list_increment(-1);
+		slide_list_increment(1);
 	}
 	
 	// Update is called once per frame
