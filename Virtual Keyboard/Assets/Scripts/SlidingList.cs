@@ -4,19 +4,31 @@ using System.Collections.Generic;
 
 public class SlidingList : MonoBehaviour {
 
+	class InnerListItem{
+		Object object_conntained;
+		Transform transform;
+		string item_text;
+		Object image;
+	}
+
 	List<ListItem> items;
 	List<Transform> transformList;
 	double height_of_item;
 	double height_of_space;
 	GameObject listObject;
 
-	float base_scale;
+	Vector3 base_scale;
+
+	int max_visible_elements;
+	double scroll_distance;
 
 	// Use this for initialization
 	void Start () {
+		max_visible_elements = 7;
+		scroll_distance = 0d;
 		transformList = new List<Transform> ();
 		Transform listOfItems = transform.Find ("ListOfItems");
-		base_scale = listOfItems.parent.transform.localScale.z;
+		base_scale = listOfItems.parent.transform.localScale;
 		listObject = listOfItems.gameObject;
 		if (listOfItems) {
 			foreach (Transform item in listOfItems){
@@ -31,6 +43,7 @@ public class SlidingList : MonoBehaviour {
 		createNewListItem ("blahblah");
 		createNewListItem ("blahblah 2");
 		createNewListItem ("blahblah 3");
+		slide_list_increment (-1);
 	}
 	
 	// Update is called once per frame
@@ -58,11 +71,19 @@ public class SlidingList : MonoBehaviour {
 
 		txtMesh.text = text;
 
-		cube.transform.Translate (new Vector3 (0, 0, (-0.12f * base_scale )));
+		cube.transform.Translate (new Vector3 (0, 0, (-0.12f * base_scale.z )));
 
 		cube.name = "ListItem";
 		txtMesh.name = "List_Item_Text";
 
 		transformList.Add(cube.transform);	
 	}
-}
+
+	void slide_list_increment(int i){
+		Transform firstElement = transformList[0];
+		Transform listOfItems = firstElement.parent.transform;
+		listOfItems.Translate(new Vector3 (0, 0, (-0.12f * base_scale.z * i )));
+
+		scroll_distance = scroll_distance + i;
+	}
+} 
