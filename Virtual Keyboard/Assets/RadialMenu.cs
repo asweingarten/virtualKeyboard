@@ -3,9 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class RadialMenu : MonoBehaviour {
-
-
-	//public RadialMenuItem[] menuItems = {};
+	
 	// Use this for initialization
 	private List<GameObject> arcSections = new List<GameObject>();
 	void Start () {
@@ -28,8 +26,7 @@ public class RadialMenu : MonoBehaviour {
 			Debug.Log ("Total weight: " + totalWeight + ", arcWeight: " + childArcDrawer.arcWeight + ", portion: " + portion);
 			Debug.Log ("ArcLength: " + (2*Mathf.PI)*portion);
 			childArcDrawer.arcLength = (2*Mathf.PI)*portion;
-			childArcDrawer.calculateMesh();Debug.Log ("ReCalc");
-			//Debug.Log (prevArcLength);
+			childArcDrawer.createMeshes();
 			arcSection.transform.rotation = Quaternion.identity;
 			arcSection.transform.Rotate(new Vector3( 0f, 0f, Mathf.Rad2Deg*prevArcLength));
 			prevArcLength += childArcDrawer.arcLength;
