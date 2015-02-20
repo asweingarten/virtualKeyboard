@@ -10,10 +10,13 @@ public class SlidingList : MonoBehaviour {
 	double height_of_space;
 	GameObject listObject;
 
+	float base_scale;
+
 	// Use this for initialization
 	void Start () {
 		transformtList = new List<Transform> ();
 		Transform listOfItems = transform.Find ("ListOfItems");
+		base_scale = listOfItems.parent.transform.localScale.z;
 		listObject = listOfItems.gameObject;
 		if (listOfItems) {
 			foreach (Transform item in listOfItems){
@@ -43,6 +46,7 @@ public class SlidingList : MonoBehaviour {
 		cube.transform.parent = listObject.transform;
 		cube.transform.localScale = lastElement.localScale;
 		cube.transform.position = lastElement.position;
+		cube.transform.rotation = lastElement.rotation;
 
 
 		TextMesh txtMesh = (TextMesh) TextMesh.Instantiate(lastTextMesh);
@@ -51,17 +55,14 @@ public class SlidingList : MonoBehaviour {
 		txtMesh.transform.localScale = lastTextMesh.transform.localScale;
 		txtMesh.transform.position = lastTextMesh.transform.position;
 		txtMesh.transform.rotation = lastTextMesh.transform.rotation;
-		// txtMesh.transform.Translate (new Vector3 (0, 0, -0.12f));
 
 		txtMesh.text = text;
 
-		cube.transform.Translate (new Vector3 (0, 0, -0.12f));
+		cube.transform.Translate (new Vector3 (0, 0, (-0.12f * base_scale )));
 
 		cube.name = "ListItem";
 		txtMesh.name = "List_Item_Text";
 
-		transformtList.Add(cube.transform);
-
-		
+		transformtList.Add(cube.transform);	
 	}
 }
