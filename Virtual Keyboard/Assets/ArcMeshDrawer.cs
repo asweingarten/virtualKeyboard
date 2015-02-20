@@ -36,6 +36,8 @@ public class ArcMeshDrawer : MonoBehaviour {
 		MeshFilter arcBodyMeshFilter = arcBody.AddComponent<MeshFilter> ();
 		MeshCollider arcBodyCollider = arcBody.AddComponent<MeshCollider> ();
 		MeshRenderer arcBodyRenderer = arcBody.AddComponent<MeshRenderer> ();
+		CollisionReporter arcBodyReporter = arcBody.AddComponent<CollisionReporter> ();
+		arcBodyReporter.message = "ArcBody";
 		arcBodyRenderer.material = arcBodyMaterial;
 
 		arcRim = new GameObject ();
@@ -44,6 +46,8 @@ public class ArcMeshDrawer : MonoBehaviour {
 		MeshFilter arcRimMeshFilter = arcRim.AddComponent<MeshFilter> ();
 		MeshCollider arcRimCollider = arcRim.AddComponent<MeshCollider> ();
 		MeshRenderer arcRimRenderer = arcRim.AddComponent<MeshRenderer> ();
+		CollisionReporter arcRimReporter = arcRim.AddComponent<CollisionReporter> ();
+		arcRimReporter.message = "ArcRim";
 		arcRimRenderer.material = arcRimMaterial;
 
 		createMeshes ();
@@ -148,7 +152,7 @@ public class ArcMeshDrawer : MonoBehaviour {
 		bodyMesh.normals = bodyNormals;
 		bodyMesh.uv = bodyUv;
 		bodyMesh.triangles = bodyTriangles;
-		arcRim.GetComponent<MeshCollider> ().sharedMesh = bodyMesh;
+		arcBody.GetComponent<MeshCollider> ().sharedMesh = bodyMesh;
 
 		Mesh rimMesh = arcRim.GetComponent<MeshFilter>().mesh;
 		rimMesh.Clear ();
