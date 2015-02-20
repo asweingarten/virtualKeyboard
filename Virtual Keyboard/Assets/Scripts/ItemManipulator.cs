@@ -27,6 +27,7 @@ public class ItemManipulator : MonoBehaviour
 	void updateSelectedItem(GameObject newlySelectedItem) {
 		Debug.Log("newly selected item: " + newlySelectedItem.name);
 		selectedItem = newlySelectedItem;
+		selectedItem.particleSystem.Play();
 	}
 
 	void translateItem() {
