@@ -5,8 +5,8 @@ public class ArcMeshDrawer : MonoBehaviour {
 
 	public float arcLength = (2*Mathf.PI);
 	public float arcWeight = 1f;
-	public float bodyRadius = 3f;
-	public float rimRadius = 3.5f;
+	public float radius = 3f;
+	public float rimWidth = 0.4f;
 
 	public Material arcRimMaterial;
 	public Material arcBodyMaterial;
@@ -108,14 +108,14 @@ public class ArcMeshDrawer : MonoBehaviour {
 		return arcPoints;
 	}
 	private void computeSharedVeticies () {
-		sharedVertices = createArc (bodyRadius);
+		sharedVertices = createArc (radius - rimWidth);
 		Debug.Log (sharedVertices);
 	}
 
 	public void createRimMesh () {
 
 		sharedVertices.CopyTo ( rimVertices, 0 );
-		Vector3[] outerRimVerticies = createArc (rimRadius);
+		Vector3[] outerRimVerticies = createArc (radius);
 		outerRimVerticies.CopyTo (rimVertices, sharedVertices.Length);
 		for (int i = 0; i < (sharedVertices.Length - 1); i++) {
 			rimTriangles[(6*i)] = i;
