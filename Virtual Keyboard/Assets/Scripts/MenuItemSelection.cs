@@ -7,7 +7,7 @@ public class MenuItemSelection : MonoBehaviour {
 	public static event MenuItemSelect OnMenuItemSelected;
 	public static event MenuItemSelect OnMenuItemHold;
 
-	private const float holdEventInterval = 0.5f; // given in seconds
+	public float holdEventInterval = 0.5f; // given in seconds
 
 	private float elapsedTime = 0.0f;
 	private bool isItemBeingHeld;
