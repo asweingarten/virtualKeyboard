@@ -7,7 +7,6 @@ public class ArcMeshDrawer : MonoBehaviour {
 	public float arcWeight = 1f;
 	public float radius = 3f;
 	public float rimWidth = 0.4f;
-	;
 
 	public Material arcRimMaterial;
 	public Material arcBodyMaterial;
@@ -16,7 +15,7 @@ public class ArcMeshDrawer : MonoBehaviour {
 
 	private GameObject arcBody;
 	private GameObject arcRim;
-	private float arcPointLength
+	private float arcPointLength;
 
 	private Vector3[] sharedVertices;
 
@@ -34,14 +33,16 @@ public class ArcMeshDrawer : MonoBehaviour {
 		arcBody = new GameObject ();
 		arcBody.name = "ArcBody";
 		arcBody.transform.parent = gameObject.transform;
-		arcBody.AddComponent<MeshFilter> ();
+		MeshFilter arcBodyMeshFilter = arcBody.AddComponent<MeshFilter> ();
+		MeshCollider arcBodyCollider = arcBody.AddComponent<MeshCollider> ();
 		MeshRenderer arcBodyRenderer = arcBody.AddComponent<MeshRenderer> ();
 		arcBodyRenderer.material = arcBodyMaterial;
 
 		arcRim = new GameObject ();
 		arcRim.name = "ArcRim";
 		arcRim.transform.parent = gameObject.transform;
-		arcRim.AddComponent<MeshFilter> ();
+		MeshFilter arcRimMeshFilter = arcRim.AddComponent<MeshFilter> ();
+		MeshCollider arcRimCollider = arcRim.AddComponent<MeshCollider> ();
 		MeshRenderer arcRimRenderer = arcRim.AddComponent<MeshRenderer> ();
 		arcRimRenderer.material = arcRimMaterial;
 
@@ -147,6 +148,7 @@ public class ArcMeshDrawer : MonoBehaviour {
 		bodyMesh.normals = bodyNormals;
 		bodyMesh.uv = bodyUv;
 		bodyMesh.triangles = bodyTriangles;
+		arcRim.GetComponent<MeshCollider> ().sharedMesh = bodyMesh;
 
 		Mesh rimMesh = arcRim.GetComponent<MeshFilter>().mesh;
 		rimMesh.Clear ();
@@ -154,5 +156,6 @@ public class ArcMeshDrawer : MonoBehaviour {
 		rimMesh.uv = rimUv;
 		rimMesh.normals = rimNormals;
 		rimMesh.triangles = rimTriangles;
+		arcRim.GetComponent<MeshCollider> ().sharedMesh = rimMesh;
 	}
 }
