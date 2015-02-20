@@ -7,7 +7,9 @@ public class ArcMeshDrawer : MonoBehaviour {
 	public float arcWeight = 1f;
 	public float radius = 3f;
 	public float rimWidth = 0.4f;
+	public Vector3 selectedScaleFactor = new Vector3(1.2f, 1.2f, 1.2f);
 
+	private Vector3 originalScale;
 	public Material arcRimMaterial;
 	public Material arcBodyMaterial;
 	
@@ -30,14 +32,15 @@ public class ArcMeshDrawer : MonoBehaviour {
 	private Vector2[] bodyUv;
 
 	void Start () {
+		originalScale = transform.localScale;
+
 		arcBody = new GameObject ();
 		arcBody.name = "ArcBody";
 		arcBody.transform.parent = gameObject.transform;
 		MeshFilter arcBodyMeshFilter = arcBody.AddComponent<MeshFilter> ();
 		MeshCollider arcBodyCollider = arcBody.AddComponent<MeshCollider> ();
 		MeshRenderer arcBodyRenderer = arcBody.AddComponent<MeshRenderer> ();
-		CollisionReporter arcBodyReporter = arcBody.AddComponent<CollisionReporter> ();
-		arcBodyReporter.message = "ArcBody";
+		RadialMenuItemSelection arcBodySelector = arcBody.AddComponent<RadialMenuItemSelection> ();
 		arcBodyRenderer.material = arcBodyMaterial;
 
 		arcRim = new GameObject ();
@@ -46,11 +49,30 @@ public class ArcMeshDrawer : MonoBehaviour {
 		MeshFilter arcRimMeshFilter = arcRim.AddComponent<MeshFilter> ();
 		MeshCollider arcRimCollider = arcRim.AddComponent<MeshCollider> ();
 		MeshRenderer arcRimRenderer = arcRim.AddComponent<MeshRenderer> ();
-		CollisionReporter arcRimReporter = arcRim.AddComponent<CollisionReporter> ();
-		arcRimReporter.message = "ArcRim";
 		arcRimRenderer.material = arcRimMaterial;
 
 		createMeshes ();
+	}
+
+	private void radialActionDebug(GameObject selected) {
+		Debug.Log ("Radial Action");
+	}
+
+	public void selectSection() {
+		//Save current scale and calculate the selected scale based on scale factor
+		originalScale = transform.localScale;
+		Vector3 selectedScale = originalScale;
+		selectedScale.Scale (selectedScaleFactor);
+		transform.localScale = selectedScale;
+		arcRim.AddComponent<RadialActionSelection> ();
+		RadialActionSelection.OnRadialActionSelected += radialActionDebug;
+	}
+
+	public void deselectSection() {
+		transform.localScale = originalScale;
+		//Remove delegate and destroy the RadialActionSelection component
+		RadialActionSelection.OnRadialActionSelected -= radialActionDebug;
+		Destroy (arcRim.GetComponent<RadialActionSelection> ());
 	}
 
 	public void createMeshes() {
@@ -82,7 +104,6 @@ public class ArcMeshDrawer : MonoBehaviour {
 		for (int i = 0; i < bodyUv.Length; i++) {
 			bodyUv[i] = new Vector2(0, 0);
 		}
-
 		for (int i = 0; i < bodyUv.Length; i++) {
 			bodyNormals[i] = new Vector3(0, 1, 0);
 		}
@@ -110,9 +131,9 @@ public class ArcMeshDrawer : MonoBehaviour {
 		arcPoints [sharedVertices.Length - 1] = pos;
 		return arcPoints;
 	}
+
 	private void computeSharedVertices() {
 		sharedVertices = createArc (radius - rimWidth);
-		Debug.Log (sharedVertices);
 	}
 
 	public void createRimMesh () {
