@@ -6,9 +6,23 @@ public class MenuItemSelection : MonoBehaviour {
 	public delegate void MenuItemOnSelect(GameObject selectedItem);
 	public static event MenuItemOnSelect OnMenuItemSelected;
 
+	private static object selectedObjectLock = new object();
+	private static GameObject globallySelectedObject;
+
+	public static GameObject selectedObject {
+		get {
+			return globallySelectedObject;
+		}
+		set {
+			lock (selectedObjectLock) {
+				globallySelectedObject = value;
+			}
+		}
+	}
+
 	// Use this for initialization
 	void Start () {
-		Debug.Log(string.Format("MenuItemSelection behaviour initialized for {0}", gameObject.name));
+
 	}
 	
 	// Update is called once per frame
@@ -17,7 +31,11 @@ public class MenuItemSelection : MonoBehaviour {
 	}
 
 	void OnCollisionEnter(Collision collision) {
-		Debug.Log(string.Format("Object {0} selected", gameObject.name));
+		if (selectedObject == gameObject) {	// Do not fire the event if the selected object is equal to the current game object.
+			return;
+		}
+
+		selectedObject = gameObject;
 		if (OnMenuItemSelected != null) {
 			OnMenuItemSelected(gameObject);
 		}
