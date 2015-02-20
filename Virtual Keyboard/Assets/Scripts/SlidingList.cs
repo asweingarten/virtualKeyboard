@@ -13,7 +13,10 @@ public class SlidingList : MonoBehaviour {
 
 	List<InnerListItem> items;
 
-	GameObject listObject;
+	GameObject addButton;
+	GameObject upArrow;
+	GameObject downArrow;
+
 	Vector3 base_scale;
 	int max_visible_elements;
 	double scroll_distance;
@@ -27,11 +30,42 @@ public class SlidingList : MonoBehaviour {
 		base_scale = listOfItems.parent.transform.localScale;
 
 		items = new List<InnerListItem> ();
+		
+		addButton = transform.Find ("AddButton").gameObject;
+		upArrow = transform.Find ("UpArrow").gameObject;
+		downArrow = transform.Find ("DownArrow").gameObject;
+		
+		MenuItemSelection.OnMenuItemHold += HandleOnMenuItemHeld;
 
-		createNewListItem ("blahblah 1");
+		Debug.Log(transformList.Count);
+
+		createNewListItem ("blahblah");
 		createNewListItem ("blahblah 2");
 		createNewListItem ("blahblah 3");
 		slide_list_increment (-2);
+	}
+
+	void HandleOnMenuItemHeld (GameObject selectedItem)
+	{
+		if (selectedItem == addButton) {
+			handleAddButton ();
+		} else if (selectedItem == upArrow) {
+			handleUpArrow ();
+		} else if (selectedItem == downArrow) {
+			handleDownArrow ();
+		}
+	}
+
+	void handleAddButton() {
+		createNewListItem(System.DateTime.Now.ToLongTimeString());
+	}
+
+	void handleUpArrow() {
+		slide_list_increment(1);
+	}
+
+	void handleDownArrow() {
+		slide_list_increment(-1);
 	}
 	
 	// Update is called once per frame
