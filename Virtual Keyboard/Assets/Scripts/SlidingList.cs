@@ -5,9 +5,9 @@ using System.Collections.Generic;
 public class SlidingList : MonoBehaviour {
 
 	class InnerListItem{
-		public Object object_contained;
-		public Transform box_transform;
-		public string item_text;
+		public Object objectContained;
+		public Transform boxTransform;
+		public TextMesh itemText;
 		public Object image;
 	}
 
@@ -17,21 +17,20 @@ public class SlidingList : MonoBehaviour {
 	GameObject upArrow;
 	GameObject downArrow;
 
-	Vector3 base_scale;
 	int max_visible_elements;
 	double scroll_distance;
+	GameObject listObject;
+	Vector3 baseScale;
+
+	int selectedIndex;
 
 	// Use this for initialization
 	void Start () {
-		max_visible_elements = 7;
-		scroll_distance = 0d;
-
-		Transform listOfItems = transform.Find ("ListOfItems");
-		base_scale = listOfItems.parent.transform.localScale;
+		baseScale = transform.Find ("ListOfItems").parent.transform.localScale;
 
 		items = new List<InnerListItem> ();
 
-		Transform buttons = transform.Find ("Buttons");
+		Transform buttons = transform.Find ("buttons");
 		
 		addButton = buttons.Find ("AddButton").gameObject;
 		upArrow = buttons.Find ("UpArrow").gameObject;
@@ -44,7 +43,19 @@ public class SlidingList : MonoBehaviour {
 		createNewListItem ("blahblah");
 		createNewListItem ("blahblah 2");
 		createNewListItem ("blahblah 3");
-		slide_list_increment (-2);
+		createNewListItem ("blahblah 4");
+		createNewListItem ("blahblah 5");
+
+		// TODO as of this moment requires four items in the list at this point to center on fourth, fix soon
+		selectedIndex = 3;
+
+		createNewListItem ("2 1");
+		createNewListItem ("2 2");
+		createNewListItem ("2 3");
+		createNewListItem ("2 4");
+		createNewListItem ("2 5");
+
+		slideListIncrement (2);
 	}
 
 	void HandleOnMenuItemLostFocus (GameObject selectedItem)
@@ -81,11 +92,11 @@ public class SlidingList : MonoBehaviour {
 	}
 
 	void handleUpArrow() {
-		slide_list_increment(-1);
+		slideListIncrement(-1);
 	}
 
 	void handleDownArrow() {
-		slide_list_increment(1);
+		slideListIncrement(-1);
 	}
 	
 	// Update is called once per frame
@@ -94,42 +105,67 @@ public class SlidingList : MonoBehaviour {
 	}
 
 	void createNewListItem(string text){
-		InnerListItem new_inner_list_item = new InnerListItem();
+		InnerListItem newInnerListItem = new InnerListItem();
 		Transform listItemPrimitive = transform.Find ("ListItemPrimitive");
-		Transform listOfItems = transform.Find ("ListOfItems");
 		TextMesh textMeshPrimitive = listItemPrimitive.Find("List_Item_Text").GetComponent<TextMesh>();
 
 		GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-		cube.transform.parent = listOfItems.transform;
+		cube.name = "ListItem";
+		cube.transform.parent = transform.Find ("ListOfItems").transform;
 		cube.transform.localScale = listItemPrimitive.localScale;
 		cube.transform.position = listItemPrimitive.position;
 		cube.transform.rotation = listItemPrimitive.rotation;
-
-
+		cube.renderer.material = listItemPrimitive.renderer.material;
+		
 		TextMesh txtMesh = (TextMesh) TextMesh.Instantiate(textMeshPrimitive);
+		txtMesh.name = "List_Item_Text";
+		txtMesh.text = text;
 		txtMesh.transform.parent = cube.transform;
-
 		txtMesh.transform.localScale = textMeshPrimitive.transform.localScale;
 		txtMesh.transform.position = textMeshPrimitive.transform.position;
 		txtMesh.transform.rotation = textMeshPrimitive.transform.rotation;
 
-		txtMesh.text = text;
+		cube.transform.Translate (new Vector3 (0, 0, (-0.12f * baseScale.z * items.Count )));
 
-		cube.transform.Translate (new Vector3 (0, 0, (-0.12f * base_scale.z * items.Count )));
-
-		cube.name = "ListItem";
-		txtMesh.name = "List_Item_Text";
-
-		new_inner_list_item.box_transform = cube.transform;
-		new_inner_list_item.item_text = text;
-
-		items.Add (new_inner_list_item);
+		newInnerListItem.boxTransform = cube.transform;
+		newInnerListItem.itemText = txtMesh;
+		items.Add (newInnerListItem);
+		
+		updateTransparency ();
 	}
 
-	void slide_list_increment(int i){
-		Transform listOfItems = transform.Find ("ListOfItems");
-		listOfItems.Translate(new Vector3 (0, 0, (0.12f * base_scale.z * i )));
+	void slideListIncrement(int i){
+		int newIndex = Mathf.Min(Mathf.Max (selectedIndex + i, 0), items.Count-1);
 
-		scroll_distance = scroll_distance + i;
+		Transform listOfItems = transform.Find ("ListOfItems");
+		listOfItems.Translate(new Vector3 (0, 0, (0.12f * baseScale.z * (newIndex - selectedIndex) )));
+		selectedIndex = newIndex;
+		Debug.Log (newIndex);
+
+		updateTransparency ();
+	}
+
+	void updateTransparency (){
+		int index = 0;
+		foreach(InnerListItem item in items){
+			GameObject cube = item.boxTransform.gameObject;
+			TextMesh text = item.itemText;
+			Color color = cube.renderer.material.color;
+			Color text_color = text.renderer.material.color;
+			if (Mathf.Abs (index - selectedIndex) > 4){
+				color.a = 0.0f;
+				text_color.a = 0.0f;
+			} else if (Mathf.Abs (index - selectedIndex) == 4){
+				color.a = 0.5f;
+				text_color.a = 0.5f;
+			} else if (Mathf.Abs (index - selectedIndex) < 4){
+				color.a = 1.0f;
+				text_color.a = 1.0f;
+			}
+
+			cube.renderer.material.color = color;
+			text.renderer.material.color = text_color;
+			index++;
+		}
 	}
 } 
