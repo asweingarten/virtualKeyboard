@@ -5,172 +5,154 @@ public class ArcMeshDrawer : MonoBehaviour {
 
 	public float arcLength = (2*Mathf.PI);
 	public float arcWeight = 1f;
-	public Color startColor = Color.blue;
-	public Color endColor = Color.blue;
+	public float radius = 3f;
+	public float rimWidth = 0.4f;
+	;
+
+	public Material arcRimMaterial;
+	public Material arcBodyMaterial;
 	
-	public Material arcMaterial;
+	public int quality = 20;
 
-	private Mesh mesh;
-	private MeshFilter meshFilter;
-	public int size = 20;
+	private GameObject arcBody;
+	private GameObject arcRim;
+	private float arcPointLength
 
-	private Vector3[] vertices;
-	private int[] triangles;
-	private Vector3[] normals;
-	private Vector2[] uv;
+	private Vector3[] sharedVertices;
+
+	private Vector3[] rimVertices;
+	private int[] rimTriangles;
+	private Vector3[] rimNormals;
+	private Vector2[] rimUv;
+
+	private Vector3[] bodyVertices;
+	private int[] bodyTriangles;
+	private Vector3[] bodyNormals;
+	private Vector2[] bodyUv;
+
 	void Start () {
-		//calculateSizes ();
-		calculateMesh ();
+		arcBody = new GameObject ();
+		arcBody.name = "ArcBody";
+		arcBody.transform.parent = gameObject.transform;
+		arcBody.AddComponent<MeshFilter> ();
+		MeshRenderer arcBodyRenderer = arcBody.AddComponent<MeshRenderer> ();
+		arcBodyRenderer.material = arcBodyMaterial;
+
+		arcRim = new GameObject ();
+		arcRim.name = "ArcRim";
+		arcRim.transform.parent = gameObject.transform;
+		arcRim.AddComponent<MeshFilter> ();
+		MeshRenderer arcRimRenderer = arcRim.AddComponent<MeshRenderer> ();
+		arcRimRenderer.material = arcRimMaterial;
+
+		createMeshes ();
+	}
+
+	public void createMeshes() {
+		calculateSizes ();
+		computeSharedVertices ();
+		createRimMesh ();
+		createBodyMesh ();
 	}
 
 	private void calculateSizes() {	
-		vertices = new Vector3[size+1];
-		triangles = new int[3*(size-1)];
-		
-		normals = new Vector3[size + 1];
-		uv = new Vector2[size + 1];
-		
-		for (int i = 0; i < uv.Length; i++)
-			uv[i] = new Vector2(0, 0);
-		for (int i = 0; i < normals.Length; i++)
-			normals[i] = new Vector3(0, 1, 0);
+		arcPointLength = (arcLength) / (quality-1);
+		sharedVertices = new Vector3[quality];
+
+		rimVertices = new Vector3[sharedVertices.Length * 2];
+		rimTriangles = new int[2*3*sharedVertices.Length];
+		rimNormals = new Vector3[sharedVertices.Length * 2];
+		rimUv = new Vector2[sharedVertices.Length*2];
+
+		bodyVertices = new Vector3[sharedVertices.Length + 1];
+		bodyTriangles = new int[3*(sharedVertices.Length - 1)];
+		bodyNormals = new Vector3[sharedVertices.Length + 1];
+		bodyUv = new Vector2[sharedVertices.Length + 1];
+
+		for (int i = 0; i < rimUv.Length; i++)
+			rimUv[i] = new Vector2(0, 0);
+		for (int i = 0; i < rimNormals.Length; i++)
+			rimNormals[i] = new Vector3(0, 1, 0);
+
+		for (int i = 0; i < bodyUv.Length; i++) {
+			bodyUv[i] = new Vector2(0, 0);
+		}
+
+		for (int i = 0; i < bodyUv.Length; i++) {
+			bodyNormals[i] = new Vector3(0, 1, 0);
+		}
 	}
 
-	public void triangleMesh() {
-		vertices = new Vector3[] {new Vector3(0, 0, 0), new Vector3(2f, 0, 0), new Vector3(2.8f, 1.0f, 0f)};
-		uv = new Vector2[] {new Vector2(0, 0), new Vector2(0, 1), new Vector2(1, 1)};
-		triangles = new int[] {2, 1, 0};
-	}
-
-	public void calculateMesh () {
-		calculateSizes ();
-		float 	r = 3f,
-		x = 1f,
-		y = 0f,
-		theta = 0f;
+	private Vector3[] createArc( float radius ) {
+		Vector3[] arcPoints = new Vector3[sharedVertices.Length];
+		float 	x = 1f,
+				y = 0f,
+				theta = 0f;
 		int 	i = 0;
 		Vector3 pos;
-
-		float arcPointLength = (arcLength) / (size-1);
-
-		while (i < (size-1)) {
-			x = r*Mathf.Cos(theta);
-			y = r*Mathf.Sin(theta);
+		while (i < (arcPoints.Length-1)) {
+			x = radius*Mathf.Cos(theta);
+			y = radius*Mathf.Sin(theta);
 			
 			pos = new Vector3(x, y, 0);
-			vertices[i] = pos;
+			arcPoints[i] = pos;
 			i++;
 			theta += arcPointLength;
 		}
-		x = r*Mathf.Cos(arcLength);
-		y = r*Mathf.Sin(arcLength);
+		x = radius*Mathf.Cos(arcLength);
+		y = radius*Mathf.Sin(arcLength);
 		pos = new Vector3(x, y, 0);
-		vertices [size-1] = pos;
+		arcPoints [sharedVertices.Length - 1] = pos;
+		return arcPoints;
+	}
+	private void computeSharedVertices() {
+		sharedVertices = createArc (radius - rimWidth);
+		Debug.Log (sharedVertices);
+	}
 
-		pos = new Vector3 (0, 0, 0);
-		vertices [size] = pos;
+	public void createRimMesh () {
+		sharedVertices.CopyTo ( rimVertices, 0 );
+		Vector3[] outerRimVerticies = createArc (radius);
+		outerRimVerticies.CopyTo (rimVertices, sharedVertices.Length);
 
-		for (i = 0; i < size - 1; i++) {
-			//Debug.Log ("Triangle: #" + i + " p1: " + vertices[size] + ", p2: " + vertices[i] + ", p3: " + vertices[i+1] );
-			triangles[ (3*i) ] = i + 1;
-			triangles[ (3*i) + 1 ] = i;
-			triangles[ (3*i) + 2 ] = size;
+		for (int i = 0; i < (sharedVertices.Length - 1); i++) {
+			rimTriangles[(6*i)] = i;
+			rimTriangles[(6*i) + 1] = i + 1;
+			rimTriangles[(6*i) + 2] = sharedVertices.Length + i;
+
+			rimTriangles[(6*i) + 3] = sharedVertices.Length + i;
+			rimTriangles[(6*i) + 4] = i+1;
+			rimTriangles[(6*i) + 5] = sharedVertices.Length + i + 1;
 		}
-		Debug.Log ("Calculated Mesh" );
+	}
+
+	public void createBodyMesh () {
+		sharedVertices.CopyTo (bodyVertices, 0);
+
+		Vector3 center = new Vector3 (0, 0, 0);
+		bodyVertices [bodyVertices.Length - 1] = center;
+		
+		for (int i = 0; i < (bodyTriangles.Length/3); i++) {
+			bodyTriangles[ (3*i) ] = i + 1;
+			bodyTriangles[ (3*i) + 1 ] = i;
+			bodyTriangles[ (3*i) + 2 ] = bodyVertices.Length-1;
+		}
 	}
 
 	// Update is called once per frame
 	void Update () {
-		//Debug.Log ("Updating Mesh");
-		Mesh mesh = GetComponent<MeshFilter> ().mesh;
-		mesh.Clear ();
-		mesh.vertices = vertices;
-		mesh.normals = normals;
-		mesh.uv = uv;
-		mesh.triangles = triangles;
-	}
+		Mesh bodyMesh = arcBody.GetComponent<MeshFilter> ().mesh;
+		bodyMesh.Clear ();
+		bodyMesh.vertices = bodyVertices;
+		bodyMesh.normals = bodyNormals;
+		bodyMesh.uv = bodyUv;
+		bodyMesh.triangles = bodyTriangles;
 
-	/*
-	void Start()
-	{
-		mesh = new Mesh();
-		mesh.vertices = new Vector3[4 * quality];   // Could be of size [2 * quality + 2] if circle segment is continuous
-		mesh.triangles = new int[3 * 2 * quality];
-		
-		Vector3[] normals = new Vector3[4 * quality];
-		Vector2[] uv = new Vector2[4 * quality];
-		
-		for (int i = 0; i < uv.Length; i++)
-			uv[i] = new Vector2(0, 0);
-		for (int i = 0; i < normals.Length; i++)
-			normals[i] = new Vector3(0, 1, 0);
-		
-		mesh.uv = uv;
-		mesh.normals = normals;
-		
+		Mesh rimMesh = arcRim.GetComponent<MeshFilter>().mesh;
+		rimMesh.Clear ();
+		rimMesh.vertices = rimVertices;
+		rimMesh.uv = rimUv;
+		rimMesh.normals = rimNormals;
+		rimMesh.triangles = rimTriangles;
 	}
-	
-	void Update()
-	{
-		float angle_lookat = 0;//GetEnemyAngle();
-		
-		float angle_start = angle_lookat - angle_fov;
-		float angle_end = angle_lookat + angle_fov;
-		float angle_delta = (angle_end - angle_start) / quality;
-		
-		float angle_curr = angle_start;
-		float angle_next = angle_start + angle_delta;
-		
-		Vector3 pos_curr_min = Vector3.zero;
-		Vector3 pos_curr_max = Vector3.zero;
-		
-		Vector3 pos_next_min = Vector3.zero;
-		Vector3 pos_next_max = Vector3.zero;
-		
-		Vector3[] vertices = new Vector3[4 * quality];   // Could be of size [2 * quality + 2] if circle segment is continuous
-		int[] triangles = new int[3 * 2 * quality];
-		
-		for (int i = 0; i < quality; i++)
-		{
-			Vector3 sphere_curr = new Vector3(
-				Mathf.Sin(Mathf.Deg2Rad * (angle_curr)), 0,   // Left handed CW
-				Mathf.Cos(Mathf.Deg2Rad * (angle_curr)));
-			
-			Vector3 sphere_next = new Vector3(
-				Mathf.Sin(Mathf.Deg2Rad * (angle_next)), 0,
-				Mathf.Cos(Mathf.Deg2Rad * (angle_next)));
-			
-			pos_curr_min = transform.position + sphere_curr * dist_min;
-			pos_curr_max = transform.position + sphere_curr * dist_max;
-			
-			pos_next_min = transform.position + sphere_next * dist_min;
-			pos_next_max = transform.position + sphere_next * dist_max;
-			
-			int a = 4 * i;
-			int b = 4 * i + 1;
-			int c = 4 * i + 2;
-			int d = 4 * i + 3;
-			
-			vertices[a] = pos_curr_min; 
-			vertices[b] = pos_curr_max;
-			vertices[c] = pos_next_max;
-			vertices[d] = pos_next_min;
-			
-			triangles[6 * i] = a;       // Triangle1: abc
-			triangles[6 * i + 1] = b;  
-			triangles[6 * i + 2] = c;
-			triangles[6 * i + 3] = c;   // Triangle2: cda
-			triangles[6 * i + 4] = d;
-			triangles[6 * i + 5] = a;
-			
-			angle_curr += angle_delta;
-			angle_next += angle_delta;
-			
-		}
-		
-		mesh.vertices = vertices;
-		mesh.triangles = triangles;
-	
-		Graphics.DrawMesh(mesh, Vector3.zero, Quaternion.identity, material, 0);
-	}*/
 }
