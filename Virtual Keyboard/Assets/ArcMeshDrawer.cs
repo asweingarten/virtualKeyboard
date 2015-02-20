@@ -50,7 +50,7 @@ public class ArcMeshDrawer : MonoBehaviour {
 
 	public void createMeshes() {
 		calculateSizes ();
-		computeSharedVerticies ();
+		computeSharedVertices ();
 		createRimMesh ();
 		createBodyMesh ();
 	}
@@ -105,7 +105,7 @@ public class ArcMeshDrawer : MonoBehaviour {
 		arcPoints [sharedVertices.Length - 1] = pos;
 		return arcPoints;
 	}
-	private void computeSharedVerticies() {
+	private void computeSharedVertices() {
 		sharedVertices = createArc (radius - rimWidth);
 		Debug.Log (sharedVertices);
 	}
