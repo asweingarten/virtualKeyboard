@@ -28,7 +28,7 @@ public class RadialMenu : MonoBehaviour {
 			Debug.Log ("Total weight: " + totalWeight + ", arcWeight: " + childArcDrawer.arcWeight + ", portion: " + portion);
 			Debug.Log ("ArcLength: " + (2*Mathf.PI)*portion);
 			childArcDrawer.arcLength = (2*Mathf.PI)*portion;
-			childArcDrawer.calculateMesh();Debug.Log ("ReCalc");
+			childArcDrawer.createMeshes();
 			//Debug.Log (prevArcLength);
 			arcSection.transform.rotation = Quaternion.identity;
 			arcSection.transform.Rotate(new Vector3( 0f, 0f, Mathf.Rad2Deg*prevArcLength));
