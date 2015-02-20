@@ -5,20 +5,16 @@ using System.Collections.Generic;
 public class SlidingList : MonoBehaviour {
 
 	class InnerListItem{
-		Object object_conntained;
-		Transform transform;
-		string item_text;
-		Object image;
+		public Object object_contained;
+		public Transform box_transform;
+		public string item_text;
+		public Object image;
 	}
 
-	List<ListItem> items;
-	List<Transform> transformList;
-	double height_of_item;
-	double height_of_space;
+	List<InnerListItem> items;
+
 	GameObject listObject;
-
 	Vector3 base_scale;
-
 	int max_visible_elements;
 	double scroll_distance;
 
@@ -26,24 +22,16 @@ public class SlidingList : MonoBehaviour {
 	void Start () {
 		max_visible_elements = 7;
 		scroll_distance = 0d;
-		transformList = new List<Transform> ();
+
 		Transform listOfItems = transform.Find ("ListOfItems");
 		base_scale = listOfItems.parent.transform.localScale;
-		listObject = listOfItems.gameObject;
-		if (listOfItems) {
-			foreach (Transform item in listOfItems){
-				TextMesh textMesh = item.Find("List_Item_Text").GetComponent<TextMesh>();
 
-				transformList.Add (item);
-			}
-		}
+		items = new List<InnerListItem> ();
 
-		Debug.Log(transformList.Count);
-
-		createNewListItem ("blahblah");
+		createNewListItem ("blahblah 1");
 		createNewListItem ("blahblah 2");
 		createNewListItem ("blahblah 3");
-		slide_list_increment (-1);
+		slide_list_increment (-2);
 	}
 	
 	// Update is called once per frame
@@ -52,37 +40,41 @@ public class SlidingList : MonoBehaviour {
 	}
 
 	void createNewListItem(string text){
-		Transform lastElement = transformList[transformList.Count - 1];
-		TextMesh lastTextMesh = lastElement.Find("List_Item_Text").GetComponent<TextMesh>();
+		InnerListItem new_inner_list_item = new InnerListItem();
+		Transform listItemPrimitive = transform.Find ("ListItemPrimitive");
+		Transform listOfItems = transform.Find ("ListOfItems");
+		TextMesh textMeshPrimitive = listItemPrimitive.Find("List_Item_Text").GetComponent<TextMesh>();
 
 		GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-		cube.transform.parent = listObject.transform;
-		cube.transform.localScale = lastElement.localScale;
-		cube.transform.position = lastElement.position;
-		cube.transform.rotation = lastElement.rotation;
+		cube.transform.parent = listOfItems.transform;
+		cube.transform.localScale = listItemPrimitive.localScale;
+		cube.transform.position = listItemPrimitive.position;
+		cube.transform.rotation = listItemPrimitive.rotation;
 
 
-		TextMesh txtMesh = (TextMesh) TextMesh.Instantiate(lastTextMesh);
+		TextMesh txtMesh = (TextMesh) TextMesh.Instantiate(textMeshPrimitive);
 		txtMesh.transform.parent = cube.transform;
 
-		txtMesh.transform.localScale = lastTextMesh.transform.localScale;
-		txtMesh.transform.position = lastTextMesh.transform.position;
-		txtMesh.transform.rotation = lastTextMesh.transform.rotation;
+		txtMesh.transform.localScale = textMeshPrimitive.transform.localScale;
+		txtMesh.transform.position = textMeshPrimitive.transform.position;
+		txtMesh.transform.rotation = textMeshPrimitive.transform.rotation;
 
 		txtMesh.text = text;
 
-		cube.transform.Translate (new Vector3 (0, 0, (-0.12f * base_scale.z )));
+		cube.transform.Translate (new Vector3 (0, 0, (-0.12f * base_scale.z * items.Count )));
 
 		cube.name = "ListItem";
 		txtMesh.name = "List_Item_Text";
 
-		transformList.Add(cube.transform);	
+		new_inner_list_item.box_transform = cube.transform;
+		new_inner_list_item.item_text = text;
+
+		items.Add (new_inner_list_item);
 	}
 
 	void slide_list_increment(int i){
-		Transform firstElement = transformList[0];
-		Transform listOfItems = firstElement.parent.transform;
-		listOfItems.Translate(new Vector3 (0, 0, (-0.12f * base_scale.z * i )));
+		Transform listOfItems = transform.Find ("ListOfItems");
+		listOfItems.Translate(new Vector3 (0, 0, (0.12f * base_scale.z * i )));
 
 		scroll_distance = scroll_distance + i;
 	}
