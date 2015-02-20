@@ -38,11 +38,31 @@ public class SlidingList : MonoBehaviour {
 		downArrow = buttons.Find ("DownArrow").gameObject;
 		
 		MenuItemSelection.OnMenuItemHold += HandleOnMenuItemHeld;
+		MenuItemSelection.OnMenuItemGainedFocus += HandleOnMenuItemGainedFocus;
+		MenuItemSelection.OnMenuItemLostFocus += HandleOnMenuItemLostFocus;
 
 		createNewListItem ("blahblah");
 		createNewListItem ("blahblah 2");
 		createNewListItem ("blahblah 3");
 		slide_list_increment (-2);
+	}
+
+	void HandleOnMenuItemLostFocus (GameObject selectedItem)
+	{
+		if (selectedItem == addButton || selectedItem == upArrow || selectedItem == downArrow) {
+			GameObject listItemText = selectedItem.transform.Find ("List_Item_Text").gameObject;
+			TextMesh textMesh = listItemText.GetComponent<TextMesh>();
+			textMesh.color = Color.blue;
+		}
+	}
+
+	void HandleOnMenuItemGainedFocus (GameObject selectedItem)
+	{
+		if (selectedItem == addButton || selectedItem == upArrow || selectedItem == downArrow) {
+			GameObject listItemText = selectedItem.transform.Find ("List_Item_Text").gameObject;
+			TextMesh textMesh = listItemText.GetComponent<TextMesh>();
+			textMesh.color = Color.yellow;
+		}
 	}
 
 	void HandleOnMenuItemHeld (GameObject selectedItem)

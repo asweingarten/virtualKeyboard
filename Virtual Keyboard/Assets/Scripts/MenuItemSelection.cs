@@ -6,6 +6,8 @@ public class MenuItemSelection : MonoBehaviour {
 	public delegate void MenuItemSelect(GameObject selectedItem);
 	public static event MenuItemSelect OnMenuItemSelected;
 	public static event MenuItemSelect OnMenuItemHold;
+	public static event MenuItemSelect OnMenuItemGainedFocus;
+	public static event MenuItemSelect OnMenuItemLostFocus;
 
 	public float holdEventInterval = 0.5f; // given in seconds
 
@@ -40,9 +42,15 @@ public class MenuItemSelection : MonoBehaviour {
 		if (OnMenuItemHold != null) {
 			OnMenuItemHold(gameObject);
 		}
+		if (OnMenuItemGainedFocus != null) {
+			OnMenuItemGainedFocus(gameObject);
+		}
 	}
 
 	void OnCollisionExit(Collision collision) {
 		isItemBeingHeld = false;
+		if (OnMenuItemLostFocus != null) {
+			OnMenuItemLostFocus(gameObject);
+		}
 	}
 }
