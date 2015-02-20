@@ -8,7 +8,7 @@ public class MenuItemSelection : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-	
+		Debug.Log(string.Format("MenuItemSelection behaviour initialized for {0}", gameObject.name));
 	}
 	
 	// Update is called once per frame
