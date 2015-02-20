@@ -31,6 +31,7 @@ public class ItemManipulator : MonoBehaviour
 		}
 
 		if (newlySelectedItem != selectedItem) {
+			selectedItem = newlySelectedItem;
 			selectedItem.particleSystem.Play();
 			Debug.Log("newly selected item: " + newlySelectedItem.name);
 		} else {
