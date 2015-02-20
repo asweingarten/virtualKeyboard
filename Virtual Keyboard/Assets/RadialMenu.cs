@@ -45,7 +45,6 @@ public class RadialMenu : MonoBehaviour {
 	}
 
 	void onArcSectionSelected(GameObject selected) {
-		//Debug.Log ("onArcSectionSelected");
 		if (selectedArc != null)
 			return;
 		selectedArc = selected.transform.parent.gameObject;
@@ -54,7 +53,7 @@ public class RadialMenu : MonoBehaviour {
 
 	void onArcSectionDeselected(GameObject selected) {
 		if (selectedArc == null)
-						return;
+			return;
 		selectedArc.GetComponent<ArcMeshDrawer> ().deselectSection ();
 		selectedArc = null;
 	}

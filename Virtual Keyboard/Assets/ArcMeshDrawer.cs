@@ -70,6 +70,7 @@ public class ArcMeshDrawer : MonoBehaviour {
 
 	public void deselectSection() {
 		transform.localScale = originalScale;
+
 		//Remove delegate and destroy the RadialActionSelection component
 		RadialActionSelection.OnRadialActionSelected -= radialActionDebug;
 		Destroy (arcRim.GetComponent<RadialActionSelection> ());

@@ -37,7 +37,8 @@ public class RadialMenuItemSelection : MonoBehaviour {
 	}
 	
 	void OnCollisionEnter(Collision collision) {
-		if (selectedObject == gameObject) {	// Do not fire the event if the selected object is equal to the current game object.
+		//Do not fire action more than once per distinct selection
+		if (selectedObject == gameObject) {
 			return;
 		}
 		
@@ -48,6 +49,7 @@ public class RadialMenuItemSelection : MonoBehaviour {
 	}
 	
 	void OnCollisionExit(Collision collision) {
+		//Only deselect event if this object is the currently selected one
 		if (selectedObject && OnRadialMenuDeselected != null) {
 			OnRadialMenuDeselected(gameObject);
 			selectedObject = null;
