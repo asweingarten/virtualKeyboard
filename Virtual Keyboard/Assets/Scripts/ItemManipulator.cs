@@ -25,8 +25,18 @@ public class ItemManipulator : MonoBehaviour
 	}
 
 	void updateSelectedItem(GameObject newlySelectedItem) {
-		Debug.Log("newly selected item: " + newlySelectedItem.name);
-		selectedItem = newlySelectedItem;
+		if (selectedItem != null && selectedItem.particleSystem != null) {
+			selectedItem.particleSystem.Stop();
+			Debug.Log("deselected item: " + selectedItem.name);
+		}
+
+		if (newlySelectedItem != selectedItem) {
+			selectedItem = newlySelectedItem;
+			selectedItem.particleSystem.Play();
+			Debug.Log("newly selected item: " + newlySelectedItem.name);
+		} else {
+			selectedItem = null;
+		}
 	}
 
 	void translateItem() {
