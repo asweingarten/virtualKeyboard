@@ -34,6 +34,8 @@ public class ItemSelection : MonoBehaviour {
 	}
 
 	void OnCollisionEnter(Collision collision) {
-		OnItemSelected(gameObject);
+		if (OnItemSelected != null) {
+			OnItemSelected(gameObject);
+		}
 	}
 }
