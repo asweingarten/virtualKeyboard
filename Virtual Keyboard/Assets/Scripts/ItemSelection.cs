@@ -14,7 +14,11 @@ public class ItemSelection : MonoBehaviour {
 	}
 
 	void createParticleSystem() {
-		particleSystem = gameObject.AddComponent<ParticleSystem>();
+		if (gameObject.particleSystem == null) {
+			particleSystem = gameObject.AddComponent<ParticleSystem>();
+		} else {
+			particleSystem = gameObject.GetComponent<ParticleSystem>();
+		}
 		particleSystem.Stop();
 		particleSystem.loop = true;
 		particleSystem.maxParticles = 1000;
