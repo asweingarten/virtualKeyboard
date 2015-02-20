@@ -47,7 +47,7 @@ public class TransformationManager : MonoBehaviour {
 	public void scale(float scaleValue){
 		Vector3 scaleVector = new Vector3();
 		scaleVector.x = canScaleX ? scaleValue : 0;
-		scaleVector.y = canScaleX ? scaleValue : 0;
+		scaleVector.y = canScaleY ? scaleValue : 0;
 		scaleVector.z = canScaleZ ? scaleValue : 0;
 		this.transform.localScale += scaleVector;
 	}
