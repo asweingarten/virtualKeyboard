@@ -3,20 +3,44 @@ using System.Collections;
 
 public class ArcMeshDrawer : MonoBehaviour {
 
-	public float arcLength = (2*Mathf.PI);
+	//public float arcLength = (2*Mathf.PI);
 	public float arcWeight = 1f;
 	public float radius = 3f;
 	public float rimWidth = 0.4f;
 	public Vector3 selectedScaleFactor = new Vector3(1.2f, 1.2f, 1.2f);
-
+	public string label = "Hello World";
 	private Vector3 originalScale;
 	public Material arcRimMaterial;
 	public Material arcBodyMaterial;
+
+	private float privArcLength = (2*Mathf.PI);//Backing of arcLength Property
+	public float arcLength {
+		get {
+			return privArcLength;
+		}
+		set {
+			privArcLength = value;
+			float textAngle = privArcLength/2 + (Mathf.Deg2Rad*gameObject.transform.rotation.eulerAngles).z;
+			if(textAngle > Mathf.PI/2 && textAngle < Mathf.PI*1.5 ){
+				arcText.transform.Rotate (Mathf.Rad2Deg*(new Vector3 (0f, 0f, (arcLength / 2) + Mathf.PI)));
+				TextMesh textMesh = arcText.GetComponent<TextMesh>();
+				textMesh.anchor = TextAnchor.MiddleRight;
+				arcText.transform.position = new Vector3( 0f, 0f, 0f );
+				arcText.transform.Translate( new Vector3 (-0.1f, 0, 0));           
+			} else {
+				arcText.transform.Rotate (Mathf.Rad2Deg*(new Vector3 (0f, 0f, arcLength / 2)));
+				arcText.transform.position = new Vector3( 0f, 0f, 0f );
+				arcText.transform.Translate( new Vector3 (0.3f, 0, 0));
+			}
+			createMeshes();
+		}
+	}
 	
 	public int quality = 20;
 
 	private GameObject arcBody;
 	private GameObject arcRim;
+	private GameObject arcText;
 	private float arcPointLength;
 
 	private Vector3[] sharedVertices;
@@ -31,8 +55,27 @@ public class ArcMeshDrawer : MonoBehaviour {
 	private Vector3[] bodyNormals;
 	private Vector2[] bodyUv;
 
+	void Awake () {
+		arcText = new GameObject ();
+		arcText.name = "ArcText";
+		arcText.transform.parent = gameObject.transform;
+		MeshRenderer textRenderer = arcText.AddComponent<MeshRenderer> ();
+		TextMesh textMesh = arcText.AddComponent<TextMesh> ();
+		textMesh.fontSize = 12;
+		textMesh.anchor = TextAnchor.MiddleLeft;
+		textMesh.text = label;
+		textMesh.font = Resources.GetBuiltinResource (typeof(Font), "Arial.ttf") as Font;
+		textRenderer.material = textMesh.font.material;
+
+		arcText.transform.localScale = new Vector3 (0.3f, 0.3f, 0.3f);
+
+	}
+
 	void Start () {
 		originalScale = transform.localScale;
+
+		
+		//arcText.transform.Rotate (Mathf.Rad2Deg*(new Vector3 (0f, 0f, arcLength / 2)));
 
 		arcBody = new GameObject ();
 		arcBody.name = "ArcBody";
