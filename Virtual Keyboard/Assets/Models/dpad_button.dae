@@ -2,10 +2,10 @@
 <COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
     <asset>
         <contributor>
-            <authoring_tool>SketchUp 15.2.685</authoring_tool>
+            <authoring_tool>SketchUp 15.3.331</authoring_tool>
         </contributor>
-        <created>2015-01-22T20:30:31Z</created>
-        <modified>2015-01-22T20:30:31Z</modified>
+        <created>2015-02-21T21:25:08Z</created>
+        <modified>2015-02-21T21:25:08Z</modified>
         <unit meter="0.0254" name="inch" />
         <up_axis>Z_UP</up_axis>
     </asset>
