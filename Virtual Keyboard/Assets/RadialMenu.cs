@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -31,14 +32,24 @@ public class RadialMenu : MonoBehaviour {
 		foreach( GameObject arcSection in arcSections ) {
 			ArcMeshDrawer childArcDrawer = arcSection.GetComponent<ArcMeshDrawer>();
 			float portion = childArcDrawer.arcWeight/totalWeight;
-			childArcDrawer.arcLength = (2*Mathf.PI)*portion;
 			childArcDrawer.createMeshes();
 			arcSection.transform.rotation = Quaternion.identity;
 			arcSection.transform.Rotate(new Vector3( 0f, 0f, Mathf.Rad2Deg*prevRotation));
+			childArcDrawer.arcLength = (2*Mathf.PI)*portion;
 			prevRotation += childArcDrawer.arcLength;
 		}
 	}
-	
+	[ContextMenu("AddMenuOption")]
+	void AddMenuOption() {
+		GameObject menuOption = new GameObject();
+		menuOption.name = "ArcSection";
+		ArcMeshDrawer meshDrawer = menuOption.AddComponent<ArcMeshDrawer> ();
+		menuOption.transform.parent = gameObject.transform;
+		meshDrawer.arcBodyMaterial = Resources.Load("RadialMenu/BlockMat2", typeof(Material)) as Material;
+		meshDrawer.arcRimMaterial  = Resources.Load("RadialMenu/BlackReflectiveMat", typeof(Material)) as Material;
+		meshDrawer.arcWeight = 2;
+	}
+
 	// Update is called once per frame
 	void Update () {
 	
