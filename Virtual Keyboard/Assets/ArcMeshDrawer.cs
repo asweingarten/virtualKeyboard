@@ -3,7 +3,6 @@ using System.Collections;
 
 public class ArcMeshDrawer : MonoBehaviour {
 
-	//public float arcLength = (2*Mathf.PI);
 	public float arcWeight = 1f;
 	public float radius = 3f;
 	public float rimWidth = 0.4f;
@@ -13,7 +12,7 @@ public class ArcMeshDrawer : MonoBehaviour {
 	public Material arcRimMaterial;
 	public Material arcBodyMaterial;
 
-	private float privArcLength = (2*Mathf.PI);//Backing of arcLength Property
+	private float privArcLength = (2*Mathf.PI);//Private member gaurded by arcLength Property
 	public float arcLength {
 		get {
 			return privArcLength;
@@ -66,16 +65,11 @@ public class ArcMeshDrawer : MonoBehaviour {
 		textMesh.text = label;
 		textMesh.font = Resources.GetBuiltinResource (typeof(Font), "Arial.ttf") as Font;
 		textRenderer.material = textMesh.font.material;
-
 		arcText.transform.localScale = new Vector3 (0.3f, 0.3f, 0.3f);
-
 	}
 
 	void Start () {
 		originalScale = transform.localScale;
-
-		
-		//arcText.transform.Rotate (Mathf.Rad2Deg*(new Vector3 (0f, 0f, arcLength / 2)));
 
 		arcBody = new GameObject ();
 		arcBody.name = "ArcBody";
