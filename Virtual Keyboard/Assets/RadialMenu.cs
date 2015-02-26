@@ -64,7 +64,7 @@ public class RadialMenu : MonoBehaviour {
 
 		foreach (GameObject arcSection in arcSections) {
 			ArcMeshDrawer childArcDrawer = arcSection.GetComponent<ArcMeshDrawer>();
-			childArcDrawer.createOrFindArcComponents();//Trigger the creation of the sub objects if needed;
+			childArcDrawer.createComponentsIfNeeded();//Trigger the creation of the sub objects if needed;
 		}
 		updateArcSectionProperties ();
 	}

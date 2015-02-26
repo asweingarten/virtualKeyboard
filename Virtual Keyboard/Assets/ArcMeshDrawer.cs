@@ -94,7 +94,7 @@ public class ArcMeshDrawer : MonoBehaviour {
 		arcRimRenderer.material = arcRimMaterial;
 	}
 
-	public void createOrFindArcComponents() {
+	public void createComponentsIfNeeded() {
 		if (arcText == null) {
 			Transform textTransform = transform.FindChild ("ArcText");
 			if( textTransform != null ) {
