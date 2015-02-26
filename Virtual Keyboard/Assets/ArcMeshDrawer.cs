@@ -3,6 +3,9 @@ using System.Collections;
 
 public class ArcMeshDrawer : MonoBehaviour {
 
+	public delegate void RadialMenuActionTrigger(GameObject selectedItem);
+	public static event RadialMenuActionTrigger OnRadialMenuActionTrigger;
+
 	public float arcWeight = 1f;
 	public float radius = 3f;
 	public float rimWidth = 0.4f;
@@ -55,7 +58,7 @@ public class ArcMeshDrawer : MonoBehaviour {
 	private Vector2[] bodyUv;
 
 	void Awake () {
-		createOrFindArcComponents ();
+		createComponentsIfNeeded ();
 	}
 
 	void Start () {
@@ -126,8 +129,12 @@ public class ArcMeshDrawer : MonoBehaviour {
 		}
 	}
 
-	private void radialActionDebug(GameObject selected) {
-		Debug.Log ("Radial Action");
+	private void fireRadialAction(GameObject selected) {
+		if (OnRadialMenuActionTrigger != null) {
+			OnRadialMenuActionTrigger (gameObject);
+		}
+		deselectSection ();
+		transform.parent.gameObject.SetActive (false);
 	}
 
 	public void selectSection() {
@@ -137,14 +144,14 @@ public class ArcMeshDrawer : MonoBehaviour {
 		selectedScale.Scale (selectedScaleFactor);
 		transform.localScale = selectedScale;
 		arcRim.AddComponent<RadialActionSelection> ();
-		RadialActionSelection.OnRadialActionSelected += radialActionDebug;
+		RadialActionSelection.OnRadialActionSelected += fireRadialAction;
 	}
 
 	public void deselectSection() {
 		transform.localScale = originalScale;
 
 		//Remove delegate and destroy the RadialActionSelection component
-		RadialActionSelection.OnRadialActionSelected -= radialActionDebug;
+		RadialActionSelection.OnRadialActionSelected -= fireRadialAction;
 		Destroy (arcRim.GetComponent<RadialActionSelection> ());
 	}
 
