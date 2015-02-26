@@ -9,13 +9,13 @@ public class DpadRotationControl : MonoBehaviour
 	Frame referenceFrame = null;
 	bool activeX = false;
 	bool activeZ = false;
-
+	
 	// Use this for initialization
 	void Start () {
 		setReferenceFrame();
-
+		
 	}
-
+	
 	// Update is called once per frame
 	void Update () {
 		if (referenceFrame == null) {
@@ -23,10 +23,10 @@ public class DpadRotationControl : MonoBehaviour
 			if (!success) return;
 		}
 		Frame currentFrame = controller.Frame ();
-
+		
 		float rotationAngleX = (Mathf.Rad2Deg)*currentFrame.RotationAngle(referenceFrame, Vector.XAxis);
 		float rotationAngleZ = (Mathf.Rad2Deg)*currentFrame.RotationAngle(referenceFrame, Vector.ZAxis);
-
+		
 		if (Mathf.Abs(rotationAngleX) >= 45) {
 			KeyCode keyid = rotationAngleX > 0 ? KeyCode.W : KeyCode.S;
 			activeX = true;
@@ -34,7 +34,7 @@ public class DpadRotationControl : MonoBehaviour
 		} else if (activeX) {
 			activeX = false;
 		}
-
+		
 		if (Mathf.Abs(rotationAngleZ) >= 45) {
 			KeyCode keyid = rotationAngleZ > 0 ? KeyCode.D : KeyCode.A;
 			activeZ = true;
@@ -44,7 +44,7 @@ public class DpadRotationControl : MonoBehaviour
 		}
 		
 	}
-
+	
 	// Returns true if reference frame set
 	bool setReferenceFrame() {
 		if (!controller.Frame().Hands.IsEmpty) {
@@ -54,4 +54,4 @@ public class DpadRotationControl : MonoBehaviour
 	}
 }
 
- 
+
