@@ -14,13 +14,6 @@ public class SlidingList : MonoBehaviour {
 		public Object image;
 	}
 
-	/*
-	private GameObject createInnerListItem() {
-		GameObject newListItem = new GameObject ();
-		newListItem.AddComponent<TextMesh>();
-	}
-	*/
-
 	List<InnerListItem> items;
 
 	GameObject addButton;
@@ -34,6 +27,7 @@ public class SlidingList : MonoBehaviour {
 
 	int selectedIndex;
 	bool initialized = false;
+	bool selector_at_top = true;
 
 	// Use this for initialization
 	void Start () {
@@ -159,30 +153,31 @@ public class SlidingList : MonoBehaviour {
 			Color color = cube.renderer.material.color;
 			Color text_color = text.renderer.material.color;
 
-			// THIS CODE IS FOR WHEN SELECTOR IS THE TOP ITEM OF A 7 ITEM LIST
-			color.a = 0.0f;
-			text_color.a = 0.0f;
-			int diff = index - selectedIndex;
-			if (diff == -1 || diff == 7){
-				color.a = 0.5f;
-				text_color.a = 0.5f;
-			} else if (diff > -1 && diff < 7){
-				color.a = 1.0f;
-				text_color.a = 1.0f;
-			}
-
-			/* // THIS CODE IS FOR WHEN SELECTOR IS THE CENTER ITEM OF A 7 ITEM LIST
-			if (Mathf.Abs (index - selectedIndex) > 4){
+			if (selector_at_top){
+				// THIS CODE IS FOR WHEN SELECTOR IS THE TOP ITEM OF A 7 ITEM LIST
 				color.a = 0.0f;
 				text_color.a = 0.0f;
-			} else if (Mathf.Abs (index - selectedIndex) == 4){
-				color.a = 0.5f;
-				text_color.a = 0.5f;
-			} else if (Mathf.Abs (index - selectedIndex) < 4){
-				color.a = 1.0f;
-				text_color.a = 1.0f;
+				int diff = index - selectedIndex;
+				if (diff == -1 || diff == 7){
+					color.a = 0.5f;
+					text_color.a = 0.5f;
+				} else if (diff > -1 && diff < 7){
+					color.a = 1.0f;
+					text_color.a = 1.0f;
+				}
+			else {
+				// THIS CODE IS FOR WHEN SELECTOR IS THE CENTER ITEM OF A 7 ITEM LIST
+				if (Mathf.Abs (index - selectedIndex) > 4){
+					color.a = 0.0f;
+					text_color.a = 0.0f;
+				} else if (Mathf.Abs (index - selectedIndex) == 4){
+					color.a = 0.5f;
+					text_color.a = 0.5f;
+				} else if (Mathf.Abs (index - selectedIndex) < 4){
+					color.a = 1.0f;
+					text_color.a = 1.0f;
+				}
 			}
-			*/
 
 			cube.renderer.material.color = color;
 			text.renderer.material.color = text_color;
