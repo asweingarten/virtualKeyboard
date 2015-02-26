@@ -106,7 +106,7 @@ public class ArcMeshDrawer : MonoBehaviour {
 				addArcTextComponents();
 			}
 		}
-
+		
 		if (arcBody == null) {
 			Transform bodyTransform = transform.FindChild ("ArcBody");
 			if( bodyTransform != null ) {
@@ -262,5 +262,17 @@ public class ArcMeshDrawer : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		assignMeshes ();
+	}
+
+	void OnValidate() {
+		Transform textTransform = transform.FindChild ("ArcText");
+		arcText = textTransform.gameObject;
+		if (arcText != null) {
+			Debug.Log ("Validate");
+
+
+			TextMesh textMesh = arcText.GetComponent<TextMesh> ();
+			textMesh.text = label;
+		}
 	}
 }
