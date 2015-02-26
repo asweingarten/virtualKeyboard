@@ -1,10 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
+using UnityEngine;
 
+// [ExecuteInEditMode]
 public class SlidingList : MonoBehaviour {
 
-	class InnerListItem{
+	class InnerListItem {
 		public Object objectContained;
 		public Transform boxTransform;
 		public TextMesh itemText;
@@ -23,39 +26,33 @@ public class SlidingList : MonoBehaviour {
 	Vector3 baseScale;
 
 	int selectedIndex;
+	bool initialized = false;
+	bool selector_at_top = true;
 
 	// Use this for initialization
 	void Start () {
-		baseScale = transform.Find ("ListOfItems").parent.transform.localScale;
+		myInitialize ();
+	}
 
-		items = new List<InnerListItem> ();
+	void myInitialize(){
+		if (!initialized) {
+			baseScale = transform.Find ("ListOfItems").parent.transform.localScale;
+			
+			items = new List<InnerListItem> ();
+			
+			Transform buttons = transform.Find ("buttons");
+			
+			addButton = buttons.Find ("AddButton").gameObject;
+			upArrow = buttons.Find ("UpArrow").gameObject;
+			downArrow = buttons.Find ("DownArrow").gameObject;
+			
+			MenuItemSelection.OnMenuItemHold += HandleOnMenuItemHeld;
+			MenuItemSelection.OnMenuItemGainedFocus += HandleOnMenuItemGainedFocus;
+			MenuItemSelection.OnMenuItemLostFocus += HandleOnMenuItemLostFocus;
+			selectedIndex = 0;
 
-		Transform buttons = transform.Find ("buttons");
-		
-		addButton = buttons.Find ("AddButton").gameObject;
-		upArrow = buttons.Find ("UpArrow").gameObject;
-		downArrow = buttons.Find ("DownArrow").gameObject;
-		
-		MenuItemSelection.OnMenuItemHold += HandleOnMenuItemHeld;
-		MenuItemSelection.OnMenuItemGainedFocus += HandleOnMenuItemGainedFocus;
-		MenuItemSelection.OnMenuItemLostFocus += HandleOnMenuItemLostFocus;
-
-		createNewListItem ("blahblah");
-		createNewListItem ("blahblah 2");
-		createNewListItem ("blahblah 3");
-		createNewListItem ("blahblah 4");
-		createNewListItem ("blahblah 5");
-
-		// TODO as of this moment requires four items in the list at this point to center on fourth, fix soon
-		selectedIndex = 3;
-
-		createNewListItem ("2 1");
-		createNewListItem ("2 2");
-		createNewListItem ("2 3");
-		createNewListItem ("2 4");
-		createNewListItem ("2 5");
-
-		slideListIncrement (2);
+			initialized = true;
+		}
 	}
 
 	void HandleOnMenuItemLostFocus (GameObject selectedItem)
@@ -104,7 +101,7 @@ public class SlidingList : MonoBehaviour {
 	
 	}
 
-	void createNewListItem(string text){
+	public void createNewListItem(string text){
 		InnerListItem newInnerListItem = new InnerListItem();
 		Transform listItemPrimitive = transform.Find ("ListItemPrimitive");
 		TextMesh textMeshPrimitive = listItemPrimitive.Find("List_Item_Text").GetComponent<TextMesh>();
@@ -152,20 +149,42 @@ public class SlidingList : MonoBehaviour {
 			TextMesh text = item.itemText;
 			Color color = cube.renderer.material.color;
 			Color text_color = text.renderer.material.color;
-			if (Mathf.Abs (index - selectedIndex) > 4){
+
+			if (selector_at_top){
+				// THIS CODE IS FOR WHEN SELECTOR IS THE TOP ITEM OF A 7 ITEM LIST
 				color.a = 0.0f;
 				text_color.a = 0.0f;
-			} else if (Mathf.Abs (index - selectedIndex) == 4){
-				color.a = 0.5f;
-				text_color.a = 0.5f;
-			} else if (Mathf.Abs (index - selectedIndex) < 4){
-				color.a = 1.0f;
-				text_color.a = 1.0f;
+				int diff = index - selectedIndex;
+				if (diff == -1 || diff == 7){
+					color.a = 0.5f;
+					text_color.a = 0.5f;
+				} else if (diff > -1 && diff < 7){
+					color.a = 1.0f;
+					text_color.a = 1.0f;
+				}
+			} else {
+				// THIS CODE IS FOR WHEN SELECTOR IS THE CENTER ITEM OF A 7 ITEM LIST
+				if (Mathf.Abs (index - selectedIndex) > 4){
+					color.a = 0.0f;
+					text_color.a = 0.0f;
+				} else if (Mathf.Abs (index - selectedIndex) == 4){
+					color.a = 0.5f;
+					text_color.a = 0.5f;
+				} else if (Mathf.Abs (index - selectedIndex) < 4){
+					color.a = 1.0f;
+					text_color.a = 1.0f;
+				}
 			}
 
 			cube.renderer.material.color = color;
 			text.renderer.material.color = text_color;
 			index++;
 		}
+	}
+
+	[ContextMenu ("Add New List Item")]
+	void DoSomething2 () {
+		myInitialize ();
+		createNewListItem(System.DateTime.Now.ToLongTimeString());
 	}
 } 
