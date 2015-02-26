@@ -21,13 +21,13 @@ public class ArcMeshDrawer : MonoBehaviour {
 			privArcLength = value;
 			float textAngle = privArcLength/2 + (Mathf.Deg2Rad*gameObject.transform.rotation.eulerAngles).z;
 			if(textAngle > Mathf.PI/2 && textAngle < Mathf.PI*1.5 ){
-				arcText.transform.Rotate (Mathf.Rad2Deg*(new Vector3 (0f, 0f, (arcLength / 2) + Mathf.PI)));
+				arcText.transform.Rotate (Mathf.Rad2Deg*(new Vector3 (0f, 0f, (privArcLength / 2) + Mathf.PI)));
 				TextMesh textMesh = arcText.GetComponent<TextMesh>();
 				textMesh.anchor = TextAnchor.MiddleRight;
 				arcText.transform.position = new Vector3( 0f, 0f, 0f );
 				arcText.transform.Translate( new Vector3 (-0.1f, 0, 0));           
 			} else {
-				arcText.transform.Rotate (Mathf.Rad2Deg*(new Vector3 (0f, 0f, arcLength / 2)));
+				arcText.transform.Rotate (Mathf.Rad2Deg*(new Vector3 (0f, 0f, privArcLength / 2)));
 				arcText.transform.position = new Vector3( 0f, 0f, 0f );
 				arcText.transform.Translate( new Vector3 (0.3f, 0, 0));
 			}
@@ -55,7 +55,14 @@ public class ArcMeshDrawer : MonoBehaviour {
 	private Vector2[] bodyUv;
 
 	void Awake () {
-		arcText = new GameObject ();
+		createOrFindArcComponents ();
+	}
+
+	void Start () {
+		createMeshes ();
+	}
+
+	private void addArcTextComponents() {
 		arcText.name = "ArcText";
 		arcText.transform.parent = gameObject.transform;
 		MeshRenderer textRenderer = arcText.AddComponent<MeshRenderer> ();
@@ -68,10 +75,7 @@ public class ArcMeshDrawer : MonoBehaviour {
 		arcText.transform.localScale = new Vector3 (0.3f, 0.3f, 0.3f);
 	}
 
-	void Start () {
-		originalScale = transform.localScale;
-
-		arcBody = new GameObject ();
+	private void addArcBodyComponents() {
 		arcBody.name = "ArcBody";
 		arcBody.transform.parent = gameObject.transform;
 		MeshFilter arcBodyMeshFilter = arcBody.AddComponent<MeshFilter> ();
@@ -79,16 +83,47 @@ public class ArcMeshDrawer : MonoBehaviour {
 		MeshRenderer arcBodyRenderer = arcBody.AddComponent<MeshRenderer> ();
 		RadialMenuItemSelection arcBodySelector = arcBody.AddComponent<RadialMenuItemSelection> ();
 		arcBodyRenderer.material = arcBodyMaterial;
+	}
 
-		arcRim = new GameObject ();
+	private void addArcRimComponents() {
 		arcRim.name = "ArcRim";
 		arcRim.transform.parent = gameObject.transform;
 		MeshFilter arcRimMeshFilter = arcRim.AddComponent<MeshFilter> ();
 		MeshCollider arcRimCollider = arcRim.AddComponent<MeshCollider> ();
 		MeshRenderer arcRimRenderer = arcRim.AddComponent<MeshRenderer> ();
 		arcRimRenderer.material = arcRimMaterial;
+	}
 
-		createMeshes ();
+	public void createComponentsIfNeeded() {
+		if (arcText == null) {
+			Transform textTransform = transform.FindChild ("ArcText");
+			if( textTransform != null ) {
+				arcText = textTransform.gameObject;
+			} else {
+				arcText = new GameObject();
+				addArcTextComponents();
+			}
+		}
+		
+		if (arcBody == null) {
+			Transform bodyTransform = transform.FindChild ("ArcBody");
+			if( bodyTransform != null ) {
+				arcBody = bodyTransform.gameObject;
+			} else {
+				arcBody = new GameObject();
+				addArcBodyComponents();
+			}
+		}
+
+		if (arcRim == null) {
+			Transform rimTransform = transform.FindChild ("ArcRim");
+			if( rimTransform != null ) {
+				arcRim = rimTransform.gameObject;
+			} else {
+				arcRim = new GameObject();
+				addArcRimComponents();
+			}
+		}
 	}
 
 	private void radialActionDebug(GameObject selected) {
@@ -118,6 +153,7 @@ public class ArcMeshDrawer : MonoBehaviour {
 		computeSharedVertices ();
 		createRimMesh ();
 		createBodyMesh ();
+		assignMeshes ();
 	}
 
 	private void calculateSizes() {	
@@ -203,22 +239,47 @@ public class ArcMeshDrawer : MonoBehaviour {
 		}
 	}
 
-	// Update is called once per frame
-	void Update () {
-		Mesh bodyMesh = arcBody.GetComponent<MeshFilter> ().mesh;
+	private void assignMeshes() {
+		Mesh tempBodyMesh = arcBody.GetComponent<MeshFilter> ().mesh;
+		Mesh bodyMesh = arcBody.GetComponent<MeshFilter> ().sharedMesh;
+		if (bodyMesh == null) {
+			bodyMesh = tempBodyMesh;
+		}
 		bodyMesh.Clear ();
 		bodyMesh.vertices = bodyVertices;
 		bodyMesh.normals = bodyNormals;
 		bodyMesh.uv = bodyUv;
 		bodyMesh.triangles = bodyTriangles;
 		arcBody.GetComponent<MeshCollider> ().sharedMesh = bodyMesh;
-
-		Mesh rimMesh = arcRim.GetComponent<MeshFilter>().mesh;
+		
+		Mesh tempRimMesh = arcRim.GetComponent<MeshFilter>().mesh;
+		Mesh rimMesh = arcRim.GetComponent<MeshFilter>().sharedMesh;
+		if (rimMesh == null) {
+			rimMesh = tempRimMesh;
+		}
 		rimMesh.Clear ();
 		rimMesh.vertices = rimVertices;
 		rimMesh.uv = rimUv;
 		rimMesh.normals = rimNormals;
 		rimMesh.triangles = rimTriangles;
 		arcRim.GetComponent<MeshCollider> ().sharedMesh = rimMesh;
+	}
+
+	// Update is called once per frame
+	void Update () {
+		assignMeshes ();
+	}
+
+	void OnValidate() {
+		Transform textTransform = transform.FindChild ("ArcText");
+
+		if (textTransform != null ) {
+			arcText = textTransform.gameObject;
+			Debug.Log ("Validate");
+
+
+			TextMesh textMesh = arcText.GetComponent<TextMesh> ();
+			textMesh.text = label;
+		}
 	}
 }

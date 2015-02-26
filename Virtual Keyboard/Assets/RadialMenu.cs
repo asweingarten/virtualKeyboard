@@ -3,6 +3,8 @@ using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
 
+//Known issue: if you use the DrawRaidalMenu Context and then delete the drawn added components
+// 	you will have to manually reset to roation on the arcSections to get it to render correctly
 public class RadialMenu : MonoBehaviour {
 
 	private GameObject selectedArc;
@@ -12,9 +14,14 @@ public class RadialMenu : MonoBehaviour {
 	void Start () {
 		RadialMenuItemSelection.OnRadialMenuSelected += onArcSectionSelected;
 		RadialMenuItemSelection.OnRadialMenuDeselected += onArcSectionDeselected;
+		updateArcSectionProperties ();
+	}
+
+	void updateArcSectionProperties() {
 		int numChildren = gameObject.transform.childCount;
 		float totalWeight = 0f;
 		//Calculate total weight of all arcSections and add them to a list
+		arcSections.Clear ();
 		for (int i = 0; i < numChildren; i++) {
 			Transform childTransform = gameObject.transform.GetChild(i);
 			GameObject child = childTransform.gameObject;
@@ -24,14 +31,15 @@ public class RadialMenu : MonoBehaviour {
 				totalWeight += child.GetComponent<ArcMeshDrawer>().arcWeight;
 			}
 		}
-
+		
 		//Keep track of starting rotation angle based on sum of prev arc lengths
 		float prevRotation = 0;
-
+		
 		//Calculate the arcLength for each section based on section_weight/total_weight
 		foreach( GameObject arcSection in arcSections ) {
 			ArcMeshDrawer childArcDrawer = arcSection.GetComponent<ArcMeshDrawer>();
 			float portion = childArcDrawer.arcWeight/totalWeight;
+
 			childArcDrawer.createMeshes();
 			arcSection.transform.rotation = Quaternion.identity;
 			arcSection.transform.Rotate(new Vector3( 0f, 0f, Mathf.Rad2Deg*prevRotation));
@@ -39,6 +47,28 @@ public class RadialMenu : MonoBehaviour {
 			prevRotation += childArcDrawer.arcLength;
 		}
 	}
+
+	[ContextMenu("DrawRadialMenu")]
+	void DrawRadialMenu() {
+		arcSections.Clear ();
+		int numChildren = gameObject.transform.childCount;
+		//Calculate total weight of all arcSections and add them to a list
+		for (int i = 0; i < numChildren; i++) {
+			Transform childTransform = gameObject.transform.GetChild(i);
+			GameObject child = childTransform.gameObject;
+			//Look for ArcSections and make sure they are active
+			if( child.name == "ArcSection" && child.activeSelf ) {
+				arcSections.Add( child );
+			}
+		}
+
+		foreach (GameObject arcSection in arcSections) {
+			ArcMeshDrawer childArcDrawer = arcSection.GetComponent<ArcMeshDrawer>();
+			childArcDrawer.createComponentsIfNeeded();//Trigger the creation of the sub objects if needed;
+		}
+		updateArcSectionProperties ();
+	}
+
 	[ContextMenu("AddMenuOption")]
 	void AddMenuOption() {
 		GameObject menuOption = new GameObject();
@@ -47,7 +77,7 @@ public class RadialMenu : MonoBehaviour {
 		menuOption.transform.parent = gameObject.transform;
 		meshDrawer.arcBodyMaterial = Resources.Load("RadialMenu/BlockMat2", typeof(Material)) as Material;
 		meshDrawer.arcRimMaterial  = Resources.Load("RadialMenu/BlackReflectiveMat", typeof(Material)) as Material;
-		meshDrawer.arcWeight = 2;
+		meshDrawer.arcWeight = 1;
 	}
 
 	// Update is called once per frame
