@@ -23,7 +23,7 @@ public class SlidingList : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		if (!initialized) {
-			baseScale = transform.Find ("ListOfItems").parent.transform.localScale;
+			baseScale = gameObject.transform.localScale;
 			
 			Transform buttons = transform.Find ("buttons");
 			
@@ -87,7 +87,7 @@ public class SlidingList : MonoBehaviour {
 	}
 
 	public void createNewListItem(string text){
-		baseScale = transform.Find ("ListOfItems").parent.transform.localScale;
+		baseScale = gameObject.transform.localScale;
 
 		Transform listItemPrimitive = transform.Find ("ListItemPrimitive");
 		TextMesh textMeshPrimitive = listItemPrimitive.Find("List_Item_Text").GetComponent<TextMesh>();
@@ -114,7 +114,7 @@ public class SlidingList : MonoBehaviour {
 	}
 
 	void slideListIncrement(int i){
-		baseScale = transform.Find ("ListOfItems").parent.transform.localScale;
+		baseScale = gameObject.transform.localScale;
 		
 		int newIndex = Mathf.Min(Mathf.Max (selectedIndex + i, 0), transform.Find ("ListOfItems").childCount-1);
 
@@ -128,9 +128,9 @@ public class SlidingList : MonoBehaviour {
 	void updateTransparency (){
 		int index = 0;
 		foreach(Transform t in transform.Find ("ListOfItems")){
-			GameObject cube = t.gameObject;
+			GameObject listItemBox = t.gameObject;
 			TextMesh text = t.Find("List_Item_Text").gameObject.GetComponent<TextMesh>();
-			Color color = cube.renderer.material.color;
+			Color color = listItemBox.renderer.material.color;
 			Color text_color = text.renderer.material.color;
 
 			if (selector_at_top){
@@ -159,7 +159,7 @@ public class SlidingList : MonoBehaviour {
 				}
 			}
 
-			cube.renderer.material.color = color;
+			listItemBox.renderer.material.color = color;
 			text.renderer.material.color = text_color;
 			index++;
 		}
