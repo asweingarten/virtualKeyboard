@@ -20,7 +20,6 @@ public class ArcMeshDrawer : MonoBehaviour {
 		set {
 			privArcLength = value;
 			float textAngle = privArcLength/2 + (Mathf.Deg2Rad*gameObject.transform.rotation.eulerAngles).z;
-			arcText.transform.eulerAngles = gameObject.transform.rotation.eulerAngles;
 			if(textAngle > Mathf.PI/2 && textAngle < Mathf.PI*1.5 ){
 				arcText.transform.Rotate (Mathf.Rad2Deg*(new Vector3 (0f, 0f, (privArcLength / 2) + Mathf.PI)));
 				TextMesh textMesh = arcText.GetComponent<TextMesh>();
@@ -98,7 +97,6 @@ public class ArcMeshDrawer : MonoBehaviour {
 	public void createOrFindArcComponents() {
 		if (arcText == null) {
 			Transform textTransform = transform.FindChild ("ArcText");
-			Debug.Log (textTransform);
 			if( textTransform != null ) {
 				arcText = textTransform.gameObject;
 			} else {
@@ -242,7 +240,11 @@ public class ArcMeshDrawer : MonoBehaviour {
 	}
 
 	private void assignMeshes() {
+		Mesh tempBodyMesh = arcBody.GetComponent<MeshFilter> ().mesh;
 		Mesh bodyMesh = arcBody.GetComponent<MeshFilter> ().sharedMesh;
+		if (bodyMesh == null) {
+			bodyMesh = tempBodyMesh;
+		}
 		bodyMesh.Clear ();
 		bodyMesh.vertices = bodyVertices;
 		bodyMesh.normals = bodyNormals;
@@ -250,7 +252,11 @@ public class ArcMeshDrawer : MonoBehaviour {
 		bodyMesh.triangles = bodyTriangles;
 		arcBody.GetComponent<MeshCollider> ().sharedMesh = bodyMesh;
 		
+		Mesh tempRimMesh = arcRim.GetComponent<MeshFilter>().mesh;
 		Mesh rimMesh = arcRim.GetComponent<MeshFilter>().sharedMesh;
+		if (rimMesh == null) {
+			rimMesh = tempRimMesh;
+		}
 		rimMesh.Clear ();
 		rimMesh.vertices = rimVertices;
 		rimMesh.uv = rimUv;
@@ -266,8 +272,9 @@ public class ArcMeshDrawer : MonoBehaviour {
 
 	void OnValidate() {
 		Transform textTransform = transform.FindChild ("ArcText");
-		arcText = textTransform.gameObject;
-		if (arcText != null) {
+
+		if (textTransform != null ) {
+			arcText = textTransform.gameObject;
 			Debug.Log ("Validate");
 
 

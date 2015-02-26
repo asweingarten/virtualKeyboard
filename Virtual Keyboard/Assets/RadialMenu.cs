@@ -3,6 +3,8 @@ using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
 
+//Known issue: if you use the DrawRaidalMenu Context and then delete the drawn added components
+// 	you will have to manually reset to roation on the arcSections to get it to render correctly
 public class RadialMenu : MonoBehaviour {
 
 	private GameObject selectedArc;
@@ -37,6 +39,7 @@ public class RadialMenu : MonoBehaviour {
 		foreach( GameObject arcSection in arcSections ) {
 			ArcMeshDrawer childArcDrawer = arcSection.GetComponent<ArcMeshDrawer>();
 			float portion = childArcDrawer.arcWeight/totalWeight;
+
 			childArcDrawer.createMeshes();
 			arcSection.transform.rotation = Quaternion.identity;
 			arcSection.transform.Rotate(new Vector3( 0f, 0f, Mathf.Rad2Deg*prevRotation));
@@ -63,7 +66,7 @@ public class RadialMenu : MonoBehaviour {
 			ArcMeshDrawer childArcDrawer = arcSection.GetComponent<ArcMeshDrawer>();
 			childArcDrawer.createOrFindArcComponents();//Trigger the creation of the sub objects if needed;
 		}
-		updateArcSectionProperties ();//First make sure arc Section have correct transforms and arcLength
+		updateArcSectionProperties ();
 	}
 
 	[ContextMenu("AddMenuOption")]
@@ -75,8 +78,6 @@ public class RadialMenu : MonoBehaviour {
 		meshDrawer.arcBodyMaterial = Resources.Load("RadialMenu/BlockMat2", typeof(Material)) as Material;
 		meshDrawer.arcRimMaterial  = Resources.Load("RadialMenu/BlackReflectiveMat", typeof(Material)) as Material;
 		meshDrawer.arcWeight = 1;
-
-		updateArcSectionProperties ();
 	}
 
 	// Update is called once per frame
