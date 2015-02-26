@@ -2,9 +2,16 @@ using UnityEngine;
 using System.Collections;
 using Leap;
 
-[RequireComponent(typeof(InteractionPanel))]
-public class DpadRotationControl : MonoBehaviour
+public class DpadController : MonoBehaviour
 {
+	private OVRPlayerController playerController;
+	public GameObject user = null;
+
+	public delegate void LeapRotateOn(KeyCode keyId);
+	public delegate void LeapRotateOff(KeyCode keyId);
+	public static event LeapRotateOn OnLeapRotateOn;
+	public static event LeapRotateOff OnLeapRotateOff;
+
 	Controller controller = new Controller();
 	Frame referenceFrame = null;
 	bool activeX = false;
@@ -12,8 +19,10 @@ public class DpadRotationControl : MonoBehaviour
 	
 	// Use this for initialization
 	void Start () {
+		if (user == null) return;
+		playerController = user.GetComponent<OVRPlayerController>() as OVRPlayerController;
+
 		setReferenceFrame();
-		
 	}
 	
 	// Update is called once per frame
@@ -26,21 +35,23 @@ public class DpadRotationControl : MonoBehaviour
 		
 		float rotationAngleX = (Mathf.Rad2Deg)*currentFrame.RotationAngle(referenceFrame, Vector.XAxis);
 		float rotationAngleZ = (Mathf.Rad2Deg)*currentFrame.RotationAngle(referenceFrame, Vector.ZAxis);
-		
+
+		KeyCode keyidX = rotationAngleX > 0 ? KeyCode.W : KeyCode.S;
 		if (Mathf.Abs(rotationAngleX) >= 45) {
-			KeyCode keyid = rotationAngleX > 0 ? KeyCode.W : KeyCode.S;
-			activeX = true;
-			Debug.Log("X activation");
+			OnLeapRotateOn(keyidX);
+			triggerMovement(keyidX.ToString());
 		} else if (activeX) {
-			activeX = false;
+			OnLeapRotateOff(keyidX);
+			triggerStop(keyidX.ToString());
 		}
-		
+
+		KeyCode keyidZ = rotationAngleZ > 0 ? KeyCode.D : KeyCode.A;
 		if (Mathf.Abs(rotationAngleZ) >= 45) {
-			KeyCode keyid = rotationAngleZ > 0 ? KeyCode.D : KeyCode.A;
-			activeZ = true;
-			Debug.Log ("Z activation");
+			OnLeapRotateOn(keyidZ);
+			triggerMovement(keyidZ.ToString());
 		} else if(activeZ) {
-			activeZ = false;
+			OnLeapRotateOff(keyidZ);
+			triggerStop(keyidZ.ToString());
 		}
 		
 	}
@@ -51,6 +62,32 @@ public class DpadRotationControl : MonoBehaviour
 			referenceFrame = controller.Frame();
 		}
 		return referenceFrame != null;
+	}
+
+	void triggerStop(string keyId) {
+		string upperKeyId = keyId.ToUpper ();
+		if (upperKeyId.Equals (KeyCode.W.ToString ())) {
+			playerController.moveForward = false;
+		} else if (upperKeyId.Equals (KeyCode.A.ToString ())) {
+			playerController.moveLeft = false;
+		} else if ( upperKeyId.Equals (KeyCode.D.ToString())) {
+			playerController.moveRight = false;
+		} else if ( upperKeyId.Equals (KeyCode.S.ToString())) {
+			playerController.moveBack = false;
+		}
+	}
+	
+	void triggerMovement(string keyId) {
+		string upperKeyId = keyId.ToUpper ();
+		if (upperKeyId.Equals (KeyCode.W.ToString ())) {
+			playerController.moveForward = true;
+		} else if (upperKeyId.Equals (KeyCode.A.ToString ())) {
+			playerController.moveLeft = true;
+		} else if ( upperKeyId.Equals (KeyCode.D.ToString())) {
+			playerController.moveRight = true;
+		} else if ( upperKeyId.Equals (KeyCode.S.ToString())) {
+			playerController.moveBack = true;
+		}
 	}
 }
 
