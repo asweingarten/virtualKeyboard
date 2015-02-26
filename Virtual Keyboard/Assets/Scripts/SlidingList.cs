@@ -7,15 +7,6 @@ using UnityEngine;
 // [ExecuteInEditMode]
 public class SlidingList : MonoBehaviour {
 
-	class InnerListItem {
-		public Object objectContained;
-		public Transform boxTransform;
-		public TextMesh itemText;
-		public Object image;
-	}
-
-	List<InnerListItem> items;
-
 	GameObject addButton;
 	GameObject upArrow;
 	GameObject downArrow;
@@ -25,20 +16,14 @@ public class SlidingList : MonoBehaviour {
 	GameObject listObject;
 	Vector3 baseScale;
 
-	int selectedIndex;
+	int selectedIndex = 0;
 	bool initialized = false;
 	bool selector_at_top = true;
 
 	// Use this for initialization
 	void Start () {
-		myInitialize ();
-	}
-
-	void myInitialize(){
 		if (!initialized) {
-			baseScale = transform.Find ("ListOfItems").parent.transform.localScale;
-			
-			items = new List<InnerListItem> ();
+			baseScale = gameObject.transform.localScale;
 			
 			Transform buttons = transform.Find ("buttons");
 			
@@ -50,7 +35,7 @@ public class SlidingList : MonoBehaviour {
 			MenuItemSelection.OnMenuItemGainedFocus += HandleOnMenuItemGainedFocus;
 			MenuItemSelection.OnMenuItemLostFocus += HandleOnMenuItemLostFocus;
 			selectedIndex = 0;
-
+			
 			initialized = true;
 		}
 	}
@@ -89,7 +74,7 @@ public class SlidingList : MonoBehaviour {
 	}
 
 	void handleUpArrow() {
-		slideListIncrement(-1);
+		slideListIncrement(1);
 	}
 
 	void handleDownArrow() {
@@ -102,7 +87,8 @@ public class SlidingList : MonoBehaviour {
 	}
 
 	public void createNewListItem(string text){
-		InnerListItem newInnerListItem = new InnerListItem();
+		baseScale = gameObject.transform.localScale;
+
 		Transform listItemPrimitive = transform.Find ("ListItemPrimitive");
 		TextMesh textMeshPrimitive = listItemPrimitive.Find("List_Item_Text").GetComponent<TextMesh>();
 
@@ -122,32 +108,29 @@ public class SlidingList : MonoBehaviour {
 		txtMesh.transform.position = textMeshPrimitive.transform.position;
 		txtMesh.transform.rotation = textMeshPrimitive.transform.rotation;
 
-		cube.transform.Translate (new Vector3 (0, 0, (-0.12f * baseScale.z * items.Count )));
-
-		newInnerListItem.boxTransform = cube.transform;
-		newInnerListItem.itemText = txtMesh;
-		items.Add (newInnerListItem);
+		cube.transform.Translate (new Vector3 (0, 0, (-0.12f * baseScale.z * (transform.Find ("ListOfItems").childCount -1 - selectedIndex))));
 		
 		updateTransparency ();
 	}
 
 	void slideListIncrement(int i){
-		int newIndex = Mathf.Min(Mathf.Max (selectedIndex + i, 0), items.Count-1);
+		baseScale = gameObject.transform.localScale;
+		
+		int newIndex = Mathf.Min(Mathf.Max (selectedIndex + i, 0), transform.Find ("ListOfItems").childCount-1);
 
 		Transform listOfItems = transform.Find ("ListOfItems");
 		listOfItems.Translate(new Vector3 (0, 0, (0.12f * baseScale.z * (newIndex - selectedIndex) )));
 		selectedIndex = newIndex;
-		Debug.Log (newIndex);
 
 		updateTransparency ();
 	}
 
 	void updateTransparency (){
 		int index = 0;
-		foreach(InnerListItem item in items){
-			GameObject cube = item.boxTransform.gameObject;
-			TextMesh text = item.itemText;
-			Color color = cube.renderer.material.color;
+		foreach(Transform t in transform.Find ("ListOfItems")){
+			GameObject listItemBox = t.gameObject;
+			TextMesh text = t.Find("List_Item_Text").gameObject.GetComponent<TextMesh>();
+			Color color = listItemBox.renderer.material.color;
 			Color text_color = text.renderer.material.color;
 
 			if (selector_at_top){
@@ -176,15 +159,48 @@ public class SlidingList : MonoBehaviour {
 				}
 			}
 
-			cube.renderer.material.color = color;
+			listItemBox.renderer.material.color = color;
 			text.renderer.material.color = text_color;
 			index++;
 		}
 	}
 
 	[ContextMenu ("Add New List Item")]
-	void DoSomething2 () {
-		myInitialize ();
+	void AddNewListItem () {
+		Start ();
 		createNewListItem(System.DateTime.Now.ToLongTimeString());
+	}
+
+	[ContextMenu ("Clear List")]
+	void ClearList () {
+		initialized = false;
+		Start ();
+
+		int childCount = transform.Find ("ListOfItems").childCount;
+		for (int i = childCount - 1; i >= 0; i--){
+			GameObject.DestroyImmediate(transform.Find ("ListOfItems").GetChild(i).gameObject);
+		}
+	}
+
+	[ContextMenu ("Scroll Up")]
+	void ScrollUp () {
+		handleUpArrow();
+	}
+
+	[ContextMenu ("Scroll Down")]
+	void ScrollDown () {
+		handleDownArrow();
+	}
+
+	[ContextMenu ("Print All Items From GameObject")]
+	void Debug1 () {
+		Transform listOfItems = transform.Find ("ListOfItems");
+		Debug.Log (listOfItems);
+		foreach (Transform t in listOfItems){
+			Debug.Log (t.GetType());
+			Transform textMeshTransform = t.Find("List_Item_Text");
+			Debug.Log(textMeshTransform.gameObject.GetComponent<TextMesh>().text);
+		}
+
 	}
 } 
