@@ -31,12 +31,10 @@ public class SlidingList : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		Debug.Log("CALLED START");
 		myInitialize ();
 	}
 
 	void myInitialize(){
-		Debug.Log("CALLED INITIALIZE");
 		if (!initialized) {
 			baseScale = transform.Find ("ListOfItems").parent.transform.localScale;
 			
@@ -104,7 +102,6 @@ public class SlidingList : MonoBehaviour {
 	}
 
 	public void createNewListItem(string text){
-		Debug.Log ("CALLED createNewListItem");
 		InnerListItem newInnerListItem = new InnerListItem();
 		Transform listItemPrimitive = transform.Find ("ListItemPrimitive");
 		TextMesh textMeshPrimitive = listItemPrimitive.Find("List_Item_Text").GetComponent<TextMesh>();
@@ -165,7 +162,7 @@ public class SlidingList : MonoBehaviour {
 					color.a = 1.0f;
 					text_color.a = 1.0f;
 				}
-			else {
+			} else {
 				// THIS CODE IS FOR WHEN SELECTOR IS THE CENTER ITEM OF A 7 ITEM LIST
 				if (Mathf.Abs (index - selectedIndex) > 4){
 					color.a = 0.0f;
