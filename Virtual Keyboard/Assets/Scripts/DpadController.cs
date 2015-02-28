@@ -40,7 +40,7 @@ public class DpadController : MonoBehaviour
 		if (Mathf.Abs(rotationAngleX) >= 45) {
 			OnLeapRotateOn(keyidX);
 			triggerMovement(keyidX.ToString());
-		} else if (activeX) {
+		} else {
 			OnLeapRotateOff(keyidX);
 			triggerStop(keyidX.ToString());
 		}
@@ -49,7 +49,7 @@ public class DpadController : MonoBehaviour
 		if (Mathf.Abs(rotationAngleZ) >= 45) {
 			OnLeapRotateOn(keyidZ);
 			triggerMovement(keyidZ.ToString());
-		} else if(activeZ) {
+		} else {
 			OnLeapRotateOff(keyidZ);
 			triggerStop(keyidZ.ToString());
 		}
