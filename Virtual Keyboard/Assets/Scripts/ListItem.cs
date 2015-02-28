@@ -1,22 +1,24 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ListItem : MonoBehaviour {
-
-
-	public string keyId;
-	private TextMesh textMesh;
-
-	private Color baseColor;
-	public Color activeColor;
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
+public abstract class ListItem : MonoBehaviour
+{
+	private bool isActive;
+	public bool IsActive{
+		get{
+			return isActive;
+		}
+		set{
+			isActive = value;
+		}
 	}
 
+	void OnCollisionEnter(Collision collision) {
+		Debug.Log ("INTERACTING WITH LIST ITEM");
+		if (isActive) {
+			execute ();
+		}
+	}
+	
+	public abstract void execute();
 }
