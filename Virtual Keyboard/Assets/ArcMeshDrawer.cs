@@ -28,11 +28,11 @@ public class ArcMeshDrawer : MonoBehaviour {
 				arcText.transform.Rotate (Mathf.Rad2Deg*(new Vector3 (0f, 0f, (privArcLength / 2) + Mathf.PI)));
 				TextMesh textMesh = arcText.GetComponent<TextMesh>();
 				textMesh.anchor = TextAnchor.MiddleRight;
-				arcText.transform.position = new Vector3( 0f, 0f, 0f );
+				arcText.transform.position = gameObject.transform.position;
 				arcText.transform.Translate( new Vector3 (-0.1f, 0, 0));           
 			} else {
 				arcText.transform.Rotate (Mathf.Rad2Deg*(new Vector3 (0f, 0f, privArcLength / 2)));
-				arcText.transform.position = new Vector3( 0f, 0f, 0f );
+				arcText.transform.position = gameObject.transform.position;
 				arcText.transform.Translate( new Vector3 (0.3f, 0, 0));
 			}
 			createMeshes();
