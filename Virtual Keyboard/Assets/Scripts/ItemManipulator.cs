@@ -10,6 +10,10 @@ public class ItemManipulator : MonoBehaviour
 
 	private bool trackingActive = false;
 
+	public bool translationEnabled = false;
+	public bool rotationEnabled = false;
+	public bool scalingEnabled = false;
+
 	// Use this for initialization
 	void Start () {
 		controller = new Controller ();
@@ -19,9 +23,25 @@ public class ItemManipulator : MonoBehaviour
 	// Update is called once per frame
 	void Update () {
 		if (selectedItem == null) return;
-		translateItem ();
-		rotateItem();
-		scaleItem();
+
+		translationEnabled = isHandClosed ();
+
+		if (translationEnabled) {
+			translateItem ();
+		}
+		if (rotationEnabled) {
+			rotateItem();
+		}
+		if (scalingEnabled) {
+			scaleItem();
+		}
+	}
+
+	bool isHandClosed(){
+		Frame frame = controller.Frame ();
+
+		Hand hand = frame.Hands.Rightmost;
+		return (hand.GrabStrength > 0.9f);
 	}
 
 	void updateSelectedItem(GameObject newlySelectedItem) {
@@ -37,6 +57,7 @@ public class ItemManipulator : MonoBehaviour
 		} else {
 			selectedItem = null;
 		}
+
 	}
 
 	void translateItem() {
