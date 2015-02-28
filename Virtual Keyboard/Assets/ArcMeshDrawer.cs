@@ -72,7 +72,6 @@ public class ArcMeshDrawer : MonoBehaviour {
 		MeshRenderer textRenderer = arcText.AddComponent<MeshRenderer> ();
 		TextMesh textMesh = arcText.AddComponent<TextMesh> ();
 		textMesh.fontSize = 20;
-		//textMesh.offsetZ = 20;
 		textMesh.characterSize = 0.2f;
 		textMesh.anchor = TextAnchor.MiddleLeft;
 		textMesh.text = label;
