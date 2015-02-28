@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class FurnitureListItem : MonoBehaviour, IListItem
+public class FurnitureListItem : ListItem
 {
 	public string furnitureName;
 	public GameObject furniture;
@@ -18,7 +18,8 @@ public class FurnitureListItem : MonoBehaviour, IListItem
 	
 	}
 
-	public virtual void execute() {
+	public override void execute() {
+		Debug.Log ("INSTANTIATE CALLED");
 		Instantiate (furniture, new Vector3 (0, 0, 0), Quaternion.identity);
 	}
 }

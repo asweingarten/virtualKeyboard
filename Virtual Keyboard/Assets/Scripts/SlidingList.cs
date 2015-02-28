@@ -38,6 +38,7 @@ public class SlidingList : MonoBehaviour {
 			
 			initialized = true;
 		}
+		updateTransparency ();
 	}
 
 	void HandleOnMenuItemLostFocus (GameObject selectedItem)
@@ -84,6 +85,10 @@ public class SlidingList : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 	
+	}
+
+	public void callExecuteOnSelectedItem(){
+		
 	}
 
 	public void createNewListItem(string text){
@@ -144,6 +149,12 @@ public class SlidingList : MonoBehaviour {
 				} else if (diff > -1 && diff < 7){
 					color.a = 1.0f;
 					text_color.a = 1.0f;
+				}
+
+				if (diff == 0){
+					t.GetComponent<ListItem>().IsActive = true;
+				} else {
+					t.GetComponent<ListItem>().IsActive = false;
 				}
 			} else {
 				// THIS CODE IS FOR WHEN SELECTOR IS THE CENTER ITEM OF A 7 ITEM LIST
