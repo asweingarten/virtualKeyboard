@@ -23,6 +23,7 @@ public class ArcMeshDrawer : MonoBehaviour {
 		set {
 			privArcLength = value;
 			float textAngle = privArcLength/2 + (Mathf.Deg2Rad*gameObject.transform.rotation.eulerAngles).z;
+			arcText.transform.rotation = gameObject.transform.rotation;
 			if(textAngle > Mathf.PI/2 && textAngle < Mathf.PI*1.5 ){
 				arcText.transform.Rotate (Mathf.Rad2Deg*(new Vector3 (0f, 0f, (privArcLength / 2) + Mathf.PI)));
 				TextMesh textMesh = arcText.GetComponent<TextMesh>();
