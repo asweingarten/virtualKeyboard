@@ -25,14 +25,14 @@ public class ArcMeshDrawer : MonoBehaviour {
 			float textAngle = privArcLength/2 + (Mathf.Deg2Rad*gameObject.transform.rotation.eulerAngles).z;
 			arcText.transform.rotation = gameObject.transform.rotation;
 			if(textAngle > Mathf.PI/2 && textAngle < Mathf.PI*1.5 ){
-				arcText.transform.Rotate (Mathf.Rad2Deg*(new Vector3 (0f, 0f, (privArcLength / 2) + Mathf.PI)));
+				arcText.transform.RotateAround (Vector3.zero, Vector3.forward, Mathf.Rad2Deg*((privArcLength / 2) + Mathf.PI));
 				TextMesh textMesh = arcText.GetComponent<TextMesh>();
 				textMesh.anchor = TextAnchor.MiddleRight;
-				arcText.transform.position = new Vector3( 0f, 0f, 0f );
-				arcText.transform.Translate( new Vector3 (-0.1f, 0, 0));           
+				arcText.transform.Translate( new Vector3 (-0.2f, 0, 0));           
 			} else {
-				arcText.transform.Rotate (Mathf.Rad2Deg*(new Vector3 (0f, 0f, privArcLength / 2)));
-				arcText.transform.position = new Vector3( 0f, 0f, 0f );
+				arcText.transform.RotateAround (Vector3.zero, Vector3.forward, Mathf.Rad2Deg*(privArcLength / 2));
+				TextMesh textMesh = arcText.GetComponent<TextMesh>();
+				textMesh.anchor = TextAnchor.MiddleLeft;
 				arcText.transform.Translate( new Vector3 (0.3f, 0, 0));
 			}
 			createMeshes();
@@ -71,12 +71,12 @@ public class ArcMeshDrawer : MonoBehaviour {
 		arcText.transform.parent = gameObject.transform;
 		MeshRenderer textRenderer = arcText.AddComponent<MeshRenderer> ();
 		TextMesh textMesh = arcText.AddComponent<TextMesh> ();
-		textMesh.fontSize = 12;
+		textMesh.fontSize = 20;
+		textMesh.characterSize = 0.2f;
 		textMesh.anchor = TextAnchor.MiddleLeft;
 		textMesh.text = label;
 		textMesh.font = Resources.GetBuiltinResource (typeof(Font), "Arial.ttf") as Font;
 		textRenderer.material = textMesh.font.material;
-		arcText.transform.localScale = new Vector3 (0.3f, 0.3f, 0.3f);
 	}
 
 	private void addArcBodyComponents() {
@@ -96,6 +96,39 @@ public class ArcMeshDrawer : MonoBehaviour {
 		MeshCollider arcRimCollider = arcRim.AddComponent<MeshCollider> ();
 		MeshRenderer arcRimRenderer = arcRim.AddComponent<MeshRenderer> ();
 		arcRimRenderer.material = arcRimMaterial;
+	}
+
+	public void removeComponents() {
+		if (arcText == null) {
+			Transform textTransform = transform.FindChild ("ArcText");
+			if( textTransform != null ) {
+				arcText = textTransform.gameObject;
+				Debug.Log ( "Remocing arcText" );
+				DestroyImmediate(arcText);
+			} 
+		} else {
+			DestroyImmediate(arcText);
+		}
+		
+		if (arcBody == null) {
+			Transform bodyTransform = transform.FindChild ("ArcBody");
+			if( bodyTransform != null ) {
+				arcBody = bodyTransform.gameObject;
+				DestroyImmediate(arcBody);
+			}
+		} else {
+			DestroyImmediate(arcBody);
+		}
+		
+		if (arcRim == null) {
+			Transform rimTransform = transform.FindChild ("ArcRim");
+			if( rimTransform != null ) {
+				arcRim = rimTransform.gameObject;
+				DestroyImmediate(arcRim);
+			}
+		} else {
+			DestroyImmediate(arcRim);
+		}
 	}
 
 	public void createComponentsIfNeeded() {

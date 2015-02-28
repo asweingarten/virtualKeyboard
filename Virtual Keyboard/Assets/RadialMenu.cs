@@ -42,14 +42,33 @@ public class RadialMenu : MonoBehaviour {
 
 			childArcDrawer.createMeshes();
 			arcSection.transform.rotation = Quaternion.identity;
-			arcSection.transform.Rotate(new Vector3( 0f, 0f, Mathf.Rad2Deg*prevRotation));
+			arcSection.transform.RotateAround(Vector3.zero, new Vector3(0f, 0f, 1f), Mathf.Rad2Deg*prevRotation);
 			childArcDrawer.arcLength = (2*Mathf.PI)*portion;
 			prevRotation += childArcDrawer.arcLength;
 		}
 	}
+	[ContextMenu("UndrawRadialMenu")]
+	void UndrawRadialMenu() {
+		int numChildren = gameObject.transform.childCount;
+		//Calculate total weight of all arcSections and add them to a list
+		for (int i = 0; i < numChildren; i++) {
+			Transform childTransform = gameObject.transform.GetChild(i);
+			GameObject child = childTransform.gameObject;
+			//Look for ArcSections and make sure they are active
+			if( child.name == "ArcSection" && child.activeSelf ) {
+				ArcMeshDrawer childArcDrawer = child.GetComponent<ArcMeshDrawer>();
+				childArcDrawer.removeComponents();
+				child.transform.rotation = Quaternion.identity;
+				child.transform.localPosition = Vector3.zero;
+				child.transform.localScale = Vector3.one;
+			}
+		}
+
+	}
 
 	[ContextMenu("DrawRadialMenu")]
 	void DrawRadialMenu() {
+		UndrawRadialMenu ();
 		arcSections.Clear ();
 		int numChildren = gameObject.transform.childCount;
 		//Calculate total weight of all arcSections and add them to a list
