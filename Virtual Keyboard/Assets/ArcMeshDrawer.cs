@@ -98,6 +98,39 @@ public class ArcMeshDrawer : MonoBehaviour {
 		arcRimRenderer.material = arcRimMaterial;
 	}
 
+	public void removeComponents() {
+		if (arcText == null) {
+			Transform textTransform = transform.FindChild ("ArcText");
+			if( textTransform != null ) {
+				arcText = textTransform.gameObject;
+				Debug.Log ( "Remocing arcText" );
+				DestroyImmediate(arcText);
+			} 
+		} else {
+			DestroyImmediate(arcText);
+		}
+		
+		if (arcBody == null) {
+			Transform bodyTransform = transform.FindChild ("ArcBody");
+			if( bodyTransform != null ) {
+				arcBody = bodyTransform.gameObject;
+				DestroyImmediate(arcBody);
+			}
+		} else {
+			DestroyImmediate(arcBody);
+		}
+		
+		if (arcRim == null) {
+			Transform rimTransform = transform.FindChild ("ArcRim");
+			if( rimTransform != null ) {
+				arcRim = rimTransform.gameObject;
+				DestroyImmediate(arcRim);
+			}
+		} else {
+			DestroyImmediate(arcRim);
+		}
+	}
+
 	public void createComponentsIfNeeded() {
 		if (arcText == null) {
 			Transform textTransform = transform.FindChild ("ArcText");

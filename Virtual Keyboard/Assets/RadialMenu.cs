@@ -47,9 +47,28 @@ public class RadialMenu : MonoBehaviour {
 			prevRotation += childArcDrawer.arcLength;
 		}
 	}
+	[ContextMenu("UndrawRadialMenu")]
+	void UndrawRadialMenu() {
+		int numChildren = gameObject.transform.childCount;
+		//Calculate total weight of all arcSections and add them to a list
+		for (int i = 0; i < numChildren; i++) {
+			Transform childTransform = gameObject.transform.GetChild(i);
+			GameObject child = childTransform.gameObject;
+			//Look for ArcSections and make sure they are active
+			if( child.name == "ArcSection" && child.activeSelf ) {
+				ArcMeshDrawer childArcDrawer = child.GetComponent<ArcMeshDrawer>();
+				childArcDrawer.removeComponents();
+				child.transform.rotation = Quaternion.identity;
+				child.transform.localPosition = Vector3.zero;
+				child.transform.localScale = Vector3.one;
+			}
+		}
+
+	}
 
 	[ContextMenu("DrawRadialMenu")]
 	void DrawRadialMenu() {
+		UndrawRadialMenu ();
 		arcSections.Clear ();
 		int numChildren = gameObject.transform.childCount;
 		//Calculate total weight of all arcSections and add them to a list
