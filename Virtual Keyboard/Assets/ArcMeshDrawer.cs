@@ -25,16 +25,14 @@ public class ArcMeshDrawer : MonoBehaviour {
 			float textAngle = privArcLength/2 + (Mathf.Deg2Rad*gameObject.transform.rotation.eulerAngles).z;
 			arcText.transform.rotation = gameObject.transform.rotation;
 			if(textAngle > Mathf.PI/2 && textAngle < Mathf.PI*1.5 ){
-				//arcText.transform.Rotate (Mathf.Rad2Deg*(new Vector3 (0f, 0f, (privArcLength / 2) + Mathf.PI)));
 				arcText.transform.RotateAround (Vector3.zero, Vector3.forward, Mathf.Rad2Deg*((privArcLength / 2) + Mathf.PI));
 				TextMesh textMesh = arcText.GetComponent<TextMesh>();
 				textMesh.anchor = TextAnchor.MiddleRight;
-				//arcText.transform.position = gameObject.transform.position;
-				arcText.transform.Translate( new Vector3 (-0.1f, 0, 0));           
+				arcText.transform.Translate( new Vector3 (-0.2f, 0, 0));           
 			} else {
-				//arcText.transform.Rotate (Mathf.Rad2Deg*(new Vector3 (0f, 0f, privArcLength / 2)));
 				arcText.transform.RotateAround (Vector3.zero, Vector3.forward, Mathf.Rad2Deg*(privArcLength / 2));
-				//arcText.transform.position = gameObject.transform.position;
+				TextMesh textMesh = arcText.GetComponent<TextMesh>();
+				textMesh.anchor = TextAnchor.MiddleLeft;
 				arcText.transform.Translate( new Vector3 (0.3f, 0, 0));
 			}
 			createMeshes();
@@ -73,12 +71,13 @@ public class ArcMeshDrawer : MonoBehaviour {
 		arcText.transform.parent = gameObject.transform;
 		MeshRenderer textRenderer = arcText.AddComponent<MeshRenderer> ();
 		TextMesh textMesh = arcText.AddComponent<TextMesh> ();
-		textMesh.fontSize = 12;
+		textMesh.fontSize = 20;
+		//textMesh.offsetZ = 20;
+		textMesh.characterSize = 0.2f;
 		textMesh.anchor = TextAnchor.MiddleLeft;
 		textMesh.text = label;
 		textMesh.font = Resources.GetBuiltinResource (typeof(Font), "Arial.ttf") as Font;
 		textRenderer.material = textMesh.font.material;
-		arcText.transform.localScale = new Vector3 (0.3f, 0.3f, 0.3f);
 	}
 
 	private void addArcBodyComponents() {
