@@ -25,14 +25,16 @@ public class ArcMeshDrawer : MonoBehaviour {
 			float textAngle = privArcLength/2 + (Mathf.Deg2Rad*gameObject.transform.rotation.eulerAngles).z;
 			arcText.transform.rotation = gameObject.transform.rotation;
 			if(textAngle > Mathf.PI/2 && textAngle < Mathf.PI*1.5 ){
-				arcText.transform.Rotate (Mathf.Rad2Deg*(new Vector3 (0f, 0f, (privArcLength / 2) + Mathf.PI)));
+				//arcText.transform.Rotate (Mathf.Rad2Deg*(new Vector3 (0f, 0f, (privArcLength / 2) + Mathf.PI)));
+				arcText.transform.RotateAround (Vector3.zero, Vector3.forward, Mathf.Rad2Deg*((privArcLength / 2) + Mathf.PI));
 				TextMesh textMesh = arcText.GetComponent<TextMesh>();
 				textMesh.anchor = TextAnchor.MiddleRight;
-				arcText.transform.position = gameObject.transform.position;
+				//arcText.transform.position = gameObject.transform.position;
 				arcText.transform.Translate( new Vector3 (-0.1f, 0, 0));           
 			} else {
-				arcText.transform.Rotate (Mathf.Rad2Deg*(new Vector3 (0f, 0f, privArcLength / 2)));
-				arcText.transform.position = gameObject.transform.position;
+				//arcText.transform.Rotate (Mathf.Rad2Deg*(new Vector3 (0f, 0f, privArcLength / 2)));
+				arcText.transform.RotateAround (Vector3.zero, Vector3.forward, Mathf.Rad2Deg*(privArcLength / 2));
+				//arcText.transform.position = gameObject.transform.position;
 				arcText.transform.Translate( new Vector3 (0.3f, 0, 0));
 			}
 			createMeshes();

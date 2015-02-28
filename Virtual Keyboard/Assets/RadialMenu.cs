@@ -43,7 +43,7 @@ public class RadialMenu : MonoBehaviour {
 			childArcDrawer.createMeshes();
 			arcSection.transform.rotation = Quaternion.identity;
 			//arcSection.transform.RotateAround(gameObject.transform.position, new Vector3( 0f, 0f, 1f), Mathf.Rad2Deg*prevRotation);
-			arcSection.transform.RotateAround(Vector3.zero, new Vector3( 0f, 0f, 1f), Mathf.Rad2Deg*prevRotation);
+			arcSection.transform.RotateAround(Vector3.zero, new Vector3(0f, 0f, 1f), Mathf.Rad2Deg*prevRotation);
 			//arcSection.transform.Rotate(new Vector3( 0f, 0f, Mathf.Rad2Deg*prevRotation));
 			childArcDrawer.arcLength = (2*Mathf.PI)*portion;
 			prevRotation += childArcDrawer.arcLength;
