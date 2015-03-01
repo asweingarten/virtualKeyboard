@@ -72,6 +72,7 @@ public class ArcMeshDrawer : MonoBehaviour {
 		arcText.transform.parent = gameObject.transform;
 		Debug.Log (arcText.transform.localPosition);
 		arcText.transform.localPosition = Vector3.zero;
+		arcText.transform.localScale = Vector3.one;
 		arcText.transform.localRotation = Quaternion.identity;
 		MeshRenderer textRenderer = arcText.AddComponent<MeshRenderer> ();
 		TextMesh textMesh = arcText.AddComponent<TextMesh> ();
@@ -87,6 +88,7 @@ public class ArcMeshDrawer : MonoBehaviour {
 		arcBody.name = "ArcBody";
 		arcBody.transform.parent = gameObject.transform;
 		arcBody.transform.localPosition = Vector3.zero;
+		arcBody.transform.localScale = Vector3.one;
 		arcBody.transform.localRotation = Quaternion.identity;
 		MeshFilter arcBodyMeshFilter = arcBody.AddComponent<MeshFilter> ();
 		MeshCollider arcBodyCollider = arcBody.AddComponent<MeshCollider> ();
@@ -99,6 +101,7 @@ public class ArcMeshDrawer : MonoBehaviour {
 		arcRim.name = "ArcRim";
 		arcRim.transform.parent = gameObject.transform;
 		arcRim.transform.localPosition = Vector3.zero;
+		arcRim.transform.localScale = Vector3.one;
 		arcRim.transform.localRotation = Quaternion.identity;
 		MeshFilter arcRimMeshFilter = arcRim.AddComponent<MeshFilter> ();
 		MeshCollider arcRimCollider = arcRim.AddComponent<MeshCollider> ();
