@@ -3,14 +3,13 @@ using System.Collections;
 
 public class RadialMenuItemSelection : MonoBehaviour {
 	
-	public delegate void RadialMenuItemOnSelect(GameObject selectedItem);
-	public delegate void RadialMenuItemOnDeselect(GameObject selectedItem);
+
 	public delegate void RadialMenuOnSelect(GameObject selectedItem);
 	public delegate void RadialMenuOnDeselect(GameObject selectedItem);
-	public static event RadialMenuItemOnSelect OnRadialMenuItemSelected;
-	public static event RadialMenuItemOnDeselect OnRadialMenuItemDeselected;
 	public static event RadialMenuOnSelect OnRadialMenuSelected;
 	public static event RadialMenuOnDeselect OnRadialMenuDeselected;
+
+	public string selectionObjectName { get; set;}
 
 	private static object selectedObjectLock = new object();
 	private static GameObject globallySelectedObject;
@@ -37,6 +36,14 @@ public class RadialMenuItemSelection : MonoBehaviour {
 	}
 	
 	void OnCollisionEnter(Collision collision) {
+		GameObject collidingObject = collision.gameObject;
+		if( selectionObjectName != null && selectionObjectName.Length != 0 && collidingObject.name != selectionObjectName ) {
+			Transform parentTransform = collidingObject.transform.parent;
+			if( parentTransform == null || parentTransform.gameObject.name != selectionObjectName ) {
+				return;
+			}
+		}
+
 		//Do not fire action more than once per distinct selection
 		if (selectedObject == gameObject) {
 			return;
@@ -49,6 +56,14 @@ public class RadialMenuItemSelection : MonoBehaviour {
 	}
 	
 	void OnCollisionExit(Collision collision) {
+		GameObject collidingObject = collision.gameObject;
+		if( selectionObjectName != null && selectionObjectName.Length != 0 && collidingObject.name != selectionObjectName ) {
+			Transform parentTransform = collidingObject.transform.parent;
+			if( parentTransform == null || parentTransform.gameObject.name != selectionObjectName ) {
+				return;
+			}
+		}
+
 		//Only deselect event if this object is the currently selected one
 		if (selectedObject && OnRadialMenuDeselected != null) {
 			OnRadialMenuDeselected(gameObject);

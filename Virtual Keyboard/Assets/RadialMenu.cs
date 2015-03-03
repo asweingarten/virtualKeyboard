@@ -7,6 +7,8 @@ public class RadialMenu : MonoBehaviour {
 
 	private GameObject selectedArc;
 
+	public string interactionObjectName = "index";
+
 	// Use this for initialization
 	private List<GameObject> arcSections = new List<GameObject>();
 	void Start () {
@@ -36,6 +38,7 @@ public class RadialMenu : MonoBehaviour {
 		//Calculate the arcLength for each section based on section_weight/total_weight
 		foreach( GameObject arcSection in arcSections ) {
 			ArcMeshDrawer childArcDrawer = arcSection.GetComponent<ArcMeshDrawer>();
+			childArcDrawer.selectionObjectName = interactionObjectName;
 			float portion = childArcDrawer.arcWeight/totalWeight;
 
 			childArcDrawer.createMeshes();
@@ -85,6 +88,12 @@ public class RadialMenu : MonoBehaviour {
 			childArcDrawer.createComponentsIfNeeded();//Trigger the creation of the sub objects if needed;
 		}
 		updateArcSectionProperties ();
+	}
+
+	private void loadRadialMaterialResources() {
+		Object[] bodyMats = Resources.LoadAll ("RadialMenu/BodyMaterials");
+		Object[] rimMats = Resources.LoadAll ("RadialMenu/RimMaterials");
+
 	}
 
 	[ContextMenu("AddMenuOption")]
