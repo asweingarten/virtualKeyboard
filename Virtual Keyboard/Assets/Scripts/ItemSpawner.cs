@@ -6,6 +6,7 @@ public class ItemSpawner : MonoBehaviour
 	public GameObject Ceiling = null;
 	public GameObject Floor = null;
 	public GameObject[] Walls = new GameObject[4];
+	public GameObject MainCamera = null;
 
 	// Use this for initialization
 	void Start ()
@@ -31,19 +32,21 @@ public class ItemSpawner : MonoBehaviour
 				break;
 
 			case Furniture.Mounting.WALL:
-				Camera camera = Camera.mainCamera;
-				RaycastHit hit;
-				// Send out a raycast from the camera's position, if it collides with a wall, return the wall's position.
-				if(Physics.Raycast(camera.transform.position, camera.transform.forward, out hit)) {
-    				for (int i = 0; i < 4; i++) {
-						if (Walls[i] == null) { continue; }
-						if (Walls[i].transform.position == hit.transform.position) {
-							Debug.Log("Collision at" + Walls[i].transform.position);
-							return Walls[i].transform.position;
+				if (MainCamera != null) {
+					// Send out a raycast from the camera's position, if it collides with a wall, return the wall's position.
+					RaycastHit hit;
+					if(Physics.Raycast(MainCamera.transform.position, MainCamera.transform.forward, out hit)) {
+	    				for (int i = 0; i < 4; i++) {
+							if (Walls[i] == null) { continue; }
+							if (Walls[i].transform.position == hit.transform.position) {
+								Debug.Log("Collision at" + Walls[i].transform.position);
+								return Walls[i].transform.position;
+							}
 						}
 					}
 				}
 
+				Debug.Log("No collisions with walls were recorded");
 				return Vector3.zero;
 				break;
 		}
