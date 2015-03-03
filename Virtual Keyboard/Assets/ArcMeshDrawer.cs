@@ -51,31 +51,6 @@ public class ArcMeshDrawer : MonoBehaviour {
 		}
 	}
 
-
-	private void updateChildComponentSelectionObjects() {
-		if (arcBody == null) {
-			Transform bodyTransform = transform.FindChild ("ArcBody");
-			if( bodyTransform != null ) {
-				arcBody = bodyTransform.gameObject;
-			}
-		}
-		RadialMenuItemSelection itemSelection = arcBody.GetComponent<RadialMenuItemSelection> ();
-		if (itemSelection) {
-			itemSelection.selectionObjectName = privSelectionObjectName;
-		}
-
-		if (arcRim == null) {
-			Transform rimTransform = transform.FindChild ("ArcBody");
-			if( rimTransform != null ) {
-				arcRim = rimTransform.gameObject;
-			}
-		}
-		RadialActionSelection actionSelection = arcBody.GetComponent<RadialActionSelection> ();
-		if (actionSelection) {
-			actionSelection.selectionObjectName = privSelectionObjectName;
-		}
-	}
-	
 	public int quality = 20;
 
 	private GameObject arcBody;
@@ -101,6 +76,30 @@ public class ArcMeshDrawer : MonoBehaviour {
 
 	void Start () {
 		createMeshes ();
+	}
+
+	private void updateChildComponentSelectionObjects() {
+		if (arcBody == null) {
+			Transform bodyTransform = transform.FindChild ("ArcBody");
+			if( bodyTransform != null ) {
+				arcBody = bodyTransform.gameObject;
+			}
+		}
+		RadialMenuItemSelection itemSelection = arcBody.GetComponent<RadialMenuItemSelection> ();
+		if (itemSelection) {
+			itemSelection.selectionObjectName = privSelectionObjectName;
+		}
+		
+		if (arcRim == null) {
+			Transform rimTransform = transform.FindChild ("ArcBody");
+			if( rimTransform != null ) {
+				arcRim = rimTransform.gameObject;
+			}
+		}
+		RadialActionSelection actionSelection = arcBody.GetComponent<RadialActionSelection> ();
+		if (actionSelection) {
+			actionSelection.selectionObjectName = privSelectionObjectName;
+		}
 	}
 
 	private void addArcTextComponents() {
