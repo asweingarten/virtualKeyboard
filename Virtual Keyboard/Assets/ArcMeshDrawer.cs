@@ -28,8 +28,6 @@ public class ArcMeshDrawer : MonoBehaviour {
 				arcText.transform.localRotation = Quaternion.Euler( 0f, 0f, Mathf.Rad2Deg*((privArcLength / 2) + Mathf.PI));
 				TextMesh textMesh = arcText.GetComponent<TextMesh>();
 				textMesh.anchor = TextAnchor.MiddleRight;
-				//Debug.Log (gameObject.transform.TransformDirection(new Vector3 (-0.2f, 0, 0)));
-				//Debug.Log (arcText.transform.);
 				float lossyX = arcText.transform.lossyScale.x;
 				arcText.transform.Translate(new Vector3 (-0.2f * lossyX, 0, 0));           
 			} else {
