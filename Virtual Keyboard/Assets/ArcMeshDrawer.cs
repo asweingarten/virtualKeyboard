@@ -23,14 +23,15 @@ public class ArcMeshDrawer : MonoBehaviour {
 		set {
 			privArcLength = value;
 			float textAngle = privArcLength/2 + (Mathf.Deg2Rad*gameObject.transform.rotation.eulerAngles).z;
+			arcText.transform.localPosition = Vector3.zero;
 			arcText.transform.rotation = gameObject.transform.rotation;
 			if(textAngle > Mathf.PI/2 && textAngle < Mathf.PI*1.5 ){
-				arcText.transform.RotateAround (Vector3.zero, Vector3.forward, Mathf.Rad2Deg*((privArcLength / 2) + Mathf.PI));
+				arcText.transform.localRotation = Quaternion.Euler( 0f, 0f, Mathf.Rad2Deg*((privArcLength / 2) + Mathf.PI));
 				TextMesh textMesh = arcText.GetComponent<TextMesh>();
 				textMesh.anchor = TextAnchor.MiddleRight;
 				arcText.transform.Translate( new Vector3 (-0.2f, 0, 0));           
 			} else {
-				arcText.transform.RotateAround (Vector3.zero, Vector3.forward, Mathf.Rad2Deg*(privArcLength / 2));
+				arcText.transform.localRotation = Quaternion.Euler( 0f, 0f, Mathf.Rad2Deg*(privArcLength / 2));
 				TextMesh textMesh = arcText.GetComponent<TextMesh>();
 				textMesh.anchor = TextAnchor.MiddleLeft;
 				arcText.transform.Translate( new Vector3 (0.3f, 0, 0));
@@ -69,6 +70,10 @@ public class ArcMeshDrawer : MonoBehaviour {
 	private void addArcTextComponents() {
 		arcText.name = "ArcText";
 		arcText.transform.parent = gameObject.transform;
+		Debug.Log (arcText.transform.localPosition);
+		arcText.transform.localPosition = Vector3.zero;
+		arcText.transform.localScale = Vector3.one;
+		arcText.transform.localRotation = Quaternion.identity;
 		MeshRenderer textRenderer = arcText.AddComponent<MeshRenderer> ();
 		TextMesh textMesh = arcText.AddComponent<TextMesh> ();
 		textMesh.fontSize = 20;
@@ -82,6 +87,9 @@ public class ArcMeshDrawer : MonoBehaviour {
 	private void addArcBodyComponents() {
 		arcBody.name = "ArcBody";
 		arcBody.transform.parent = gameObject.transform;
+		arcBody.transform.localPosition = Vector3.zero;
+		arcBody.transform.localScale = Vector3.one;
+		arcBody.transform.localRotation = Quaternion.identity;
 		MeshFilter arcBodyMeshFilter = arcBody.AddComponent<MeshFilter> ();
 		MeshCollider arcBodyCollider = arcBody.AddComponent<MeshCollider> ();
 		MeshRenderer arcBodyRenderer = arcBody.AddComponent<MeshRenderer> ();
@@ -92,6 +100,9 @@ public class ArcMeshDrawer : MonoBehaviour {
 	private void addArcRimComponents() {
 		arcRim.name = "ArcRim";
 		arcRim.transform.parent = gameObject.transform;
+		arcRim.transform.localPosition = Vector3.zero;
+		arcRim.transform.localScale = Vector3.one;
+		arcRim.transform.localRotation = Quaternion.identity;
 		MeshFilter arcRimMeshFilter = arcRim.AddComponent<MeshFilter> ();
 		MeshCollider arcRimCollider = arcRim.AddComponent<MeshCollider> ();
 		MeshRenderer arcRimRenderer = arcRim.AddComponent<MeshRenderer> ();

@@ -3,8 +3,6 @@ using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
 
-//Known issue: if you use the DrawRaidalMenu Context and then delete the drawn added components
-// 	you will have to manually reset to roation on the arcSections to get it to render correctly
 public class RadialMenu : MonoBehaviour {
 
 	private GameObject selectedArc;
@@ -41,12 +39,13 @@ public class RadialMenu : MonoBehaviour {
 			float portion = childArcDrawer.arcWeight/totalWeight;
 
 			childArcDrawer.createMeshes();
-			arcSection.transform.rotation = Quaternion.identity;
-			arcSection.transform.RotateAround(Vector3.zero, new Vector3(0f, 0f, 1f), Mathf.Rad2Deg*prevRotation);
+
+			arcSection.transform.localRotation = Quaternion.Euler( 0f, 0f, Mathf.Rad2Deg*prevRotation);
 			childArcDrawer.arcLength = (2*Mathf.PI)*portion;
 			prevRotation += childArcDrawer.arcLength;
 		}
 	}
+	
 	[ContextMenu("UndrawRadialMenu")]
 	void UndrawRadialMenu() {
 		int numChildren = gameObject.transform.childCount;
