@@ -14,7 +14,6 @@ public class ArcMeshDrawer : MonoBehaviour {
 	private Vector3 originalScale;
 	public Material arcRimMaterial;
 	public Material arcBodyMaterial;
-
 	private float privArcLength = (2*Mathf.PI);//Private member gaurded by arcLength Property
 	public float arcLength {
 		get {
@@ -29,17 +28,29 @@ public class ArcMeshDrawer : MonoBehaviour {
 				arcText.transform.localRotation = Quaternion.Euler( 0f, 0f, Mathf.Rad2Deg*((privArcLength / 2) + Mathf.PI));
 				TextMesh textMesh = arcText.GetComponent<TextMesh>();
 				textMesh.anchor = TextAnchor.MiddleRight;
-				arcText.transform.Translate( new Vector3 (-0.2f, 0, 0));           
+				float lossyX = arcText.transform.lossyScale.x;
+				arcText.transform.Translate(new Vector3 (-0.2f * lossyX, 0, 0));           
 			} else {
 				arcText.transform.localRotation = Quaternion.Euler( 0f, 0f, Mathf.Rad2Deg*(privArcLength / 2));
 				TextMesh textMesh = arcText.GetComponent<TextMesh>();
 				textMesh.anchor = TextAnchor.MiddleLeft;
-				arcText.transform.Translate( new Vector3 (0.3f, 0, 0));
+				float lossyX = arcText.transform.lossyScale.x;
+				arcText.transform.Translate( new Vector3 (0.3f*lossyX, 0, 0));
 			}
 			createMeshes();
 		}
 	}
-	
+	private string privSelectionObjectName = "index";
+	public string selectionObjectName {
+		get {
+			return privSelectionObjectName;
+		}
+		set {
+			privSelectionObjectName = value;
+			updateChildComponentSelectionObjects();
+		}
+	}
+
 	public int quality = 20;
 
 	private GameObject arcBody;
@@ -65,6 +76,30 @@ public class ArcMeshDrawer : MonoBehaviour {
 
 	void Start () {
 		createMeshes ();
+	}
+
+	private void updateChildComponentSelectionObjects() {
+		if (arcBody == null) {
+			Transform bodyTransform = transform.FindChild ("ArcBody");
+			if( bodyTransform != null ) {
+				arcBody = bodyTransform.gameObject;
+			}
+		}
+		RadialMenuItemSelection itemSelection = arcBody.GetComponent<RadialMenuItemSelection> ();
+		if (itemSelection) {
+			itemSelection.selectionObjectName = privSelectionObjectName;
+		}
+		
+		if (arcRim == null) {
+			Transform rimTransform = transform.FindChild ("ArcBody");
+			if( rimTransform != null ) {
+				arcRim = rimTransform.gameObject;
+			}
+		}
+		RadialActionSelection actionSelection = arcBody.GetComponent<RadialActionSelection> ();
+		if (actionSelection) {
+			actionSelection.selectionObjectName = privSelectionObjectName;
+		}
 	}
 
 	private void addArcTextComponents() {
@@ -94,6 +129,7 @@ public class ArcMeshDrawer : MonoBehaviour {
 		MeshCollider arcBodyCollider = arcBody.AddComponent<MeshCollider> ();
 		MeshRenderer arcBodyRenderer = arcBody.AddComponent<MeshRenderer> ();
 		RadialMenuItemSelection arcBodySelector = arcBody.AddComponent<RadialMenuItemSelection> ();
+		arcBodySelector.selectionObjectName = selectionObjectName;
 		arcBodyRenderer.material = arcBodyMaterial;
 	}
 
@@ -188,7 +224,8 @@ public class ArcMeshDrawer : MonoBehaviour {
 		Vector3 selectedScale = originalScale;
 		selectedScale.Scale (selectedScaleFactor);
 		transform.localScale = selectedScale;
-		arcRim.AddComponent<RadialActionSelection> ();
+		RadialActionSelection radialActionSelection = arcRim.AddComponent<RadialActionSelection> ();
+		radialActionSelection.selectionObjectName = selectionObjectName;
 		RadialActionSelection.OnRadialActionSelected += fireRadialAction;
 	}
 
@@ -327,9 +364,6 @@ public class ArcMeshDrawer : MonoBehaviour {
 
 		if (textTransform != null ) {
 			arcText = textTransform.gameObject;
-			Debug.Log ("Validate");
-
-
 			TextMesh textMesh = arcText.GetComponent<TextMesh> ();
 			textMesh.text = label;
 		}
