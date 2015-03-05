@@ -23,7 +23,7 @@ public class ItemManipulator : MonoBehaviour
 	// Update is called once per frame
 	void Update () {
 		if (selectedItem == null) return;
-
+		if ( !isHandClosed() ) return;
 		//translationEnabled = isHandClosed ();
 
 		if (translationEnabled) {
