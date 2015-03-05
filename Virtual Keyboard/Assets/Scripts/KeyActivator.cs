@@ -23,7 +23,6 @@ public class KeyActivator : MonoBehaviour
 			baseColor = textMesh.color;
 			textMesh.text = keyId;
 		}
-
 	}
 
 	// Update is called once per frame

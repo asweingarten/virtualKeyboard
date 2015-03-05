@@ -6,8 +6,10 @@ public class ItemSelection : MonoBehaviour {
 	public delegate void ItemOnSelect(GameObject selectedItem);
 	public static event ItemOnSelect OnItemSelected;
 
-	private ParticleSystem particleSystem;
+	public bool selected {get;set;}
 
+	private ParticleSystem particleSystem;
+	
 	// Use this for initialization
 	void Start () {
 		createParticleSystem();
@@ -30,7 +32,7 @@ public class ItemSelection : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-	
+
 	}
 
 	void OnCollisionEnter(Collision collision) {
