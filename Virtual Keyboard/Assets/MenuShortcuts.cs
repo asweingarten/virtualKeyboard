@@ -19,10 +19,8 @@ public class MenuShortcuts : MonoBehaviour {
 	void Start () {
 		itemSelection = GetComponent<ItemSelection> ();
 		leapController.EnableGesture (Leap.Gesture.GestureType.TYPECIRCLE);
-		//leapController.config ();
 		leapController.Config.SetFloat ("Gesture.Circle.MinRadius", 15.0f);
 		leapController.Config.SetFloat ("Gesture.Circle.MinArc", 2*Mathf.PI);
-		//Leap.Gesture.Circle.MinRadius = 10f;
 	}
 	
 	// Update is called once per frame

@@ -24,7 +24,6 @@ public class ItemManipulator : MonoBehaviour
 	void Update () {
 		if (selectedItem == null) return;
 		if ( !isHandClosed() ) return;
-		//translationEnabled = isHandClosed ();
 
 		if (translationEnabled) {
 			translateItem ();
