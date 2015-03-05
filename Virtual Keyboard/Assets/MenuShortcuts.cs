@@ -27,7 +27,7 @@ public class MenuShortcuts : MonoBehaviour {
 	void Update () {
 		if( !isSelected() ) return;
 
-		if (Input.GetKeyDown (""+menuKey)) {
+		if (Input.GetKeyDown (menuKey.ToString())) {
 			menuObject.SetActive(!menuObject.activeSelf);
 			return;
 		}
