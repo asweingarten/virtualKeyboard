@@ -7,9 +7,14 @@ public class ItemSelection : MonoBehaviour {
 	public static event ItemOnSelect OnItemSelected;
 
 	public bool selected {get;set;}
-
-	private ParticleSystem particleSystem;
 	
+	private ItemManipulator itemManipulator;
+	private ParticleSystem particleSystem;
+
+	void Awake () {
+		itemManipulator = (ItemManipulator)GameObject.FindObjectOfType ( typeof (ItemManipulator) );
+	}
+
 	// Use this for initialization
 	void Start () {
 		createParticleSystem();
@@ -33,6 +38,16 @@ public class ItemSelection : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
+	}
+
+	public void enableSelection() {
+		if(!itemManipulator) return;
+		itemManipulator.enableSelection();
+	}
+
+	public void disableSelection() {
+		if(!itemManipulator) return;
+		itemManipulator.disableSelection ();
 	}
 
 	void OnCollisionEnter(Collision collision) {
