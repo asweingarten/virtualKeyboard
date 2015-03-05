@@ -37,7 +37,18 @@ public class MenuShortcuts : MonoBehaviour {
 		
 		foreach (Gesture gesture in gestures) {
 			if( gesture.State.Equals(Gesture.GestureState.STATESTOP) ) {
-				menuObject.SetActive(!menuObject.activeSelf);
+				if( gesture.Type == Leap.Gesture.GestureType.TYPECIRCLE ) {
+					CircleGesture circleGesture = new CircleGesture(gesture);
+					//Clockwise
+					if( circleGesture.Pointable.Direction.AngleTo(circleGesture.Normal) <= Mathf.PI/2 ) {
+						menuObject.SetActive(!menuObject.activeSelf);
+					}//Counter-Clockwise
+					else {
+					}
+				}
+
+				
+
 				return;
 			}
 		}
