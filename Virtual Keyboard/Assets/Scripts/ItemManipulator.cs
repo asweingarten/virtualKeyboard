@@ -124,6 +124,16 @@ public class ItemManipulator : MonoBehaviour
 		ItemSelection.OnItemSelected += updateSelectedItem;
 	}
 
+	public void cloneSelected() {
+		GameObject newGameObject = (GameObject)Instantiate (selectedItem);
+		updateSelectedItem(newGameObject);
+	}
+
+	public void deleteSelected() {
+		Destroy (selectedItem);
+		selectedItem = null;
+	}
+
 	public bool isItemSelected(GameObject obj) {
 		return selectedItem == obj;
 	}
