@@ -17,8 +17,12 @@ public class MenuShortcuts : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		//Debug.Log (radialTransformManager);
-		if (Input.GetKeyDown (""+menuKey)) {
+		if (isSelected() && Input.GetKeyDown (""+menuKey)) {
 			menuObject.SetActive(!menuObject.activeSelf);
 		}
+	}
+
+	private bool isSelected() {
+		return itemSelection.selected;
 	}
 }

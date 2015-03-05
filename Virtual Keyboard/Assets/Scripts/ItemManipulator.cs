@@ -5,7 +5,7 @@ using Leap;
 public class ItemManipulator : MonoBehaviour
 {
 	private GameObject selectedItem;
-
+	 
 	private Controller controller;
 
 	private bool trackingActive = false;
@@ -47,11 +47,19 @@ public class ItemManipulator : MonoBehaviour
 	void updateSelectedItem(GameObject newlySelectedItem) {
 		if (selectedItem != null && selectedItem.particleSystem != null) {
 			selectedItem.particleSystem.Stop();
+			ItemSelection selectionScript = selectedItem.GetComponent<ItemSelection>();
+			selectionScript.selected = false;
 			Debug.Log("deselected item: " + selectedItem.name);
 		}
 
 		if (newlySelectedItem != selectedItem) {
+			ItemSelection selectionScript;
+			if( selectedItem != null ) {
+				selectionScript = selectedItem.GetComponent<ItemSelection>();
+			}
 			selectedItem = newlySelectedItem;
+			selectionScript = selectedItem.GetComponent<ItemSelection>();
+			selectionScript.selected = true;
 			selectedItem.particleSystem.Play();
 			Debug.Log("newly selected item: " + newlySelectedItem.name);
 		} else {

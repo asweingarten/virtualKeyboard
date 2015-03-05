@@ -6,6 +6,7 @@ public class ItemSelection : MonoBehaviour {
 	public delegate void ItemOnSelect(GameObject selectedItem);
 	public static event ItemOnSelect OnItemSelected;
 
+	public bool selected {get;set;}
 
 	private ParticleSystem particleSystem;
 	
