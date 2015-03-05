@@ -107,5 +107,9 @@ public class ItemManipulator : MonoBehaviour
 		return 0f;
 	}
 
+	public bool isItemSelected(GameObject obj) {
+		return selectedItem == obj;
+	}
+
 }
 
