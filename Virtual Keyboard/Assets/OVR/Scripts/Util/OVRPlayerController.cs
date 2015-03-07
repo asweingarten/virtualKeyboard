@@ -145,6 +145,7 @@ public class OVRPlayerController : MonoBehaviour
 			InitialPose = null;
 		}
 
+		checkKeyboard();
 		UpdateMovement();
 
 		Vector3 moveDirection = Vector3.zero;
@@ -189,6 +190,28 @@ public class OVRPlayerController : MonoBehaviour
 	public bool moveLeft{ get; set;}
 	public bool moveRight{ get; set;}
 	public bool moveBack{ get; set;}
+
+	private void checkKeyboard() {
+		if (Input.GetKeyDown(KeyCode.W)) {
+			moveForward = true;
+		} else if (Input.GetKeyDown(KeyCode.D)) {
+			moveRight = true;
+		} else if (Input.GetKeyDown(KeyCode.A)) {
+			moveLeft = true;
+		} else if (Input.GetKeyDown(KeyCode.S)) {
+			moveBack = true;
+		}
+
+		if (Input.GetKeyUp(KeyCode.W)) {
+			moveForward = false;
+		} else if (Input.GetKeyUp(KeyCode.D)) {
+			moveRight = false;
+		} else if (Input.GetKeyUp(KeyCode.A)) {
+			moveLeft = false;
+		} else if (Input.GetKeyUp(KeyCode.S)) {
+			moveBack = false;
+		}
+	}
 
 	public virtual void UpdateMovement()
 	{
