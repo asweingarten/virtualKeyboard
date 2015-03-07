@@ -14,8 +14,8 @@ public abstract class ListItem : MonoBehaviour
 	}
 
 	void OnCollisionEnter(Collision collision) {
-		Debug.Log ("INTERACTING WITH LIST ITEM");
 		if (isActive) {
+			Debug.Log ("INTERACTING WITH LIST ITEM");
 			execute ();
 		}
 	}
