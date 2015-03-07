@@ -5,11 +5,14 @@ using Leap;
 [RequireComponent (typeof (ItemSelection))]
 public class MenuShortcuts : MonoBehaviour {
 
-	public char menuKey = 'm';
+	public string clockwiseMenuKey = "m";
+	public string counterClockwiseMenuKey = "n";
 
 	private Controller leapController;
 	private ItemSelection itemSelection;
-	public GameObject menuObject;
+	public GameObject clockwiseMenu;
+	public GameObject counterClockwiseMenu;
+
 
 	void Awake () {
 		leapController = new Controller ();
@@ -27,8 +30,11 @@ public class MenuShortcuts : MonoBehaviour {
 	void Update () {
 		if( !isSelected() ) return;
 
-		if (Input.GetKeyDown (menuKey.ToString())) {
-			menuObject.SetActive(!menuObject.activeSelf);
+		if (Input.GetKeyDown (clockwiseMenuKey)) {
+			toggleClockwiseMenu();
+			return;
+		} else if (Input.GetKeyDown (counterClockwiseMenuKey)) {
+			toggleCounterClockwiseMenu();
 			return;
 		}
 
@@ -37,10 +43,49 @@ public class MenuShortcuts : MonoBehaviour {
 		
 		foreach (Gesture gesture in gestures) {
 			if( gesture.State.Equals(Gesture.GestureState.STATESTOP) ) {
-				menuObject.SetActive(!menuObject.activeSelf);
+				if( gesture.Type == Leap.Gesture.GestureType.TYPECIRCLE ) {
+					CircleGesture circleGesture = new CircleGesture(gesture);
+					//Clockwise
+					if( circleGesture.Pointable.Direction.AngleTo(circleGesture.Normal) <= Mathf.PI/2 ) {
+						toggleClockwiseMenu();
+					}//Counter-Clockwise
+					else {
+						toggleCounterClockwiseMenu();
+					}
+				}
 				return;
 			}
 		}
+	}
+
+	private void toggleClockwiseMenu() {
+		if (clockwiseMenu != null) {
+			if(clockwiseMenu.activeSelf) {
+				itemSelection.enableSelection();
+				clockwiseMenu.SetActive (false);
+			} else {
+				itemSelection.disableSelection();
+				clockwiseMenu.SetActive (true);
+			}
+		}
+		else return;
+		if(counterClockwiseMenu != null ) counterClockwiseMenu.SetActive(false);
+
+	}
+
+	private void toggleCounterClockwiseMenu() {
+		if (counterClockwiseMenu != null) {
+			if( counterClockwiseMenu.activeSelf) {
+				itemSelection.enableSelection();
+				counterClockwiseMenu.SetActive (false);
+			} else {
+				itemSelection.disableSelection();
+				counterClockwiseMenu.SetActive(true);
+			}
+		}
+		else return;
+		if(clockwiseMenu != null ) clockwiseMenu.SetActive(false);
+
 	}
 
 	private bool isSelected() {

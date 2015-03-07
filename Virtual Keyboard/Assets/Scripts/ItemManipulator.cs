@@ -17,7 +17,7 @@ public class ItemManipulator : MonoBehaviour
 	// Use this for initialization
 	void Start () {
 		controller = new Controller ();
-		ItemSelection.OnItemSelected += updateSelectedItem;
+		enableSelection ();
 	}
 
 	// Update is called once per frame
@@ -47,7 +47,7 @@ public class ItemManipulator : MonoBehaviour
 		if (selectedItem != null && selectedItem.particleSystem != null) {
 			selectedItem.particleSystem.Stop();
 			ItemSelection selectionScript = selectedItem.GetComponent<ItemSelection>();
-			selectionScript.selected = false;
+			if( selectionScript ) selectionScript.selected = false;
 			Debug.Log("deselected item: " + selectedItem.name);
 		}
 
@@ -58,7 +58,7 @@ public class ItemManipulator : MonoBehaviour
 			}
 			selectedItem = newlySelectedItem;
 			selectionScript = selectedItem.GetComponent<ItemSelection>();
-			selectionScript.selected = true;
+			if( selectionScript ) selectionScript.selected = true;
 			selectedItem.particleSystem.Play();
 			Debug.Log("newly selected item: " + newlySelectedItem.name);
 		} else {
@@ -112,6 +112,26 @@ public class ItemManipulator : MonoBehaviour
 
 	float calculateUnityRotationAngle(float leapRotationAngle) {
 		return 0f;
+	}
+
+	public void disableSelection() {
+		trackingActive = false;
+		ItemSelection.OnItemSelected -= updateSelectedItem;
+	}
+
+	public void enableSelection() {
+		trackingActive = true;
+		ItemSelection.OnItemSelected += updateSelectedItem;
+	}
+
+	public void cloneSelected() {
+		GameObject newGameObject = (GameObject)Instantiate (selectedItem);
+		updateSelectedItem(newGameObject);
+	}
+
+	public void deleteSelected() {
+		Destroy (selectedItem);
+		selectedItem = null;
 	}
 
 	public bool isItemSelected(GameObject obj) {
