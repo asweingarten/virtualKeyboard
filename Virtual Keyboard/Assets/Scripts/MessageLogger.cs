@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class MessageLogger : MonoBehaviour {
@@ -46,8 +47,8 @@ public class MessageLogger : MonoBehaviour {
 	/// </summary>
 	/// <param name="newText">New debug text.</param>
 	public void updateText(string newText) {
-		var textObject = gameObject.transform.GetChild(0);
-		var textComponent = textObject.GetComponent<UnityEngine.UI.Text>();
+		GameObject textObject = (GameObject)gameObject.transform.GetChild(0).gameObject;
+		Text textComponent = textObject.GetComponent<UnityEngine.UI.Text>();
 		textComponent.text = newText;
 	}
 }
