@@ -15,10 +15,13 @@ public class SlidingList : MonoBehaviour {
 	double scroll_distance;
 	GameObject listObject;
 	Vector3 baseScale;
+	int selectedMultiIndex = 0;
 
 	int selectedIndex = 0;
 	bool initialized = false;
 	bool selector_at_top = true;
+
+	public List<List<ListItem>> categories = new List<List<ListItem>>();
 
 	// Use this for initialization
 	void Start () {
@@ -35,6 +38,7 @@ public class SlidingList : MonoBehaviour {
 			MenuItemSelection.OnMenuItemGainedFocus += HandleOnMenuItemGainedFocus;
 			MenuItemSelection.OnMenuItemLostFocus += HandleOnMenuItemLostFocus;
 			selectedIndex = 0;
+			selectedMultiIndex = 0;
 			
 			initialized = true;
 		}
@@ -99,7 +103,7 @@ public class SlidingList : MonoBehaviour {
 
 		GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
 		cube.name = "ListItem";
-		cube.transform.parent = transform.Find ("ListOfItems").transform;
+		cube.transform.parent = transform.Find ("ListOfListOfItems").GetChild(selectedMultiIndex).transform;
 		cube.transform.localScale = listItemPrimitive.localScale;
 		cube.transform.position = listItemPrimitive.position;
 		cube.transform.rotation = listItemPrimitive.rotation;
@@ -113,7 +117,8 @@ public class SlidingList : MonoBehaviour {
 		txtMesh.transform.position = textMeshPrimitive.transform.position;
 		txtMesh.transform.rotation = textMeshPrimitive.transform.rotation;
 
-		cube.transform.Translate (new Vector3 (0, 0, (-0.12f * baseScale.z * (transform.Find ("ListOfItems").childCount -1 - selectedIndex))));
+		// Debug.Log (transform.Find ("ListOfListOfItems").GetChild(selectedMultiIndex).childCount);
+		cube.transform.Translate (new Vector3 (0, 0, (-0.12f * baseScale.z * (transform.Find ("ListOfListOfItems").GetChild(selectedMultiIndex).childCount -2 - selectedIndex))));
 		cube.AddComponent("FurnitureListItem");
 		updateTransparency ();
 	}
@@ -121,10 +126,14 @@ public class SlidingList : MonoBehaviour {
 	void slideListIncrement(int i){
 		baseScale = gameObject.transform.localScale;
 		
-		int newIndex = Mathf.Min(Mathf.Max (selectedIndex + i, 0), transform.Find ("ListOfItems").childCount-1);
+		int newIndex = Mathf.Min(Mathf.Max (selectedIndex + i, 0), transform.Find ("ListOfListOfItems").GetChild(selectedMultiIndex).childCount-2);
 
-		Transform listOfItems = transform.Find ("ListOfItems");
+		Transform listOfItems = transform.Find ("ListOfListOfItems").GetChild(selectedMultiIndex);
 		listOfItems.Translate(new Vector3 (0, 0, (0.12f * baseScale.z * (newIndex - selectedIndex) )));
+
+		Transform categoryBox = listOfItems.Find ("TitleBox");
+		categoryBox.Translate(new Vector3 (0, 0, (-0.12f * baseScale.z * (newIndex - selectedIndex) )));
+
 		selectedIndex = newIndex;
 
 		updateTransparency ();
@@ -132,21 +141,30 @@ public class SlidingList : MonoBehaviour {
 
 	void updateTransparency (){
 		int index = 0;
-		foreach(Transform t in transform.Find ("ListOfItems")){
+		foreach(Transform t in transform.Find ("ListOfListOfItems").GetChild(selectedMultiIndex)){
 			GameObject listItemBox = t.gameObject;
-			TextMesh text = t.Find("List_Item_Text").gameObject.GetComponent<TextMesh>();
-			Color color = listItemBox.renderer.material.color;
-			Color text_color = text.renderer.material.color;
+			if (t.name == "ListItem"){
+				TextMesh text = t.Find("List_Item_Text").gameObject.GetComponent<TextMesh>();
+				Color color = listItemBox.renderer.material.color;
+				Color text_color = text.renderer.material.color;
+				
+				listItemBox.SetActive(false);
+				int diff = index - selectedIndex;
+				ListItem listItem = listItemBox.GetComponent("FurnitureListItem") as ListItem;
+				if (diff == 0){
+					listItem.IsActive = true;
+				} else {
+					listItem.IsActive = false;
+				}
 
-			listItemBox.SetActive(false);
-			int diff = index - selectedIndex;
-			if (diff > -1 && diff < 7){
-				listItemBox.SetActive(true);
+				if (diff > -1 && diff < 7){
+					listItemBox.SetActive(true);
+				}
+				
+				listItemBox.renderer.material.color = color;
+				text.renderer.material.color = text_color;
+				index++;
 			}
-
-			listItemBox.renderer.material.color = color;
-			text.renderer.material.color = text_color;
-			index++;
 		}
 	}
 
@@ -161,9 +179,11 @@ public class SlidingList : MonoBehaviour {
 		initialized = false;
 		Start ();
 
-		int childCount = transform.Find ("ListOfItems").childCount;
+		int childCount = transform.Find ("ListOfListOfItems").GetChild(selectedMultiIndex).childCount;
 		for (int i = childCount - 1; i >= 0; i--){
-			GameObject.DestroyImmediate(transform.Find ("ListOfItems").GetChild(i).gameObject);
+			if (transform.Find ("ListOfListOfItems").GetChild(selectedMultiIndex).GetChild(i).name == "ListItem"){
+				GameObject.DestroyImmediate(transform.Find ("ListOfListOfItems").GetChild(selectedMultiIndex).GetChild(i).gameObject);
+			}
 		}
 	}
 
@@ -179,7 +199,7 @@ public class SlidingList : MonoBehaviour {
 
 	[ContextMenu ("Print All Items From GameObject")]
 	void Debug1 () {
-		Transform listOfItems = transform.Find ("ListOfItems");
+		Transform listOfItems = transform.Find ("ListOfListOfItems").GetChild(selectedMultiIndex);
 		Debug.Log (listOfItems);
 		foreach (Transform t in listOfItems){
 			Debug.Log (t.GetType());
@@ -187,5 +207,43 @@ public class SlidingList : MonoBehaviour {
 			Debug.Log(textMeshTransform.gameObject.GetComponent<TextMesh>().text);
 		}
 
+	}
+
+
+
+	void handleLeftArrow() {
+		multiListIncrement(-1);
+	}
+	
+	void handleRightArrow() {
+		multiListIncrement(1);
+	}
+	
+	void multiListIncrement(int i){
+		slideListIncrement (0-selectedIndex);
+		
+		int newIndex = Mathf.Min(Mathf.Max (selectedMultiIndex + i, 0), transform.Find ("ListOfListOfItems").childCount-1);
+		Transform listOfItems = transform.Find ("ListOfListOfItems");
+		
+		int it = 0;
+		foreach (Transform t in listOfItems) {
+			if (it == newIndex){
+				t.gameObject.SetActive(true);
+			} else {
+				t.gameObject.SetActive(false);
+			}
+			it++;
+		}
+		selectedMultiIndex = newIndex;	
+	}
+	
+	[ContextMenu ("Scroll Left")]
+	void Scrollleft () {
+		handleLeftArrow();
+	}
+	
+	[ContextMenu ("Scroll Right")]
+	void Scrollright () {
+		handleRightArrow();
 	}
 } 
