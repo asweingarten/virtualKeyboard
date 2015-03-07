@@ -10,6 +10,9 @@ public class SlidingList : MonoBehaviour {
 	GameObject addButton;
 	GameObject upArrow;
 	GameObject downArrow;
+	GameObject leftArrow;
+	GameObject rightArrow;
+	GameObject categoryBox;
 
 	int max_visible_elements;
 	double scroll_distance;
@@ -31,6 +34,20 @@ public class SlidingList : MonoBehaviour {
 			addButton = buttons.Find ("AddButton").gameObject;
 			upArrow = buttons.Find ("UpArrow").gameObject;
 			downArrow = buttons.Find ("DownArrow").gameObject;
+			leftArrow = buttons.Find ("LeftArrow").gameObject;
+			rightArrow = buttons.Find ("RightArrow").gameObject;
+			categoryBox = transform.Find ("TitleBoxFrame").gameObject;
+
+			ListItem upArrowListItem = upArrow.GetComponent("ButtonItem") as ListItem;
+			upArrowListItem.IsActive = true;
+			ListItem downArrowListItem = downArrow.GetComponent("ButtonItem") as ListItem;
+			downArrowListItem.IsActive = true;
+			ListItem leftArrowListItem = leftArrow.GetComponent("ButtonItem") as ListItem;
+			leftArrowListItem.IsActive = true;
+			ListItem rightArrowListItem = rightArrow.GetComponent("ButtonItem") as ListItem;
+			rightArrowListItem.IsActive = true;
+			ListItem categoryBoxListItem = categoryBox.GetComponent("ButtonItem") as ListItem;
+			categoryBoxListItem.IsActive = true;
 			
 			MenuItemSelection.OnMenuItemHold += HandleOnMenuItemHeld;
 			MenuItemSelection.OnMenuItemGainedFocus += HandleOnMenuItemGainedFocus;
@@ -76,11 +93,11 @@ public class SlidingList : MonoBehaviour {
 		createNewListItem(System.DateTime.Now.ToLongTimeString());
 	}
 
-	void handleUpArrow() {
+	public void handleUpArrow() {
 		slideListIncrement(1);
 	}
 
-	void handleDownArrow() {
+	public void handleDownArrow() {
 		slideListIncrement(-1);
 	}
 	
@@ -174,15 +191,15 @@ public class SlidingList : MonoBehaviour {
 
 	[ContextMenu ("Clear List")]
 	void ClearList () {
-		initialized = false;
-		Start ();
 
+		Debug.Log (categoryIndex);
 		int childCount = transform.Find ("ListOfListOfItems").GetChild(categoryIndex).childCount;
 		for (int i = childCount - 1; i >= 0; i--){
 			if (transform.Find ("ListOfListOfItems").GetChild(categoryIndex).GetChild(i).name == "ListItem"){
 				GameObject.DestroyImmediate(transform.Find ("ListOfListOfItems").GetChild(categoryIndex).GetChild(i).gameObject);
 			}
 		}
+		selectedIndex = 0;
 	}
 
 	[ContextMenu ("Scroll Up")]
@@ -209,11 +226,11 @@ public class SlidingList : MonoBehaviour {
 
 
 
-	void handleLeftArrow() {
+	public void handleLeftArrow() {
 		multiListIncrement(-1);
 	}
 	
-	void handleRightArrow() {
+	public void handleRightArrow() {
 		multiListIncrement(1);
 	}
 	
