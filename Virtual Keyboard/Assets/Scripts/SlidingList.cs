@@ -114,7 +114,7 @@ public class SlidingList : MonoBehaviour {
 		txtMesh.transform.rotation = textMeshPrimitive.transform.rotation;
 
 		cube.transform.Translate (new Vector3 (0, 0, (-0.12f * baseScale.z * (transform.Find ("ListOfItems").childCount -1 - selectedIndex))));
-		
+		cube.AddComponent("FurnitureListItem");
 		updateTransparency ();
 	}
 
@@ -138,36 +138,10 @@ public class SlidingList : MonoBehaviour {
 			Color color = listItemBox.renderer.material.color;
 			Color text_color = text.renderer.material.color;
 
-			if (selector_at_top){
-				// THIS CODE IS FOR WHEN SELECTOR IS THE TOP ITEM OF A 7 ITEM LIST
-				color.a = 0.0f;
-				text_color.a = 0.0f;
-				int diff = index - selectedIndex;
-				if (diff == -1 || diff == 7){
-					color.a = 0.5f;
-					text_color.a = 0.5f;
-				} else if (diff > -1 && diff < 7){
-					color.a = 1.0f;
-					text_color.a = 1.0f;
-				}
-
-				if (diff == 0){
-					t.GetComponent<ListItem>().IsActive = true;
-				} else {
-					t.GetComponent<ListItem>().IsActive = false;
-				}
-			} else {
-				// THIS CODE IS FOR WHEN SELECTOR IS THE CENTER ITEM OF A 7 ITEM LIST
-				if (Mathf.Abs (index - selectedIndex) > 4){
-					color.a = 0.0f;
-					text_color.a = 0.0f;
-				} else if (Mathf.Abs (index - selectedIndex) == 4){
-					color.a = 0.5f;
-					text_color.a = 0.5f;
-				} else if (Mathf.Abs (index - selectedIndex) < 4){
-					color.a = 1.0f;
-					text_color.a = 1.0f;
-				}
+			listItemBox.SetActive(false);
+			int diff = index - selectedIndex;
+			if (diff > -1 && diff < 7){
+				listItemBox.SetActive(true);
 			}
 
 			listItemBox.renderer.material.color = color;
