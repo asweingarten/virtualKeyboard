@@ -13,7 +13,9 @@ public class RadialMenuItemSelection : MonoBehaviour {
 
 	private static object selectedObjectLock = new object();
 	private static GameObject globallySelectedObject;
-	
+
+	private float startTime;
+	private float timeDelay = 1f;
 	public static GameObject selectedObject {
 		get {
 			return globallySelectedObject;
@@ -27,7 +29,7 @@ public class RadialMenuItemSelection : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
-		
+		startTime = Time.time;
 	}
 	
 	// Update is called once per frame
@@ -42,6 +44,11 @@ public class RadialMenuItemSelection : MonoBehaviour {
 			if( parentTransform == null || parentTransform.gameObject.name != selectionObjectName ) {
 				return;
 			}
+		}
+
+		if( Time.time - startTime < timeDelay ) {
+			selectedObject = gameObject;
+			return;
 		}
 
 		//Do not fire action more than once per distinct selection

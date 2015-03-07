@@ -162,7 +162,6 @@ public class ArcMeshDrawer : MonoBehaviour {
 	private void addArcTextComponents() {
 		arcText.name = "ArcText";
 		arcText.transform.parent = gameObject.transform;
-		Debug.Log (arcText.transform.localPosition);
 		arcText.transform.localPosition = Vector3.zero;
 		arcText.transform.localScale = Vector3.one;
 		arcText.transform.localRotation = Quaternion.identity;
@@ -207,7 +206,6 @@ public class ArcMeshDrawer : MonoBehaviour {
 			Transform textTransform = transform.FindChild ("ArcText");
 			if( textTransform != null ) {
 				arcText = textTransform.gameObject;
-				Debug.Log ( "Remocing arcText" );
 				DestroyImmediate(arcText);
 			} 
 		} else {
@@ -275,6 +273,13 @@ public class ArcMeshDrawer : MonoBehaviour {
 		transform.parent.gameObject.SetActive (false);
 	}
 
+	void OnDisable() {
+		if (selected) {
+			deselectSection();
+		}
+	}
+
+	private bool selected = false;
 	public void selectSection() {
 		//Save current scale and calculate the selected scale based on scale factor
 		originalScale = transform.localScale;
@@ -284,6 +289,7 @@ public class ArcMeshDrawer : MonoBehaviour {
 		RadialActionSelection radialActionSelection = arcRim.AddComponent<RadialActionSelection> ();
 		radialActionSelection.selectionObjectName = selectionObjectName;
 		RadialActionSelection.OnRadialActionSelected += fireRadialAction;
+		selected = true;
 	}
 
 	public void deselectSection() {
@@ -292,6 +298,7 @@ public class ArcMeshDrawer : MonoBehaviour {
 		//Remove delegate and destroy the RadialActionSelection component
 		RadialActionSelection.OnRadialActionSelected -= fireRadialAction;
 		Destroy (arcRim.GetComponent<RadialActionSelection> ());
+		selected = false;
 	}
 
 	public void createMeshes() {

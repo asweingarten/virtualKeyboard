@@ -8,11 +8,14 @@ public class NestedRadialSwitcher : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		int childCount = gameObject.transform.childCount;
+
 		for ( int i = 0; i < childCount; i++ ) {
 			GameObject child = gameObject.transform.GetChild(i).gameObject;
 			if( child.tag.Contains("NestedMenu") ) {
 				nestedMenu = child;
-				addBackOption();
+				if( !gameObject.tag.Contains("Back") ) {
+					addBackOption();
+				}
 				ArcMeshDrawer.OnRadialMenuActionTrigger += switchMenu;
 				child.SetActive(false);
 				break;
@@ -21,11 +24,20 @@ public class NestedRadialSwitcher : MonoBehaviour {
 	}
 
 	public void addBackOption() {
-
+		int childCount = nestedMenu.transform.childCount;
+		for ( int i = 0; i < childCount; i++ ) {
+			GameObject child = nestedMenu.transform.GetChild(i).gameObject;
+			Debug.Log (child.tag);
+			if( child.tag.Contains("Back") ) {
+				backSection = child;
+				return;
+			}
+		}
 		RadialMenu radialMenu = nestedMenu.GetComponent<RadialMenu> ();
 		backSection = radialMenu.createMenuOption ();
 		ArcMeshDrawer arcMeshDrawer = backSection.GetComponent<ArcMeshDrawer> ();
 		arcMeshDrawer.label = "Back";
+		backSection.tag = "Back";
 		backSection.AddComponent<NestedRadialSwitcher> ();
 	}
 	// Update is called once per frame
@@ -38,9 +50,12 @@ public class NestedRadialSwitcher : MonoBehaviour {
 
 		Debug.Log ("switchMenu");
 		//Create a copy of the current menu and assign as child of back button
-		GameObject currentMenuCopy = (GameObject)GameObject.Instantiate(transform.root.gameObject);
-		currentMenuCopy.SetActive (false);
-		currentMenuCopy.transform.parent = backSection.transform;
+		transform.root.gameObject.SetActive (false);
+		if( backSection != null ) {
+			GameObject currentMenuCopy = (GameObject)GameObject.Instantiate(transform.root.gameObject);
+			currentMenuCopy.tag = "NestedMenu";
+			currentMenuCopy.transform.parent = backSection.transform;
+		}
 
 		//Detach Child Menu and set it as active
 		nestedMenu.transform.parent = null;
@@ -50,7 +65,7 @@ public class NestedRadialSwitcher : MonoBehaviour {
 		nestedMenu.SetActive (true);
 
 		//Remove current menu
-		//Destroy (transform.root.gameObject);
+		Destroy (transform.root.gameObject, 1f);
 
 
 	}
