@@ -138,8 +138,9 @@ public class SlidingList : MonoBehaviour {
 	}
 
 	void updateTransparency (){
-		for (int i = 0; i < transform.Find ("ListOfListOfItems").GetChild(categoryIndex).childCount; i++) {
-			Transform t = transform.Find ("ListOfListOfItems").GetChild(categoryIndex).GetChild(i);
+		Transform listOfItems = transform.Find ("ListOfListOfItems").GetChild (categoryIndex);
+		for (int i = 0; i < listOfItems.childCount; i++) {
+			Transform t = listOfItems.GetChild(i);
 			if (t.name == "ListItem"){
 				GameObject listItemBox = t.gameObject;
 				TextMesh text = t.Find("List_Item_Text").gameObject.GetComponent<TextMesh>();
