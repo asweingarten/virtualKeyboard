@@ -19,7 +19,11 @@ public class CloneSelected : MonoBehaviour {
 	void Update () {
 		
 	}
-	
+
+	void OnDestroy() {
+		ArcMeshDrawer.OnRadialMenuActionTrigger -= cloneSelected;
+	}
+
 	private void cloneSelected(GameObject source) {
 		if (source != gameObject) return;
 		if( itemManipulator ) itemManipulator.cloneSelected();

@@ -98,6 +98,10 @@ public class RadialMenu : MonoBehaviour {
 
 	[ContextMenu("AddMenuOption")]
 	void AddMenuOption() {
+		createMenuOption ();
+	}
+
+	public GameObject createMenuOption() {
 		GameObject menuOption = new GameObject();
 		menuOption.name = "ArcSection";
 		ArcMeshDrawer meshDrawer = menuOption.AddComponent<ArcMeshDrawer> ();
@@ -105,6 +109,14 @@ public class RadialMenu : MonoBehaviour {
 		meshDrawer.arcBodyMaterial = Resources.Load("RadialMenu/BlockMat2", typeof(Material)) as Material;
 		meshDrawer.arcRimMaterial  = Resources.Load("RadialMenu/BlackReflectiveMat", typeof(Material)) as Material;
 		meshDrawer.arcWeight = 1;
+		menuOption.transform.localPosition = Vector3.zero;
+		menuOption.transform.localScale = Vector3.one;
+		return menuOption;
+	}
+
+	void OnDestroy() {
+		RadialMenuItemSelection.OnRadialMenuSelected -= onArcSectionSelected;
+		RadialMenuItemSelection.OnRadialMenuDeselected -= onArcSectionDeselected;
 	}
 
 	// Update is called once per frame
@@ -114,7 +126,8 @@ public class RadialMenu : MonoBehaviour {
 
 	void onArcSectionSelected(GameObject selected) {
 		if (selectedArc != null) return;
-		if (selected.transform.parent == null || 
+		if (selected == null ||
+		    selected.transform.parent == null || 
 		    selected.transform.parent.parent == null || 
 		    selected.transform.parent.parent.gameObject != gameObject ) return;
 		selectedArc = selected.transform.parent.gameObject;
