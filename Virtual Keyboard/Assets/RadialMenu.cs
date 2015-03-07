@@ -115,6 +115,8 @@ public class RadialMenu : MonoBehaviour {
 	void onArcSectionSelected(GameObject selected) {
 		if (selectedArc != null)
 			return;
+		if (selected.transform.parent == null) return;
+		if (selected.transform.parent.parent.gameObject != gameObject ) return;
 		selectedArc = selected.transform.parent.gameObject;
 		selectedArc.GetComponent<ArcMeshDrawer> ().selectSection ();
 	}
