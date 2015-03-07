@@ -265,6 +265,10 @@ public class ArcMeshDrawer : MonoBehaviour {
 		}
 	}
 
+	void OnDestroy() {
+		RadialActionSelection.OnRadialActionSelected -= fireRadialAction;
+	}
+
 	private void fireRadialAction(GameObject selected) {
 		if (OnRadialMenuActionTrigger != null) {
 			OnRadialMenuActionTrigger (gameObject);

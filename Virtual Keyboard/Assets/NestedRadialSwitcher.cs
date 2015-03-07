@@ -27,7 +27,6 @@ public class NestedRadialSwitcher : MonoBehaviour {
 		int childCount = nestedMenu.transform.childCount;
 		for ( int i = 0; i < childCount; i++ ) {
 			GameObject child = nestedMenu.transform.GetChild(i).gameObject;
-			Debug.Log (child.tag);
 			if( child.tag.Contains("Back") ) {
 				backSection = child;
 				return;
@@ -45,10 +44,13 @@ public class NestedRadialSwitcher : MonoBehaviour {
 	
 	}
 
+	void OnDestroy() {
+		ArcMeshDrawer.OnRadialMenuActionTrigger -= switchMenu;
+	}
+
 	public void switchMenu( GameObject source ) {
 		if(source != gameObject) return;
 
-		Debug.Log ("switchMenu");
 		//Create a copy of the current menu and assign as child of back button
 		transform.root.gameObject.SetActive (false);
 		if( backSection != null ) {
@@ -65,7 +67,7 @@ public class NestedRadialSwitcher : MonoBehaviour {
 		nestedMenu.SetActive (true);
 
 		//Remove current menu
-		Destroy (transform.root.gameObject, 1f);
+		Destroy (transform.root.gameObject);
 
 
 	}

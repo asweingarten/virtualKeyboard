@@ -114,6 +114,10 @@ public class RadialMenu : MonoBehaviour {
 		return menuOption;
 	}
 
+	void OnDestroy() {
+		RadialMenuItemSelection.OnRadialMenuSelected -= onArcSectionSelected;
+		RadialMenuItemSelection.OnRadialMenuDeselected -= onArcSectionDeselected;
+	}
 
 	// Update is called once per frame
 	void Update () {
@@ -122,7 +126,8 @@ public class RadialMenu : MonoBehaviour {
 
 	void onArcSectionSelected(GameObject selected) {
 		if (selectedArc != null) return;
-		if (selected.transform.parent == null || 
+		if (selected == null ||
+		    selected.transform.parent == null || 
 		    selected.transform.parent.parent == null || 
 		    selected.transform.parent.parent.gameObject != gameObject ) return;
 		selectedArc = selected.transform.parent.gameObject;
