@@ -10,10 +10,67 @@ public class ArcMeshDrawer : MonoBehaviour {
 	public float radius = 3f;
 	public float rimWidth = 0.4f;
 	public Vector3 selectedScaleFactor = new Vector3(1.2f, 1.2f, 1.2f);
-	public string label = "Hello World";
+
+	[SerializeField]
+	private string initialLabel = "Hello World";
+	public string label {
+		get {
+			return initialLabel;
+		}
+		set {
+			initialLabel = value;
+			Transform textTransform = transform.FindChild ("ArcText");
+			if (textTransform != null ) {
+				arcText = textTransform.gameObject;
+				TextMesh textMesh = arcText.GetComponent<TextMesh> ();
+				textMesh.text = initialLabel;
+			}
+		}
+	}
 	private Vector3 originalScale;
-	public Material arcRimMaterial;
-	public Material arcBodyMaterial;
+	[SerializeField]
+	private Material rimMaterial;
+	public Material arcRimMaterial {
+		get { 
+			return rimMaterial;
+		} 
+		set {
+			rimMaterial = value;
+			if( arcRim == null ) {
+				Transform arcRimTransform = transform.FindChild("ArcRim");
+				if( arcRimTransform != null ) {
+					arcRim = arcRimTransform.gameObject;
+					MeshRenderer arcRimRenderer = arcRim.GetComponent<MeshRenderer> ();
+					arcRimRenderer.material = arcRimMaterial;
+				}
+			} else {
+				MeshRenderer arcRimRenderer = arcRim.GetComponent<MeshRenderer> ();
+				arcRimRenderer.material = arcRimMaterial;
+			}
+		}
+	}
+	[SerializeField]
+	private Material bodyMaterial;
+	public Material arcBodyMaterial {
+		get { 
+			return bodyMaterial;
+		} 
+		set {
+			bodyMaterial = value;
+			if( arcBody == null ) {
+				Transform arcBodyTransform = transform.FindChild("ArcBody");
+				if( arcBodyTransform != null ) {
+					arcBody = arcBodyTransform.gameObject;
+					MeshRenderer arcBodyRenderer = arcBody.GetComponent<MeshRenderer> ();
+					arcBodyRenderer.material = arcBodyMaterial;
+				}
+			} else {
+				MeshRenderer arcBodyRenderer = arcBody.GetComponent<MeshRenderer> ();
+				arcBodyRenderer.material = arcBodyMaterial;
+			}
+		}
+	}
+
 	private float privArcLength = (2*Mathf.PI);//Private member gaurded by arcLength Property
 	public float arcLength {
 		get {
