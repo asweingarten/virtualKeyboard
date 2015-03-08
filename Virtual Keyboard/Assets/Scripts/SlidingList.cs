@@ -202,6 +202,28 @@ public class SlidingList : MonoBehaviour {
 		Start ();
 		createNewListItem(System.DateTime.Now.ToLongTimeString());
 	}
+
+	[ContextMenu ("Add New Category")]
+	void AddNewCategory () {
+		Start ();
+		baseScale = gameObject.transform.localScale;
+		updateCategoryIndex ();
+		
+		Transform listItemOfItemsPrimitive = transform.Find ("ListOfItemsPrimitive");
+
+		GameObject newCategory = (GameObject) GameObject.Instantiate (listItemOfItemsPrimitive.gameObject);
+		newCategory.transform.parent = transform.Find ("ListOfListOfItems").transform;
+		
+		newCategory.transform.localScale = listItemOfItemsPrimitive.localScale;
+		newCategory.transform.position = listItemOfItemsPrimitive.position;
+		newCategory.transform.rotation = listItemOfItemsPrimitive.rotation;
+
+		newCategory.SetActive (false);
+		newCategory.name = "ListOfItems";
+		newCategory.transform.Find("TitleBox").Find("Title").GetComponent<TextMesh>().text = "New Category";
+		
+		updateTransparency ();
+	}
 	
 	[ContextMenu ("Clear List")]
 	void ClearList () {
