@@ -11,6 +11,11 @@ public class RadialMenu : MonoBehaviour {
 
 	// Use this for initialization
 	private List<GameObject> arcSections = new List<GameObject>();
+	private List<Material> bodyMats;
+	private List<Material> rimMats;
+
+	private static int usageCount = 0;
+
 	void Start () {
 		RadialMenuItemSelection.OnRadialMenuSelected += onArcSectionSelected;
 		RadialMenuItemSelection.OnRadialMenuDeselected += onArcSectionDeselected;
@@ -90,10 +95,42 @@ public class RadialMenu : MonoBehaviour {
 		updateArcSectionProperties ();
 	}
 
-	private void loadRadialMaterialResources() {
-		Object[] bodyMats = Resources.LoadAll ("RadialMenu/BodyMaterials");
-		Object[] rimMats = Resources.LoadAll ("RadialMenu/RimMaterials");
 
+
+	private void loadRadialMaterialResources() {
+		if (bodyMats == null || bodyMats.Count == 0) {
+			Object[] bodyMatObjs = Resources.LoadAll ("RadialMenu/BodyMaterials");
+			if( bodyMats == null ) {
+				bodyMats = new List<Material>();
+			}
+		
+			foreach (Object bodyMatObj in bodyMatObjs) {
+				if( bodyMatObj is Material ) {
+					Material bodyMat = (Material)bodyMatObj;
+					bodyMats.Add( bodyMat );
+				}
+			}
+		}
+
+		if (rimMats == null || rimMats.Count == 0) {
+			Object[] rimMatObjs = Resources.LoadAll ("RadialMenu/RimMaterials");
+			if( rimMats == null ) {
+				rimMats = new List<Material>();
+			}
+
+			foreach (Object rimMatObj in rimMatObjs) {
+				if( rimMatObj is Material ) {
+					Material rimMat = (Material)rimMatObj;
+					rimMats.Add( rimMat );
+				}
+			}
+		}
+	}
+
+	[ContextMenu("TestUsageCount")]
+	void TestUsageCount() {
+		Debug.Log ("Usage Count: " + usageCount);
+		usageCount++;
 	}
 
 	[ContextMenu("AddMenuOption")]
@@ -106,8 +143,14 @@ public class RadialMenu : MonoBehaviour {
 		menuOption.name = "ArcSection";
 		ArcMeshDrawer meshDrawer = menuOption.AddComponent<ArcMeshDrawer> ();
 		menuOption.transform.parent = gameObject.transform;
-		meshDrawer.arcBodyMaterial = Resources.Load("RadialMenu/BlockMat2", typeof(Material)) as Material;
-		meshDrawer.arcRimMaterial  = Resources.Load("RadialMenu/BlackReflectiveMat", typeof(Material)) as Material;
+		loadRadialMaterialResources ();
+		if( bodyMats.Count > 0 ) {
+			meshDrawer.arcBodyMaterial = bodyMats [usageCount % bodyMats.Count];
+		}
+		if( rimMats.Count > 0 ) {
+			meshDrawer.arcRimMaterial = rimMats [usageCount % rimMats.Count];
+		}
+		usageCount++;
 		meshDrawer.arcWeight = 1;
 		menuOption.transform.localPosition = Vector3.zero;
 		menuOption.transform.localScale = Vector3.one;
