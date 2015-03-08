@@ -182,12 +182,8 @@ public class SlidingList : MonoBehaviour {
 				
 				listItemBox.SetActive(false);
 				int diff = i - 1 - selectedIndex;
-				ListItem listItem;
-				if (categoryIndex == 0){
-					listItem = listItemBox.GetComponent("CategoryListItem") as ListItem;
-				} else {
-					listItem = listItemBox.GetComponent<ListItem>() as ListItem;
-				}
+				ListItem listItem = listItemBox.GetComponent<ListItem>() as ListItem;
+
 
 				if (diff == 0){
 					listItem.IsActive = true;
