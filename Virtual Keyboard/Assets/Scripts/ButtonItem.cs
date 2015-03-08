@@ -1,9 +1,38 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ButtonItem : ListItem {
+public class ButtonItem : MonoBehaviour {
 
-	public override void execute() {
+	private bool isActive;
+	public bool IsActive{
+		get{
+			return isActive;
+		}
+		set{
+			isActive = value;
+		}
+	}
+	
+	void OnCollisionEnter(Collision collision) {
+		if (isActive) {
+			Debug.Log ("INTERACTING WITH LIST ITEM");
+			execute ();
+		}
+	}
+
+	// Use this for initialization
+	void Start ()
+	{
+		isActive = true;
+	}
+	
+	// Update is called once per frame
+	void Update ()
+	{
+		
+	}
+
+	public void execute() {
 		SlidingList sl = transform.root.GetComponent ("SlidingList") as SlidingList;
 		switch (transform.name) {
 		case "UpArrow":
@@ -22,6 +51,5 @@ public class ButtonItem : ListItem {
 			Debug.Log (transform.name);
 			break;
 		}
-		// FurnitureCreated(createFurniture());
 	}
 }

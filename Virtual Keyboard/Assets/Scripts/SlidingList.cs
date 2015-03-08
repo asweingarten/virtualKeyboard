@@ -30,31 +30,6 @@ public class SlidingList : MonoBehaviour {
 			baseScale = gameObject.transform.localScale;
 			
 			Transform buttons = transform.Find ("buttons");
-			
-			addButton = buttons.Find ("AddButton").gameObject;
-			upArrow = buttons.Find ("UpArrow").gameObject;
-			downArrow = buttons.Find ("DownArrow").gameObject;
-			leftArrow = buttons.Find ("LeftArrow").gameObject;
-			rightArrow = buttons.Find ("RightArrow").gameObject;
-			categoryBox = transform.Find ("TitleBoxFrame").gameObject;
-
-			ListItem upArrowListItem = upArrow.GetComponent("ButtonItem") as ListItem;
-			upArrowListItem.IsActive = true;
-			ListItem downArrowListItem = downArrow.GetComponent("ButtonItem") as ListItem;
-			downArrowListItem.IsActive = true;
-			ListItem leftArrowListItem = leftArrow.GetComponent("ButtonItem") as ListItem;
-			leftArrowListItem.IsActive = true;
-			ListItem rightArrowListItem = rightArrow.GetComponent("ButtonItem") as ListItem;
-			rightArrowListItem.IsActive = true;
-			ListItem categoryBoxListItem = categoryBox.GetComponent("ButtonItem") as ListItem;
-			categoryBoxListItem.IsActive = true;
-			
-			MenuItemSelection.OnMenuItemHold += HandleOnMenuItemHeld;
-			MenuItemSelection.OnMenuItemGainedFocus += HandleOnMenuItemGainedFocus;
-			MenuItemSelection.OnMenuItemLostFocus += HandleOnMenuItemLostFocus;
-			selectedIndex = 0;
-			categoryIndex = 0;
-			
 			initialized = true;
 		}
 		updateTransparency ();
@@ -132,7 +107,6 @@ public class SlidingList : MonoBehaviour {
 		txtMesh.transform.position = textMeshPrimitive.transform.position;
 		txtMesh.transform.rotation = textMeshPrimitive.transform.rotation;
 
-		// Debug.Log (transform.Find ("ListOfListOfItems").GetChild(selectedMultiIndex).childCount);
 		cube.transform.Translate (new Vector3 (0, 0, (-0.12f * baseScale.z * (transform.Find ("ListOfListOfItems").GetChild(categoryIndex).childCount -2 - selectedIndex))));
 		cube.AddComponent("FurnitureListItem");
 		updateTransparency ();
