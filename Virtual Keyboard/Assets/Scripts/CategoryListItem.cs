@@ -18,4 +18,12 @@ public class CategoryListItem : ListItem {
 		SlidingList sl = transform.root.GetComponent ("SlidingList") as SlidingList;
 		sl.handleCategorySelection ();
 	}
+
+	public void setDisplayName(string newDisplayText){
+		this.displayText = newDisplayText;
+		TextMesh textMesh = GetComponentInChildren<TextMesh> ();
+		if( textMesh != null ) {
+			textMesh.text = newDisplayText;
+		}
+	}
 }

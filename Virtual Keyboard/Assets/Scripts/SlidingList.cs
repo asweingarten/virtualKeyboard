@@ -131,6 +131,7 @@ public class SlidingList : MonoBehaviour {
 		cube.transform.Translate (new Vector3 (0, 0, (-0.12f * baseScale.z * (transform.Find ("ListOfListOfItems").GetChild(categoryIndex).childCount -2 - selectedIndex))));
 		if (categoryIndex == 0) {
 			cube.AddComponent ("CategoryListItem");
+			cube.GetComponent<CategoryListItem>().setDisplayName(text);
 		} else {
 			cube.AddComponent ("FurnitureListItem");
 		}
@@ -179,11 +180,9 @@ public class SlidingList : MonoBehaviour {
 			if (t.name == "ListItem"){
 				GameObject listItemBox = t.gameObject;
 				TextMesh text = t.Find("List_Item_Text").gameObject.GetComponent<TextMesh>();
-				
 				listItemBox.SetActive(false);
 				int diff = i - 1 - selectedIndex;
 				ListItem listItem = listItemBox.GetComponent<ListItem>() as ListItem;
-
 
 				if (diff == 0){
 					listItem.IsActive = true;

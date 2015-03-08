@@ -1,11 +1,11 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public abstract class ListItem : MonoBehaviour
 {
 	private bool isActive;
 	[SerializeField]
-	private string displayText = "";
+	protected string displayText = "";
 	public bool IsActive{
 		get{
 			return isActive;
