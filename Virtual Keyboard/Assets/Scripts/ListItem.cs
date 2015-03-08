@@ -23,4 +23,11 @@ public abstract class ListItem : MonoBehaviour
 	}
 	
 	public abstract void execute();
+
+	void OnValidate() {
+		TextMesh textMesh = GetComponentInChildren<TextMesh> ();
+		if( textMesh != null ) {
+			textMesh.text = displayText;
+		}
+	}
 }
