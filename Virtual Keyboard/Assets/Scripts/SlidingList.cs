@@ -36,8 +36,7 @@ public class SlidingList : MonoBehaviour {
 	}
 
 	// Update is called once per frame
-	void Update () {
-		
+	void Update () {	
 	}
 
 	void HandleOnMenuItemLostFocus (GameObject selectedItem)
@@ -63,9 +62,9 @@ public class SlidingList : MonoBehaviour {
 		if (selectedItem == addButton) {
 			handleAddButton ();
 		} else if (selectedItem == upArrow) {
-			handleUpArrow ();
+			scrollListUp ();
 		} else if (selectedItem == downArrow) {
-			handleDownArrow ();
+			scrollListDown ();
 		}
 	}
 
@@ -73,28 +72,41 @@ public class SlidingList : MonoBehaviour {
 		createNewListItem(System.DateTime.Now.ToLongTimeString());
 	}
 
-	public void handleUpArrow() {
+	int updateCategoryIndex(){
+		Transform listOfItems = transform.Find ("ListOfListOfItems");
+		int it = 0;
+		foreach (Transform t in listOfItems) {
+			if (t.gameObject.activeSelf){
+				categoryIndex = it;
+				return categoryIndex;
+			}
+			it++;
+		}
+	}
+
+	public void scrollListUp() {
 		slideListIncrement(1);
 	}
 
-	public void handleDownArrow() {
+	public void scrollListDown() {
 		slideListIncrement(-1);
 	}
 
-	public void handleLeftArrow() {
-		multiListIncrement(-1);
+	public void scrollCategoriesLeft() {
+		categoryListIncrement(-1);
 	}
 	
-	public void handleRightArrow() {
-		multiListIncrement(1);
+	public void scrollCategoriesRight() {
+		categoryListIncrement(1);
 	}
 
 	public void handleCategorySelection(){
-		multiListIncrement(selectedIndex);
+		categoryListIncrement(selectedIndex);
 	}
 
 	public void createNewListItem(string text){
 		baseScale = gameObject.transform.localScale;
+		updateCategoryIndex ();
 
 		Transform listItemPrimitive = transform.Find ("ListItemPrimitive");
 		TextMesh textMeshPrimitive = listItemPrimitive.Find("List_Item_Text").GetComponent<TextMesh>();
@@ -126,6 +138,7 @@ public class SlidingList : MonoBehaviour {
 
 	void slideListIncrement(int i){
 		baseScale = gameObject.transform.localScale;
+		updateCategoryIndex ();
 		
 		int newIndex = Mathf.Min(Mathf.Max (selectedIndex + i, 0), transform.Find ("ListOfListOfItems").GetChild(categoryIndex).childCount-2);
 
@@ -140,7 +153,7 @@ public class SlidingList : MonoBehaviour {
 		updateTransparency ();
 	}
 
-	void multiListIncrement(int i){
+	void categoryListIncrement(int i){
 		slideListIncrement (0-selectedIndex);
 		
 		int newIndex = Mathf.Min(Mathf.Max (categoryIndex + i, 1), transform.Find ("ListOfListOfItems").childCount-1);
@@ -165,8 +178,6 @@ public class SlidingList : MonoBehaviour {
 			if (t.name == "ListItem"){
 				GameObject listItemBox = t.gameObject;
 				TextMesh text = t.Find("List_Item_Text").gameObject.GetComponent<TextMesh>();
-				Color color = listItemBox. renderer.sharedMaterial.color; 
-				Color text_color = text.renderer.sharedMaterial.color;
 				
 				listItemBox.SetActive(false);
 				int diff = i - 1 - selectedIndex;
@@ -186,9 +197,6 @@ public class SlidingList : MonoBehaviour {
 				if (diff > -1 && diff < 7){
 					listItemBox.SetActive(true);
 				}
-				
-				listItemBox.renderer.sharedMaterial.color = color;
-				text.renderer.sharedMaterial.color = text_color;
 			}
 		}
 	}
@@ -224,22 +232,22 @@ public class SlidingList : MonoBehaviour {
 	
 	[ContextMenu ("Scroll Left")]
 	void Scrollleft () {
-		handleLeftArrow();
+		scrollCategoriesLeft();
 	}
 	
 	[ContextMenu ("Scroll Right")]
 	void Scrollright () {
-		handleRightArrow();
+		scrollCategoriesRight();
 	}
 
 	[ContextMenu ("Scroll Up")]
 	void ScrollUp () {
-		handleUpArrow();
+		scrollListUp();
 	}
 	
 	[ContextMenu ("Scroll Down")]
 	void ScrollDown () {
-		handleDownArrow();
+		scrollListDown();
 	}
 
 	[ContextMenu ("Categories")]
@@ -257,7 +265,6 @@ public class SlidingList : MonoBehaviour {
 			it++;
 		}
 		categoryIndex = 0;
-		Debug.Log (transform.Find ("ListOfListOfItems").GetChild (0).childCount);
 		int childCount = transform.Find ("ListOfListOfItems").GetChild(0).childCount;
 		for (int i = childCount - 1; i >= 0; i--){
 			if (transform.Find ("ListOfListOfItems").GetChild(categoryIndex).GetChild(i).name == "ListItem"){
@@ -265,8 +272,6 @@ public class SlidingList : MonoBehaviour {
 			}
 		}
 		selectedIndex = 0;
-		Debug.Log (transform.Find ("ListOfListOfItems").GetChild (0).childCount);
-		
 		
 		foreach (Transform listItems in transform.Find ("ListOfListOfItems")) {
 			TextMesh text = listItems.FindChild("TitleBox").FindChild("Title").gameObject.GetComponent<TextMesh>();
