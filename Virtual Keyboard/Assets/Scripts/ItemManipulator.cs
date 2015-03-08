@@ -18,6 +18,8 @@ public class ItemManipulator : MonoBehaviour
 	void Start () {
 		controller = new Controller ();
 		enableSelection ();
+
+		TextureListItem.TextureApplied += updateSelectedItemTexture;
 	}
 
 	// Update is called once per frame
@@ -137,6 +139,25 @@ public class ItemManipulator : MonoBehaviour
 	public bool isItemSelected(GameObject obj) {
 		return selectedItem == obj;
 	}
+
+	private void updateSelectedItemTexture(Texture texture) {
+		applyTexture(selectedItem.transform, texture);
+	}
+
+	private void applyTexture(Transform t, Texture texture) {
+		if (t.gameObject.renderer != null) {
+			t.gameObject.renderer.material.mainTexture = texture;
+		}
+
+		if (t.childCount == 0) {
+			return;
+		} else {
+			foreach (Transform trans in t) {
+				applyTexture(trans, texture);			
+			}
+		}
+	}
+
 
 }
 

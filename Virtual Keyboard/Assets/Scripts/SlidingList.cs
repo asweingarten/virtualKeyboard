@@ -140,7 +140,7 @@ public class SlidingList : MonoBehaviour {
 				
 				listItemBox.SetActive(false);
 				int diff = i - 1 - selectedIndex;
-				ListItem listItem = listItemBox.GetComponent("FurnitureListItem") as ListItem;
+				ListItem listItem = listItemBox.GetComponent<ListItem>() as ListItem;
 				if (diff == 0){
 					listItem.IsActive = true;
 				} else {
