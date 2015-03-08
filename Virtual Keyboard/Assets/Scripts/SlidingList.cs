@@ -82,6 +82,7 @@ public class SlidingList : MonoBehaviour {
 			}
 			it++;
 		}
+		return categoryIndex;
 	}
 
 	public void scrollListUp() {
