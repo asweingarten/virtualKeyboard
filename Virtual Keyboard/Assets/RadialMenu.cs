@@ -151,8 +151,6 @@ public class RadialMenu : MonoBehaviour {
 			meshDrawer.arcRimMaterial = rimMats [usageCount % rimMats.Count];
 		}
 		usageCount++;
-		//meshDrawer.arcBodyMaterial = Resources.Load("RadialMenu/BlockMat2", typeof(Material)) as Material;
-		//meshDrawer.arcRimMaterial  = Resources.Load("RadialMenu/BlackReflectiveMat", typeof(Material)) as Material;
 		meshDrawer.arcWeight = 1;
 		menuOption.transform.localPosition = Vector3.zero;
 		menuOption.transform.localScale = Vector3.one;
