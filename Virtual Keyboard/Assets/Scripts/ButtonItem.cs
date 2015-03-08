@@ -22,16 +22,16 @@ public class ButtonItem : MonoBehaviour {
 		SlidingList sl = transform.root.GetComponent ("SlidingList") as SlidingList;
 		switch (transform.name) {
 		case "UpArrow":
-			sl.handleUpArrow();
+			sl.scroll();
 			break;
 		case "DownArrow":
-			sl.handleDownArrow();
+			sl.scrollListDown();
 			break;
 		case "LeftArrow":
-			sl.handleLeftArrow();
+			sl.scrollCategoriesLeft();
 			break;
 		case "RightArrow":
-			sl.handleRightArrow();
+			sl.scrollCategoriesRight();
 			break;
 		case "TitleBoxFrame":
 			sl.updateCategoryList ();
