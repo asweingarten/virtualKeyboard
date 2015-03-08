@@ -2,28 +2,14 @@
 using System.Collections;
 
 public class ButtonItem : MonoBehaviour {
-
-	private bool isActive;
-	public bool IsActive{
-		get{
-			return isActive;
-		}
-		set{
-			isActive = value;
-		}
-	}
 	
 	void OnCollisionEnter(Collision collision) {
-		if (isActive) {
-			Debug.Log ("INTERACTING WITH LIST ITEM");
-			execute ();
-		}
+		execute ();
 	}
 
 	// Use this for initialization
 	void Start ()
 	{
-		isActive = true;
 	}
 	
 	// Update is called once per frame
