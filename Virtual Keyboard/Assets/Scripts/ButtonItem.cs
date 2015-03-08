@@ -33,6 +33,9 @@ public class ButtonItem : MonoBehaviour {
 		case "RightArrow":
 			sl.handleRightArrow();
 			break;
+		case "TitleBoxFrame":
+			sl.updateCategoryList ();
+			break;
 		default:
 			Debug.Log (transform.name);
 			break;
