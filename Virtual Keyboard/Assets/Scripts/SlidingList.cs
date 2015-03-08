@@ -180,8 +180,6 @@ public class SlidingList : MonoBehaviour {
 			if (t.name == "ListItem"){
 				GameObject listItemBox = t.gameObject;
 				TextMesh text = t.Find("List_Item_Text").gameObject.GetComponent<TextMesh>();
-				Color color = listItemBox. renderer.sharedMaterial.color;
-				Color text_color = text.renderer.sharedMaterial.color;
 				listItemBox.SetActive(false);
 				int diff = i - 1 - selectedIndex;
 				ListItem listItem = listItemBox.GetComponent<ListItem>() as ListItem;
@@ -195,8 +193,6 @@ public class SlidingList : MonoBehaviour {
 				if (diff > -1 && diff < 7){
 					listItemBox.SetActive(true);
 				}
-				listItemBox.renderer.sharedMaterial.color = color;
-				text.renderer.sharedMaterial.color = text_color;
 			}
 		}
 	}
