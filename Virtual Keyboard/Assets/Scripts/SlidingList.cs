@@ -32,6 +32,7 @@ public class SlidingList : MonoBehaviour {
 			Transform buttons = transform.Find ("buttons");
 			initialized = true;
 		}
+		updateCategoryIndex ();
 		updateTransparency ();
 	}
 

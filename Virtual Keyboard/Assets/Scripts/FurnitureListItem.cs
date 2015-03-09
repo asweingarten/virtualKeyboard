@@ -36,6 +36,7 @@ public class FurnitureListItem : ListItem
 	}
 
 	public override void execute() {
+		Debug.Log ("Create Furnitiure");
 		FurnitureCreated(createFurniture());
 	}
 }
