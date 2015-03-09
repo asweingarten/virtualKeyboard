@@ -4,6 +4,7 @@ using System.Collections;
 public class ButtonItem : MonoBehaviour {
 	
 	void OnCollisionEnter(Collision collision) {
+		Debug.Log ("Collision");
 		execute ();
 	}
 
@@ -19,7 +20,7 @@ public class ButtonItem : MonoBehaviour {
 	}
 
 	public void execute() {
-		SlidingList sl = transform.root.GetComponent ("SlidingList") as SlidingList;
+		SlidingList sl = transform.parent.parent.GetComponent<SlidingList> ();
 		switch (transform.name) {
 		case "UpArrow":
 			sl.scrollListUp();
