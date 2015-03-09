@@ -3,20 +3,20 @@ using System.Collections;
 
 public abstract class ListItem : MonoBehaviour
 {
-	private bool isActive;
+	public bool IsActive;
 	[SerializeField]
 	protected string displayText = "";
-	public bool IsActive{
+	/*public bool IsActive{
 		get{
 			return isActive;
 		}
 		set{
 			isActive = value;
 		}
-	}
+	}*/
 
 	void OnCollisionEnter(Collision collision) {
-		if (isActive) {
+		if (IsActive) {
 			Debug.Log ("INTERACTING WITH LIST ITEM");	
 			execute ();
 		}

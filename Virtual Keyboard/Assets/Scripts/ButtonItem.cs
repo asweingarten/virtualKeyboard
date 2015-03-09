@@ -2,8 +2,12 @@
 using System.Collections;
 
 public class ButtonItem : MonoBehaviour {
-	
+
+	private float lastActiveTime;
 	void OnCollisionEnter(Collision collision) {
+		if( lastActiveTime != null && Time.time - lastActiveTime < .75f ) return;
+		lastActiveTime = Time.time;
+		Debug.Log ("Collision");
 		execute ();
 	}
 
@@ -19,7 +23,7 @@ public class ButtonItem : MonoBehaviour {
 	}
 
 	public void execute() {
-		SlidingList sl = transform.root.GetComponent ("SlidingList") as SlidingList;
+		SlidingList sl = transform.parent.parent.GetComponent<SlidingList> ();
 		switch (transform.name) {
 		case "UpArrow":
 			sl.scrollListUp();
@@ -34,6 +38,7 @@ public class ButtonItem : MonoBehaviour {
 			sl.scrollCategoriesRight();
 			break;
 		case "TitleBoxFrame":
+			if( sl == null ) break;
 			sl.updateCategoryList ();
 			break;
 		default:

@@ -42,6 +42,7 @@ public class ItemSelection : MonoBehaviour {
 
 	public void enableSelection() {
 		if(!itemManipulator) return;
+		Debug.Log ("Enabling Selection");
 		itemManipulator.enableSelection();
 	}
 
