@@ -8,6 +8,8 @@ public class ItemSpawner : MonoBehaviour
 	public GameObject[] Walls = new GameObject[4];
 	public GameObject MainCamera = null;
 
+	private float lastSpawnTime;
+
 	// Use this for initialization
 	void Start ()
 	{
@@ -34,7 +36,9 @@ public class ItemSpawner : MonoBehaviour
 				}
 			}
 		}
-		return Vector3.zero;
+		Vector3 spawnLocation = surface.renderer.bounds.center;
+		spawnLocation.y = surface.transform.position.y;
+		return spawnLocation;
 	}
 
 	Vector3 calculateSpawnLocation(Furniture.Mounting mounting) {
@@ -59,11 +63,15 @@ public class ItemSpawner : MonoBehaviour
 	}
 
 	void spawnFurniture(Furniture furniture) {
+		if( lastSpawnTime != null && Time.time - lastSpawnTime < 3f ) return;
+		lastSpawnTime = Time.time;
 		Debug.Log ("THE SPAWNER HAS SPOKEN");
 		Vector3 spawnLocation = calculateSpawnLocation(furniture.mounting);
 		if (spawnLocation != Vector3.zero) {
+			Debug.Log ("Should create onject");
 			Quaternion rotationQ = Quaternion.Euler(furniture.rotation);
 			GameObject obj = (GameObject)Instantiate(furniture.model, spawnLocation, rotationQ);
+			obj.transform.localScale = 
 			obj.transform.localScale = furniture.scale;
 		}
 	}
