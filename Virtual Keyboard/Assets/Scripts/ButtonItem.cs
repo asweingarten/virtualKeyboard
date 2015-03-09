@@ -2,8 +2,11 @@
 using System.Collections;
 
 public class ButtonItem : MonoBehaviour {
-	
+
+	private float lastActiveTime;
 	void OnCollisionEnter(Collision collision) {
+		if( lastActiveTime != null && Time.time - lastActiveTime < .75f ) return;
+		lastActiveTime = Time.time;
 		Debug.Log ("Collision");
 		execute ();
 	}
@@ -35,6 +38,7 @@ public class ButtonItem : MonoBehaviour {
 			sl.scrollCategoriesRight();
 			break;
 		case "TitleBoxFrame":
+			if( sl == null ) break;
 			sl.updateCategoryList ();
 			break;
 		default:

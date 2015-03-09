@@ -59,6 +59,7 @@ public class MenuShortcuts : MonoBehaviour {
 	}
 
 	private void toggleClockwiseMenu() {
+		Debug.Log ("Clockwise");
 		if (clockwiseMenu != null) {
 			if(clockwiseMenu.activeSelf) {
 				itemSelection.enableSelection();
@@ -69,11 +70,12 @@ public class MenuShortcuts : MonoBehaviour {
 			}
 		}
 		else return;
-		if(counterClockwiseMenu != null ) counterClockwiseMenu.SetActive(false);
+		//if(counterClockwiseMenu != null ) counterClockwiseMenu.SetActive(false);
 
 	}
 
 	private void toggleCounterClockwiseMenu() {
+		Debug.Log ("Counter-clockwise");
 		if (counterClockwiseMenu != null) {
 			if( counterClockwiseMenu.activeSelf) {
 				itemSelection.enableSelection();
@@ -84,7 +86,7 @@ public class MenuShortcuts : MonoBehaviour {
 			}
 		}
 		else return;
-		if(clockwiseMenu != null ) clockwiseMenu.SetActive(false);
+		//if(clockwiseMenu != null ) clockwiseMenu.SetActive(false);
 
 	}
 
