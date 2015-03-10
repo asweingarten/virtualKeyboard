@@ -14,8 +14,7 @@ public class PanelCursor : MonoBehaviour
 
 	private Controller controller;
 	private BoxCollider collider;
-	private Vector3 minBounds = Vector3.zero;
-	private Vector3 maxBounds = Vector3.zero;
+	private Vector3 interactionPanelSize = Vector3.zero;
 
 	// Use this for initialization
 	void Start ()
@@ -36,10 +35,9 @@ public class PanelCursor : MonoBehaviour
 		this.transform.rotation = interactionPanel.transform.rotation;
 		this.transform.parent = interactionPanel.transform.parent;
 		
-
 		calculateInteractionPanelBounds();
 		// TODO: Determine a general way to translate the object so it's just imposed in the interactionPanel
-		this.transform.Translate(0, 0, -0.035f, this.transform.parent);
+		//this.transform.Translate(0, 0, -0.035f, this.transform.parent);
 
 		// Add support for a HandClosed gesture where the interaction panel is triggered
 		LeapGestures.HandClosedGestureTriggered += HandClosedGestureTriggered;
@@ -55,8 +53,7 @@ public class PanelCursor : MonoBehaviour
 		if (interactionPanel.isActiveAndEnabled == true) {
 			Vector leapTranslation = currentFrame.Translation(previousFrame);
 			Vector3 unityTranslation = calculateUnityTranslationVector(leapTranslation);
-			this.transform.Translate(unityTranslation, this.transform.parent);
-			Debug.Log("Cursor coordinates: " + this.transform.localPosition);
+			TranslateCursor(unityTranslation);
 		}
 	}
 
@@ -81,6 +78,30 @@ public class PanelCursor : MonoBehaviour
 		return unityVector;
 	}
 
+	// Helper function to translate the cursor by a position determined by the leap motion
+	void TranslateCursor(Vector3 translation) {
+
+/*
+		// Calculate bounds of the interaction panel
+		Vector3 minBounds = interactionPanel.transform.position - interactionPanelSize;
+		Vector3 maxBounds = interactionPanel.transform.position + interactionPanelSize;
+
+		// Calculate cursor size and the position of the cursor
+		Vector3 cursorSize = collider.bounds.size;
+		Vector3 cursorPosition = this.transform.position + this.transform.parent.TransformDirection(translation);
+		// These are used to add some leeway to the cursor translation - allow upto half the cursor size to leave the interactionPanel
+		Vector3 minCursorPosition = cursorPosition + (cursorSize / 2);
+		Vector3 maxCursorPosition = cursorPosition - (cursorSize / 2);
+
+		// If the cursor is within the interaction panel's boundaries, allow it to be moved.
+		if (minCursorPosition.x > minBounds.x && minCursorPosition.y > minBounds.y && minCursorPosition.z > minBounds.z &&
+			maxCursorPosition.x < maxBounds.x && maxCursorPosition.y < maxBounds.y && maxCursorPosition.z < maxBounds.z) {
+			this.transform.Translate(translation, this.transform.parent);
+		}
+*/
+		this.transform.Translate(translation, this.transform.parent);
+	}
+
 	// When a key tap gesture is triggered, call the interaction panel to trigger its action
 	void HandClosedGestureTriggered(object sender, System.EventArgs e) {
 		interactionPanel.TriggerAction();
@@ -88,8 +109,8 @@ public class PanelCursor : MonoBehaviour
 
 	//TODO: Determine bounds of containing interactionPanel, and don't let the cursor go outside of those bounds.
 	void calculateInteractionPanelBounds() {
-		minBounds = new Vector3(1000, 1000, 1000);
-		maxBounds = new Vector3(-1000, -1000, -1000);
+		Vector3 minBounds = new Vector3(1000, 1000, 1000);
+		Vector3 maxBounds = new Vector3(-1000, -1000, -1000);
 
 		if (interactionPanel != null) {
 			Collider[] childColliders = interactionPanel.GetComponentsInChildren<Collider>();
@@ -105,13 +126,10 @@ public class PanelCursor : MonoBehaviour
 					maxBounds.x = Mathf.Max(max.x, maxBounds.x);
 					maxBounds.y = Mathf.Max(max.y, maxBounds.y);
 					maxBounds.z = Mathf.Max(max.z, maxBounds.z);
-
-					Debug.Log("Comparing bounds. Min: " + min + " , Max: " + max);
 				}
 	        }
-	             
-	        minBounds = this.transform.TransformPoint(minBounds);
-	        maxBounds = this.transform.TransformPoint(maxBounds);
+
+	        interactionPanelSize = (maxBounds - minBounds) / 2;
 			Debug.Log("Computed new bounds. Min: " + minBounds + " , Max: " + maxBounds);
 		}
 	}
