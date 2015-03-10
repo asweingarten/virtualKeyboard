@@ -14,12 +14,6 @@ public class VirtualKeyboard : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
-		//collider = gameObject.AddComponent<BoxCollider>();
-		//Bounds bounds = getKeyboardBounds();
-
-		//collider.center = bounds.center;
-		//collider.size = bounds.size;
-
 		KeyActivator.OnKeyLeapFocus += onKeyLeapFocus;
 		KeyActivator.OnKeyLeapFocusLost += onKeyLeapFocusLost;
 
@@ -51,39 +45,5 @@ public class VirtualKeyboard : MonoBehaviour
 			Debug.Log("Active key pressed: " + activeKey.keyId);
 		}
 	}
-
-/*
-	Bounds getKeyboardBounds() {
-
-		Vector3 min = new Vector3(10000,10000,10000);
-		Vector3 max = new Vector3(-10000,-10000,-10000);
-
-		Collider[] childColliders = gameObject.GetComponentsInChildren<Collider>();
-		foreach(Collider childCollider in childColliders) {
-			if (childCollider != (Collider) collider) {
-				Vector3 minBounds = childCollider.bounds.min;
-				Vector3 maxBounds = childCollider.bounds.max;
-
-				min.x = Mathf.Min(min.x, minBounds.x);
-				min.y = Mathf.Min(min.y, minBounds.y);
-				min.z = Mathf.Min(min.z, minBounds.z);
-
-				max.x = Mathf.Max(max.x, maxBounds.x);
-				max.y = Mathf.Max(max.y, maxBounds.y);
-				max.z = Mathf.Max(max.z, maxBounds.z);
-
-				Debug.Log("Comparing bounds. Min: " + minBounds + " , Max: " + maxBounds);
-			}
-        }
-             
-
-		Debug.Log("Adding new bounds. Min: " + min + " , Max: " + max);
-		Vector3 size = max - min;
-		Debug.Log("Size: " + size);
-		Bounds bounds = new Bounds();
-		bounds.SetMinMax(min,max);
-        return bounds;
-	} */
-
 }
 
