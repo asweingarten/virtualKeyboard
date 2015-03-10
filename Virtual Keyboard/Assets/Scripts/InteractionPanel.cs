@@ -7,16 +7,17 @@ public class InteractionPanel : MonoBehaviour
 
 	public GameObject user;
 
-	private OVRPlayerController playerController;
+	//private OVRPlayerController playerController;
 	private BoxCollider[] childColliders;
+
+	public delegate void TriggerEvent();
+	public event TriggerEvent OnAction;
 
 	// Use this for initialization
 	void Start ()
 	{
-		playerController = user.GetComponent<OVRPlayerController>() as OVRPlayerController;
-		Debug.Log (playerController);
-		KeyActivator.OnKeyLeapPressed += onKeyLeapPressed;
-		KeyActivator.OnKeyLeapReleased += onKeyLeapReleased;
+		//playerController = user.GetComponent<OVRPlayerController>() as OVRPlayerController;
+		//Debug.Log (playerController);
 		childColliders = gameObject.GetComponentsInChildren<BoxCollider>() as BoxCollider[];
 		foreach( Collider childCollider in childColliders ) {
 			if( childCollider.enabled == true ) {
@@ -33,33 +34,10 @@ public class InteractionPanel : MonoBehaviour
 
 	}
 
-	void onCollisionEnter(Collision collision) {
-		Debug.Log ("Something hit the keyboard");
-	}
-
-	void onKeyLeapReleased(string keyId) {
-		string upperKeyId = keyId.ToUpper ();
-		if (upperKeyId.Equals (KeyCode.W.ToString ())) {
-			playerController.moveForward = false;
-		} else if (upperKeyId.Equals (KeyCode.A.ToString ())) {
-			playerController.moveLeft = false;
-		} else if ( upperKeyId.Equals (KeyCode.D.ToString())) {
-			playerController.moveRight = false;
-		} else if ( upperKeyId.Equals (KeyCode.S.ToString())) {
-			playerController.moveBack = false;
-		}
-	}
-
-	void onKeyLeapPressed(string keyId) {
-		string upperKeyId = keyId.ToUpper ();
-		if (upperKeyId.Equals (KeyCode.W.ToString ())) {
-			playerController.moveForward = true;
-		} else if (upperKeyId.Equals (KeyCode.A.ToString ())) {
-			playerController.moveLeft = true;
-		} else if ( upperKeyId.Equals (KeyCode.D.ToString())) {
-			playerController.moveRight = true;
-		} else if ( upperKeyId.Equals (KeyCode.S.ToString())) {
-			playerController.moveBack = true;
+	public void TriggerAction() {
+		Debug.Log("Action triggered");
+		if (OnAction != null) {
+			OnAction();
 		}
 	}
 }

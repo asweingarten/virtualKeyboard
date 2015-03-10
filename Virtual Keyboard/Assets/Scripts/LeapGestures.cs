@@ -11,8 +11,18 @@ public class LeapGestures : MonoBehaviour {
 	GameObject[] interactionPanels;
 	private int interactionPanel = 0;
 
+	// Set a timeout for gestures of 1 second - anything longer than this is ignored.
+	private float gestureTimeout = 1.0f; 
+
+	// Set a grab threshold for the custom HandClosed gesture.
+	private float grabThreshold = 0.9f;
+
 	public delegate void CircularGestureAction(object sender, System.EventArgs e);
+	public delegate void KeyTapGestureAction(object sender, System.EventArgs e);
+	public delegate void HandClosedGestureAction(object sender, System.EventArgs e);
 	public static event CircularGestureAction CircularGestureTriggered;
+	public static event KeyTapGestureAction KeyTapGestureTriggered;
+	public static event HandClosedGestureAction HandClosedGestureTriggered;
 
 	void Awake () {
 		leapController = new Controller ();
@@ -25,16 +35,35 @@ public class LeapGestures : MonoBehaviour {
 		}
 
 		leapController.EnableGesture (Leap.Gesture.GestureType.TYPECIRCLE);
+		leapController.EnableGesture (Leap.Gesture.GestureType.TYPE_KEY_TAP);
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		Frame frame = leapController.Frame ();
+		Frame frame = leapController.Frame();
 		GestureList gestures = frame.Gestures();
 
 		foreach (Gesture gesture in gestures) {
-			if( gesture.State.Equals(Gesture.GestureState.STATESTOP) ) {
+			// Ignore any gestures that have been going on for more than a second.
+			if (gesture.DurationSeconds > gestureTimeout) {
+				continue;
+			}
+
+			// Otherwise, check if it is a supported gesture and peform the appropriate event.
+			if (gesture.Type == Gesture.GestureType.TYPE_KEY_TAP) {
+				OnKeyTapGesture(this, null);
+			} 
+		 	else if (gesture.Type == Gesture.GestureType.TYPECIRCLE && gesture.State.Equals(Gesture.GestureState.STATESTOP)) {
 				OnCircularGestureCompleted(this, null);
+			}
+		}
+
+		HandList hands = frame.Hands;
+		foreach (Hand hand in hands) {
+			// Look at the frame's hands. If above the grab threshold, fire the HandClosed event
+			if (hand.GrabStrength >= grabThreshold) {
+				OnHandClosedGesture(this, null);
+				return;
 			}
 		}
 	}
@@ -44,6 +73,20 @@ public class LeapGestures : MonoBehaviour {
 		if (CircularGestureTriggered != null) {
 			CircularGestureTriggered(sender, e);
 			Debug.Log("Circular gesture");
+		}
+	}
+
+	private void OnKeyTapGesture(object sender, System.EventArgs e) {
+		if (KeyTapGestureTriggered != null) {
+			KeyTapGestureTriggered(sender, e);
+			Debug.Log("Key tap gesture");
+		}
+	}
+
+	private void OnHandClosedGesture(object sender, System.EventArgs e) {
+		Debug.Log("Hand closed gesture");
+		if (HandClosedGestureTriggered != null) {
+			HandClosedGestureTriggered(sender, e);
 		}
 	}
 
