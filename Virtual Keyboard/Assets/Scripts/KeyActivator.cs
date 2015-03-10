@@ -3,10 +3,10 @@ using System.Collections;
 
 public class KeyActivator : MonoBehaviour
 {
-	public delegate void KeyLeapPressAction(string keyId);
-	public delegate void KeyLeapReleaseAction(string keyId);
-	public static event KeyLeapPressAction OnKeyLeapPressed;
-	public static event KeyLeapReleaseAction OnKeyLeapReleased;
+	public delegate void KeyLeapFocusAction(KeyActivator keyId);
+	public delegate void KeyLeapFocusLostAction(KeyActivator keyId);
+	public static event KeyLeapFocusAction OnKeyLeapFocus;
+	public static event KeyLeapFocusLostAction OnKeyLeapFocusLost;
 
 	public Color activeColor;
 	public string keyId;
@@ -28,35 +28,39 @@ public class KeyActivator : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
-		if (Input.GetKeyDown (keyId)) {
+		/*if (Input.GetKeyDown (keyId)) {
 			OnKeyLeapPressed (keyId);
 			setColor(activeColor);
 		} else if (Input.GetKeyUp (keyId)) 
 		{
 			OnKeyLeapReleased (keyId);
 			setColor(baseColor);
-		}
+		}*/
 	}
 
 	void OnCollisionEnter(Collision collision) {
+		Debug.Log ("Something hit the " + keyId + " key");
 		if (collision.gameObject.name == "Plane")
 			return;
-		OnKeyLeapPressed (keyId);
-		Debug.Log ("Something hit the " + keyId + " key");
-		setColor(activeColor);
+		OnKeyLeapFocus(this);
 	}
 
 	void OnCollisionExit(Collision collision) {
 		if (collision.gameObject.name == "Plane")
 			return;
-		OnKeyLeapReleased (keyId);
-		setColor(baseColor);
+		OnKeyLeapFocusLost(this);
 	}
 
-	void setColor(Color color) {
+	public void setActive(bool active) {
+		if (active == true) {
+			setColor(activeColor);
+		} else {
+			setColor(baseColor);
+		}
+	}
+
+	public void setColor(Color color) {
 		textMesh.color = color;
 	}
-
-
 }
 
