@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class ListManager : MonoBehaviour {
 	private List<GameObject> itemList;
-	private float epsilon = 0.0001f;//Smudge factor when comparing flaot values
+	private float epsilon = 0.0001f;//Smudge factor when comparing float values
 
 	private float spacing = 0.05f;
 	public float itemSpacing {

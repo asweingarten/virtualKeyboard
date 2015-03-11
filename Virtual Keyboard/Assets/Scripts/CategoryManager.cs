@@ -42,7 +42,7 @@ public class CategoryManager : MonoBehaviour {
 			categoryEntry.tag = "ListItem";
 			Transform entryTransform = categoryEntry.transform;
 
-			//Note Positioning of these elements is handled In Category component
+			//Note: Positioning of these elements is handled In ListManager component
 			entryTransform.localScale = new Vector3( 1f, 1f, listItemHeight );
 			entryTransform.localRotation = Quaternion.Euler(Vector3.zero);
 
@@ -85,8 +85,8 @@ public class CategoryManager : MonoBehaviour {
 	}
 
 	private void createCategoryList() {
-		if( isCategoryListCurrent() ) return;//update to not create if exisiting category list is up to date
-		if( categoryList != null ) Destroy(categoryList);//Destroy Prev categoryList if it exists
+		if( isCategoryListCurrent() ) return;//update do not create if exisiting category list is up to date
+		if( categoryList != null ) Destroy(categoryList);//Destroy previous categoryList if it exists
 
 		categoryList = new GameObject ();
 		categoryList.transform.SetParent (transform);
@@ -157,7 +157,7 @@ public class CategoryManager : MonoBehaviour {
 
 	}
 
-	public void categoryView() {
+	public void displayCatagoryList() {
 		categories [currentCategory].SetActive (false);
 		categoryList.SetActive (true);
 	}
