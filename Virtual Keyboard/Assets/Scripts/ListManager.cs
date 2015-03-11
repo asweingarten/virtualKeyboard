@@ -133,8 +133,20 @@ public class ListManager : MonoBehaviour {
 	}
 
 	public void nextListItem () {
+		for( int i = 0; i < itemList.Count; i++ ) {
+			GameObject currentItem = itemList[i];
+			GameObject nextItem = itemList[(i+1) % itemList.Count];
+			nextItem.SetActive(currentItem.activeSelf);
+			nextItem.transform.localPosition = currentItem.transform.localPosition;
+		}
 	}
 
 	public void prevListItem () {
+		for( int i = 0; i < itemList.Count; i++ ) {
+			GameObject currentItem = itemList[i];
+			GameObject prevItem = itemList[(itemList.Count - 1 - i) % itemList.Count];
+			prevItem.SetActive(currentItem.activeSelf);
+			prevItem.transform.localPosition = currentItem.transform.localPosition;
+		}
 	}
 }
