@@ -163,14 +163,28 @@ public class CategoryManager : MonoBehaviour {
 	}
 
 	public void prevListItem () {
-		ListManager listManager = categories [currentCategory].GetComponent<ListManager> ();
+		GameObject activeList;
+		if( categoryList != null && categoryList.activeSelf == true ) {
+			activeList = categoryList;
+		} else {
+			activeList = categories [currentCategory];
+		}
+
+		ListManager listManager = activeList.GetComponent<ListManager> ();
 		if( listManager != null ) {
 			listManager.prevListItem();
 		}
 	}
 
 	public void nextListItem () {
-		ListManager listManager = categories [currentCategory].GetComponent<ListManager> ();
+		GameObject activeList;
+		if( categoryList != null && categoryList.activeSelf == true ) {
+			activeList = categoryList;
+		} else {
+			activeList = categories [currentCategory];
+		}
+
+		ListManager listManager = activeList.GetComponent<ListManager> ();
 		if( listManager != null ) {
 			listManager.nextListItem();
 		}
