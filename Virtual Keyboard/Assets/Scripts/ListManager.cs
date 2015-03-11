@@ -73,25 +73,49 @@ public class ListManager : MonoBehaviour {
 		}
 	}
 
-	private Vector3 calculateItemPosistion (int itemNumber, GameObject item) {
+	private Vector3 calculateItemPosistion (int itemNumber, GameObject item, bool posistionBelow=true) {
 		float itemHeight = item.transform.localScale.z;
 		float height = itemNumber * (itemHeight + itemSpacing);
-		Vector3 pos = new Vector3( 0f, 0f, -height);
+		if (posistionBelow) height = -height;
+		Vector3 pos = new Vector3( 0f, 0f, height);
 		return pos;
 	}
 
+	public void positionItemAbove (int itemCount, GameObject item) {
+		item.transform.localPosition = calculateItemPosistion( itemCount, item, false );
+		
+		//Check if item is above or below list bounds
+		if (isItemBelowList(item) || isItemAboveList(item)) {
+			item.SetActive(false);
+		} else {
+			item.SetActive(true);
+		}
+	}
+	
+	public void positionItemBelow (int itemCount, GameObject item) {
+		item.transform.localPosition = calculateItemPosistion( itemCount, item, true );
+		
+		//Check if item is above or below list bounds
+		if (isItemBelowList(item) || isItemAboveList(item)) {
+			item.SetActive(false);
+		} else {
+			item.SetActive(true);
+		}
+	}
+	
 	void posistionListItems () {
 		Debug.Log ("posistionListItems");
 		int itemCount = 0;
-		foreach( GameObject item in itemList ) {
-			item.transform.localPosition = calculateItemPosistion( itemCount, item );
+		//foreach( GameObject item in itemList ) {
+		for( int i = 0; i < itemList.Count; i++ ) {
+			GameObject nextFromStart = itemList[i];
+			GameObject nextFromEnd = itemList[itemList.Count - 1 - i];
 
-			//Check if item is above or below list bounds
-			if (isItemBelowList(item) || isItemAboveList(item)) {
-				item.SetActive(false);
-			} else {
-				item.SetActive(true);
-			}
+			if( i != 0 && itemList.Count - 1 - i < i) break;
+
+			positionItemBelow( itemCount, nextFromStart );
+			if( i != 0  && itemList.Count - 1 - i != i ) positionItemAbove( itemCount, nextFromEnd );
+
 			itemCount++;
 		}
 	}
