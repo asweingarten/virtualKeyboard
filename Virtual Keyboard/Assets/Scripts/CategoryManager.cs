@@ -162,10 +162,10 @@ public class CategoryManager : MonoBehaviour {
 		categoryList.SetActive (true);
 	}
 
-	public void scrollUp () {
+	public void prevListItem () {
 	}
 
-	public void scrollDown () {
+	public void nextListItem () {
 	}
 
 }
