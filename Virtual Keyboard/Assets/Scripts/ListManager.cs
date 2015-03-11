@@ -109,12 +109,15 @@ public class ListManager : MonoBehaviour {
 		//foreach( GameObject item in itemList ) {
 		for( int i = 0; i < itemList.Count; i++ ) {
 			GameObject nextFromStart = itemList[i];
-			GameObject nextFromEnd = itemList[itemList.Count - 1 - i];
 
-			if( i != 0 && itemList.Count - 1 - i < i) break;
+
+			if( i != 0 && itemList.Count - i < i) break;
 
 			positionItemBelow( itemCount, nextFromStart );
-			if( i != 0  && itemList.Count - 1 - i != i ) positionItemAbove( itemCount, nextFromEnd );
+			if( i != 0  && itemList.Count - i != i ) {
+				GameObject nextFromEnd = itemList[itemList.Count - i];
+				positionItemAbove( itemCount, nextFromEnd );
+			}
 
 			itemCount++;
 		}
