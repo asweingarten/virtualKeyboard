@@ -163,9 +163,17 @@ public class CategoryManager : MonoBehaviour {
 	}
 
 	public void prevListItem () {
+		ListManager listManager = categories [currentCategory].GetComponent<ListManager> ();
+		if( listManager != null ) {
+			listManager.prevListItem();
+		}
 	}
 
 	public void nextListItem () {
+		ListManager listManager = categories [currentCategory].GetComponent<ListManager> ();
+		if( listManager != null ) {
+			listManager.nextListItem();
+		}
 	}
 
 }

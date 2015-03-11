@@ -109,4 +109,10 @@ public class ListManager : MonoBehaviour {
 	void OnValidate () {
 		gameObject.name = categoryTitle;
 	}
+
+	public void nextListItem () {
+	}
+
+	public void prevListItem () {
+	}
 }
