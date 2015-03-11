@@ -16,7 +16,7 @@ public class CategoryListItem : ListItem {
 	
 	public override void execute() {
 		SlidingList sl = transform.root.GetComponent ("SlidingList") as SlidingList;
-		sl.handleCategorySelection ();
+		//sl.handleCategorySelection ();
 	}
 
 	public void setDisplayName(string newDisplayText){

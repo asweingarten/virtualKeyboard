@@ -31,14 +31,14 @@ public class ListManager : MonoBehaviour {
 
 	void Awake () {
 		itemList = new List<GameObject> ();
+		transform.localPosition = Vector3.zero;
+		getListItems ();
+		posistionListItems ();
 	}
 
 	// Use this for initialization
 	void Start () {
-		transform.localPosition = Vector3.zero;
-		getListItems ();
-		posistionListItems ();
-
+	
 	}
 	
 	// Update is called once per frame

@@ -4,47 +4,46 @@ using System.Collections.Generic;
 
 using UnityEngine;
 
-// [ExecuteInEditMode]
 public class SlidingList : MonoBehaviour {
-
-	GameObject addButton;
-	GameObject upArrow;
-	GameObject downArrow;
-	GameObject leftArrow;
-	GameObject rightArrow;
-	GameObject categoryBox;
-
-	int max_visible_elements;
-	double scroll_distance;
-	GameObject listObject;
-	Vector3 baseScale;
-	int categoryIndex = 0;
-
-	int selectedIndex = 0;
-	bool initialized = false;
-	bool selector_at_top = true;
-
+	
 	// Use this for initialization
 	void Start () {
+		SlidingListInteractionManager.OnNextCategory += nextCategory;
+		SlidingListInteractionManager.OnPrevCategory += prevCategory;
+		SlidingListInteractionManager.OnNextListItem += nextListItem;
+		SlidingListInteractionManager.OnPrevListItem += prevListItem;
+		SlidingListInteractionManager.OnCategoryListView += categoryListView; 
 	}
 
 	// Update is called once per frame
 	void Update () {	
 	}
 
-	public void prevListItem() {
+	void OnDestroy() {
+		SlidingListInteractionManager.OnNextCategory -= nextCategory;
+		SlidingListInteractionManager.OnPrevCategory -= prevCategory;
+		SlidingListInteractionManager.OnNextListItem -= nextListItem;
+		SlidingListInteractionManager.OnPrevListItem -= prevListItem;
+		SlidingListInteractionManager.OnCategoryListView -= categoryListView; 
+	}
+
+	void prevListItem() {
 		//To Implement
 	}
 
-	public void nextListItem() {
+	void nextListItem() {
 		//To Implement
 	}
 
-	public void nextCategory() {
+	void nextCategory() {
 		//To Implement
 	}
 	
-	public void prevCategory() {
+	void prevCategory() {
+		//To Implement
+	}
+
+	void categoryListView() {
 		//To Implement
 	}
 
