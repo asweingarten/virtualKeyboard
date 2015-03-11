@@ -3,30 +3,42 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class ListManager : MonoBehaviour {
+	private List<GameObject> itemList;
+	private float epsilon = 0.0001f;//Smudge factor when comparing flaot values
 
-	private float listItemHeight = 0.1f;
-	private float listItemSpacing = 0.05f;
-	private List<GameObject> catagories;
-	private GameObject catagoryList;
+	private float spacing = 0.05f;
+	public float itemSpacing {
+		get {
+			return spacing;
+		}
+		set {
+			spacing = value;
+			posistionListItems();
+		}
+	}
 
-	private int currentCatagory = 0;
+	[SerializeField]
+	private string categoryTitle = "Category";
+	public string title {
+		get {
+			return categoryTitle;
+		}
+		set {
+			categoryTitle = value;
+			gameObject.name = categoryTitle;
+		}
+	}
 
 	void Awake () {
-		catagories = new List<GameObject> ();
+		itemList = new List<GameObject> ();
 	}
 
 	// Use this for initialization
 	void Start () {
-		findCatagories ();
-		if( catagories.Count > 1 ) {
-			Debug.Log ("CreateCategoryList");
-			createCatagoryList ();
-		} else if( catagories.Count == 1 ) {
-			catagories[0].SetActive(true);
-		} else {
-			//If list has no entries destroy it
-			Destroy(this);
-		}
+		transform.localPosition = Vector3.zero;
+		getListItems ();
+		posistionListItems ();
+
 	}
 	
 	// Update is called once per frame
@@ -34,142 +46,67 @@ public class ListManager : MonoBehaviour {
 	
 	}
 
-	private void createCategoryListEntries() {
+	private bool isItemBelowList( GameObject item ) {
+		Vector3 pos = item.transform.localPosition;
+		if( transform.parent == null || transform.parent.gameObject.GetComponent<MeshFilter> () == null ) {
+			return false;
+		} else {
+			Mesh mesh =  transform.parent.gameObject.GetComponent<MeshFilter> ().sharedMesh;
+			Vector3 listBottom = mesh.bounds.min;
+			Vector3 listCenter = mesh.bounds.center;
+
+			return (listCenter.z + pos.z - (0.5 * item.transform.localScale.z) < listBottom.z - epsilon);	
+		}
+
+	}
+	
+	private bool isItemAboveList( GameObject item ) {
+		Vector3 pos = item.transform.localPosition;
+		if( transform.parent == null || transform.parent.gameObject.GetComponent<MeshFilter> () == null ) {
+			return false;
+		} else {
+			Mesh mesh =  transform.parent.gameObject.GetComponent<MeshFilter> ().sharedMesh;
+			Vector3 listTop = mesh.bounds.max;
+			Vector3 listCenter = mesh.bounds.center;
+
+			return (listCenter.z + pos.z - (0.5 * item.transform.localScale.z) > listTop.z + epsilon);	
+		}
+	}
+
+	private Vector3 calculateItemPosistion (int itemNumber, GameObject item) {
+		float itemHeight = item.transform.localScale.z;
+		float height = itemNumber * (itemHeight + itemSpacing);
+		Vector3 pos = new Vector3( 0f, 0f, -height);
+		return pos;
+	}
+
+	void posistionListItems () {
+		Debug.Log ("posistionListItems");
 		int itemCount = 0;
-		foreach( GameObject catagory in catagories ) {
-			GameObject catagoryEntry = GameObject.CreatePrimitive(PrimitiveType.Cube);
-			catagoryEntry.name = catagory.name;//Name of entry inheirits from catagory name
-			catagoryEntry.transform.SetParent( catagoryList.transform );//CatagoryEntry is child of catagory list
-			catagoryEntry.tag = "ListItem";
-			Transform entryTransform = catagoryEntry.transform;
+		foreach( GameObject item in itemList ) {
+			item.transform.localPosition = calculateItemPosistion( itemCount, item );
 
-			//Note Positioning of these elements is handled In Category component
-			entryTransform.localScale = new Vector3( 1f, 1f, listItemHeight );
-			entryTransform.localRotation = Quaternion.Euler(Vector3.zero);
-
-			GameObject catagoryText = new GameObject();
-			catagoryText.transform.SetParent(catagoryEntry.transform);
-			TextMesh textMesh = catagoryText.AddComponent<TextMesh>();
-			textMesh.text = catagory.name;
-			textMesh.characterSize = 0.045f;
-			textMesh.fontSize = 20;
-			textMesh.anchor = TextAnchor.MiddleCenter;
-			textMesh.font = textMesh.font = Resources.GetBuiltinResource (typeof(Font), "Arial.ttf") as Font;
-			catagoryText.GetComponent<MeshRenderer>().material = textMesh.font.material;
-			catagoryText.transform.localPosition = Vector3.zero;
-			catagoryText.transform.localRotation = Quaternion.Euler(new Vector3(90, 0, 0));
-			catagoryText.transform.localScale = new Vector3( 1f, 10f, 1f );
-
-			++itemCount;
-		}
-	}
-
-	private bool isCatagoryListCurrent () {
-		if( catagoryList == null ) return false;
-		List<string> catagoryNames = new List<string> ();
-		foreach( GameObject catagory in catagories ) {
-			catagoryNames.Add(catagory.name);
-		}
-		int childCount = catagoryList.transform.childCount;
-		for( int i = 0; i < childCount; i++ ) {
-			GameObject catagoryEntry = catagoryList.transform.GetChild(i).gameObject;
-			if(catagoryNames.Contains(catagoryEntry.name)) {
-				//Remove matching catagory name
-				catagoryNames.Remove(catagoryEntry.name);
+			//Check if item is above or below list bounds
+			if (isItemBelowList(item) || isItemAboveList(item)) {
+				item.SetActive(false);
 			} else {
-				//If our catagoryList object has entries for non exisitent catagories it is not up to date
-				return false;
+				item.SetActive(true);
 			}
+			itemCount++;
 		}
-		//Our catagory object is current if all catagories names have been removed
-		return catagoryNames.Count == 0;
 	}
 
-	private void createCatagoryList() {
-		if( isCatagoryListCurrent() ) return;//update to not create if exisiting catagory list is up to date
-		if( catagoryList != null ) Destroy(catagoryList);//Destroy Prev catagoryList if it exists
-
-		catagoryList = new GameObject ();
-		catagoryList.transform.SetParent (transform);
-		catagoryList.name = "CatagoryList";
-		catagoryList.tag = "CatagoryList";
-		catagoryList.transform.localScale = Vector3.one;
-		catagoryList.transform.localPosition = Vector3.zero;
-		catagoryList.transform.localRotation = Quaternion.Euler (Vector3.zero); 
-		createCategoryListEntries ();
-
-		//Add Category Component to handle list item positioning and scrolling
-		Catagory cat = catagoryList.AddComponent<Catagory> ();
-		cat.title = "CatagoryList";
-	}
-
-	//Initialize list of catagories and find catagoryList
-	private void findCatagories() {
+	void getListItems () {
 		int childCount = transform.childCount;
 		for( int i = 0; i < childCount; i++ ) {
 			GameObject child = transform.GetChild(i).gameObject;
-			Debug.Log(child.name);
-			if( child.tag.Equals("Catagory") ) {
-				catagories.Add(child);
-				child.SetActive(false);//Start with all catagories inactive
-			} else if ( child.tag.Equals("CatagoryList") ) {
-				Debug.Log ("Found Catagory List");
-				catagoryList = child;
+			if( child.tag.Contains("ListItem") ) {
+				itemList.Add( child );
 			}
 		}
 	}
 
-	void addCatagoryEntry(string catagoryName, GameObject catagoryObject) {
+	void OnValidate () {
+		gameObject.name = categoryTitle;
 	}
-
-	void updateCatagoryList() {
-	}
-
-	private void deactivateAllCatagories() {
-		foreach( GameObject catagory in catagories ) {
-			catagory.SetActive(false);
-		}
-	}
-
-	//Assumes catagoryList not null and catagories not empty
-	public void returnToLastActiveCatagory() {
-		catagoryList.SetActive(false);
-		catagories [currentCatagory].SetActive (true);
-	}
-
-	public void nextCatagory() {
-		//In the event catagoryList is active return to last active catagory
-		if (catagoryList != null && catagoryList.activeSelf == true) {
-			returnToLastActiveCatagory();
-		} else {
-			catagories [currentCatagory].SetActive (false);
-			currentCatagory = (currentCatagory + 1) % catagories.Count;
-			catagories [currentCatagory].SetActive (true);
-		}
-
-	}
-
-	public void prevCatagory() {
-		//In the event catagoryList is active return to last active catagory
-		if (catagoryList != null && catagoryList.activeSelf == true) {
-			returnToLastActiveCatagory();
-		} else {
-			catagories [currentCatagory].SetActive (false);
-			currentCatagory = (currentCatagory - 1) % catagories.Count;
-			catagories [currentCatagory].SetActive (true);
-		}
-
-	}
-
-	public void catagoryView() {
-		catagories [currentCatagory].SetActive (false);
-		catagoryList.SetActive (true);
-	}
-
-	public void scrollUp () {
-	}
-
-	public void scrollDown () {
-	}
-
 }
