@@ -133,7 +133,7 @@ public class CategoryManager : MonoBehaviour {
 		categories [currentCategory].SetActive (true);
 	}
 
-	public void nextCategory() {
+	public string nextCategory() {
 		//In the event categoryList is active return to last active category
 		if (categoryList != null && categoryList.activeSelf == true) {
 			returnToLastActiveCategory();
@@ -142,10 +142,11 @@ public class CategoryManager : MonoBehaviour {
 			currentCategory = (currentCategory + 1) % categories.Count;
 			categories [currentCategory].SetActive (true);
 		}
+		return categories [currentCategory].name;
 
 	}
 
-	public void prevCategory() {
+	public string prevCategory() {
 		//In the event categoryList is active return to last active category
 		if (categoryList != null && categoryList.activeSelf == true) {
 			returnToLastActiveCategory();
@@ -154,12 +155,17 @@ public class CategoryManager : MonoBehaviour {
 			currentCategory = (currentCategory - 1) % categories.Count;
 			categories [currentCategory].SetActive (true);
 		}
-
+		return categories [currentCategory].name;
 	}
 
 	public void displayCatagoryList() {
+		if( categories.Count < 2 ) return;//No category view if only one category
 		categories [currentCategory].SetActive (false);
 		categoryList.SetActive (true);
+	}
+
+	public bool isDisplayingCategoryList () {
+		return categoryList != null && categoryList.activeSelf;
 	}
 
 	public void prevListItem () {

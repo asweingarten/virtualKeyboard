@@ -46,14 +46,15 @@ public class SlidingList : MonoBehaviour {
 
 	void nextCategory() {
 		if( categoryManager != null ) {
-			categoryManager.nextCategory();
+			string newCategory = categoryManager.nextCategory();
+			updateTitleText(newCategory);
 		}
 		//To Implement
 	}
 	
 	void prevCategory() {
 		if( categoryManager != null ) {
-			categoryManager.prevCategory();
+			string newCategory = categoryManager.prevCategory();
 		}
 		//To Implement
 	}
@@ -61,11 +62,19 @@ public class SlidingList : MonoBehaviour {
 	void categoryListView() {
 		if( categoryManager != null ) {
 			categoryManager.displayCatagoryList();
+			if( categoryManager.isDisplayingCategoryList() ) {
+				updateTitleText("Categories");
+			}
 		}
 		//To Implement
 	}
 
-
+	void updateTitleText(string title) {
+		CategoryTitle[] titleComponents = gameObject.GetComponentsInChildren<CategoryTitle> ();
+		foreach( CategoryTitle component in titleComponents ) {
+			component.updateTitleText(title);
+		}
+	}
 	public void createNewListItem(string text){
 		//To Implement
 	}

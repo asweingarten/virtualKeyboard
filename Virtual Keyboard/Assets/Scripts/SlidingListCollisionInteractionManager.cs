@@ -46,6 +46,8 @@ public class SlidingListCollisionInteractionManager : SlidingListInteractionMana
 		}
 	}
 
+
+
 	void prepareInteractionBehaviours () {
 		attachInteractionBehaviour (prevCategoryTrigger);
 		attachInteractionBehaviour (nextCategoryTrigger);
