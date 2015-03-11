@@ -76,6 +76,7 @@ public class ListManager : MonoBehaviour {
 	private Vector3 calculateItemPosistion (int itemNumber, GameObject item, bool posistionBelow=true) {
 		float itemHeight = item.transform.localScale.z;
 		float height = itemNumber * (itemHeight + itemSpacing);
+		//if positioning element below last substract height otherwise add it
 		if (posistionBelow) height = -height;
 		Vector3 pos = new Vector3( 0f, 0f, height);
 		return pos;
@@ -104,21 +105,15 @@ public class ListManager : MonoBehaviour {
 	}
 	
 	void posistionListItems () {
-		Debug.Log ("posistionListItems");
 		int itemCount = 0;
-		//foreach( GameObject item in itemList ) {
 		for( int i = 0; i < itemList.Count; i++ ) {
 			GameObject nextFromStart = itemList[i];
-
-
 			if( i != 0 && itemList.Count - i < i) break;
-
 			positionItemBelow( itemCount, nextFromStart );
 			if( i != 0  && itemList.Count - i != i ) {
 				GameObject nextFromEnd = itemList[itemList.Count - i];
 				positionItemAbove( itemCount, nextFromEnd );
 			}
-
 			itemCount++;
 		}
 	}
