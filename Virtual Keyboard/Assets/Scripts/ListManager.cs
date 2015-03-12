@@ -6,6 +6,18 @@ public class ListManager : MonoBehaviour {
 	private List<GameObject> itemList;
 	private float epsilon = 0.0001f;//Smudge factor when comparing float values
 
+	private float height = 0.1f;
+	public float listItemHeight {
+		get {
+			return height;
+		}
+		set {
+			height = value;
+			setListItemHeights();
+			posistionListItems();
+		}
+	}
+
 	private float spacing = 0.05f;
 	public float itemSpacing {
 		get {
@@ -30,15 +42,17 @@ public class ListManager : MonoBehaviour {
 	}
 
 	void Awake () {
+		Debug.Log (gameObject.name);
 		itemList = new List<GameObject> ();
-		transform.localPosition = Vector3.zero;
-		getListItems ();
-		posistionListItems ();
+
 	}
 
 	// Use this for initialization
 	void Start () {
-	
+		transform.localPosition = Vector3.zero;
+		getListItems ();
+		setListItemHeights ();
+		posistionListItems ();
 	}
 	
 	// Update is called once per frame
@@ -83,8 +97,8 @@ public class ListManager : MonoBehaviour {
 	}
 
 	public void positionItemAbove (int itemCount, GameObject item) {
+		Debug.Log (gameObject.name + " positionItemAbove" + itemCount);
 		item.transform.localPosition = calculateItemPosistion( itemCount, item, false );
-		
 		//Check if item is above or below list bounds
 		if (isItemBelowList(item) || isItemAboveList(item)) {
 			item.SetActive(false);
@@ -94,8 +108,8 @@ public class ListManager : MonoBehaviour {
 	}
 	
 	public void positionItemBelow (int itemCount, GameObject item) {
+		Debug.Log (gameObject.name + " positionItemBelow" + itemCount );
 		item.transform.localPosition = calculateItemPosistion( itemCount, item, true );
-		
 		//Check if item is above or below list bounds
 		if (isItemBelowList(item) || isItemAboveList(item)) {
 			item.SetActive(false);
@@ -107,6 +121,7 @@ public class ListManager : MonoBehaviour {
 	void posistionListItems () {
 		int itemCount = 0;
 		for( int i = 0; i < itemList.Count; i++ ) {
+			Debug.Log(gameObject.name + " Pos listItem");
 			GameObject nextFromStart = itemList[i];
 			if( i != 0 && itemList.Count - i < i) break;
 			positionItemBelow( itemCount, nextFromStart );
@@ -118,11 +133,19 @@ public class ListManager : MonoBehaviour {
 		}
 	}
 
+	void setListItemHeights () {
+		foreach( GameObject item in itemList ) {
+			item.transform.localScale = new Vector3( 1f, 1f, listItemHeight );
+		}
+	}
+
 	void getListItems () {
 		int childCount = transform.childCount;
+		Debug.Log (gameObject.name + " getListItems: " + childCount);
 		for( int i = 0; i < childCount; i++ ) {
 			GameObject child = transform.GetChild(i).gameObject;
-			if( child.tag.Contains("ListItem") ) {
+			if( child.tag.Equals("ListItem") ) {
+				Debug.Log ("Add list item");
 				itemList.Add( child );
 			}
 		}
