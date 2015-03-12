@@ -131,16 +131,29 @@ public class ListManager : MonoBehaviour {
 	void OnValidate () {
 		gameObject.name = categoryTitle;
 	}
-
+	[ContextMenu("NEXT DEBUG")]
 	public void nextListItem () {
+		bool firstActiveState = false;
+		Vector3 firstPos = Vector3.zero;
 		for( int i = 0; i < itemList.Count; i++ ) {
 			GameObject currentItem = itemList[i];
 			GameObject nextItem = itemList[(i+1) % itemList.Count];
-			nextItem.SetActive(currentItem.activeSelf);
-			nextItem.transform.localPosition = currentItem.transform.localPosition;
+			if( i == 0 ) {
+				firstActiveState = currentItem.activeSelf;
+				firstPos = currentItem.transform.localPosition;
+				currentItem.SetActive(nextItem.activeSelf);
+				currentItem.transform.localPosition = nextItem.transform.localPosition;
+			} else if(i == itemList.Count - 1) {
+				currentItem.SetActive(firstActiveState);
+				currentItem.transform.localPosition = firstPos;
+			} else {
+				currentItem.SetActive(nextItem.activeSelf);
+				currentItem.transform.localPosition = nextItem.transform.localPosition;
+			}
+
 		}
 	}
-
+	[ContextMenu("PREV DEBUG")]
 	public void prevListItem () {
 		for( int i = 0; i < itemList.Count; i++ ) {
 			GameObject currentItem = itemList[i];
