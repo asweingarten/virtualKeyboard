@@ -131,35 +131,46 @@ public class ListManager : MonoBehaviour {
 	void OnValidate () {
 		gameObject.name = categoryTitle;
 	}
-	[ContextMenu("NEXT DEBUG")]
+
 	public void nextListItem () {
 		bool firstActiveState = false;
 		Vector3 firstPos = Vector3.zero;
-		for( int i = 0; i < itemList.Count; i++ ) {
+		for( int i = itemList.Count - 1; i >= 0 ; i-- ) {
 			GameObject currentItem = itemList[i];
 			GameObject nextItem = itemList[(i+1) % itemList.Count];
-			if( i == 0 ) {
-				firstActiveState = currentItem.activeSelf;
-				firstPos = currentItem.transform.localPosition;
-				currentItem.SetActive(nextItem.activeSelf);
-				currentItem.transform.localPosition = nextItem.transform.localPosition;
-			} else if(i == itemList.Count - 1) {
-				currentItem.SetActive(firstActiveState);
-				currentItem.transform.localPosition = firstPos;
+			if( i == itemList.Count - 1 ) {
+				firstActiveState = nextItem.activeSelf;
+				firstPos = nextItem.transform.localPosition;
+				nextItem.SetActive(currentItem.activeSelf);
+				nextItem.transform.localPosition = currentItem.transform.localPosition;
+			} else if(i == 0) {
+				nextItem.SetActive(firstActiveState);
+				nextItem.transform.localPosition = firstPos;
 			} else {
-				currentItem.SetActive(nextItem.activeSelf);
-				currentItem.transform.localPosition = nextItem.transform.localPosition;
+				nextItem.SetActive(currentItem.activeSelf);
+				nextItem.transform.localPosition = currentItem.transform.localPosition;
 			}
-
 		}
 	}
-	[ContextMenu("PREV DEBUG")]
+	
 	public void prevListItem () {
+		bool firstActiveState = false;
+		Vector3 firstPos = Vector3.zero;
 		for( int i = 0; i < itemList.Count; i++ ) {
-			GameObject currentItem = itemList[i];
-			GameObject prevItem = itemList[(itemList.Count - 1 - i) % itemList.Count];
-			prevItem.SetActive(currentItem.activeSelf);
-			prevItem.transform.localPosition = currentItem.transform.localPosition;
+			GameObject prevItem = itemList[i];
+			GameObject currentItem = itemList[(i+1) % itemList.Count];
+			if( i == 0 ) {
+				firstActiveState = prevItem.activeSelf;
+				firstPos = prevItem.transform.localPosition;
+				prevItem.SetActive(currentItem.activeSelf);
+				prevItem.transform.localPosition = currentItem.transform.localPosition;
+			} else if(i == itemList.Count - 1) {
+				prevItem.SetActive(firstActiveState);
+				prevItem.transform.localPosition = firstPos;
+			} else {
+				prevItem.SetActive(currentItem.activeSelf);
+				prevItem.transform.localPosition = currentItem.transform.localPosition;
+			}
 		}
 	}
 }
