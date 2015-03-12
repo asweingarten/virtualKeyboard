@@ -154,7 +154,7 @@ public class ListManager : MonoBehaviour {
 	void OnValidate () {
 		gameObject.name = categoryTitle;
 	}
-
+	
 	public void nextListItem () {
 		bool firstActiveState = false;
 		Vector3 firstPos = Vector3.zero;

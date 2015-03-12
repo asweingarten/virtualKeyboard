@@ -132,8 +132,7 @@ public class CategoryManager : MonoBehaviour {
 		categoryList.SetActive(false);
 		categories [currentCategory].SetActive (true);
 	}
-
-	[ContextMenu("Next Category")]
+	
 	public string nextCategory() {
 		//In the event categoryList is active return to last active category
 		if (categoryList != null && categoryList.activeSelf == true) {
@@ -146,8 +145,7 @@ public class CategoryManager : MonoBehaviour {
 		return categories [currentCategory].name;
 
 	}
-
-	[ContextMenu("Prev Category")]
+	
 	public string prevCategory() {
 		//In the event categoryList is active return to last active category
 		if (categoryList != null && categoryList.activeSelf == true) {
@@ -163,8 +161,7 @@ public class CategoryManager : MonoBehaviour {
 		}
 		return categories [currentCategory].name;
 	}
-
-	[ContextMenu("Display Categories")]
+	
 	public void displayCatagoryList() {
 		if( categories.Count < 2 ) return;//No category view if only one category
 		categories [currentCategory].SetActive (false);
