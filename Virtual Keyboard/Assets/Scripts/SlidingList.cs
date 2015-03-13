@@ -87,11 +87,6 @@ public class SlidingList : MonoBehaviour {
 		}
 	}
 
-	[ContextMenu ("Add New List Item")]
-	void AddNewListItem () {
-		//To implement
-	}
-
 	[ContextMenu ("Add New Category")]
 	void AddNewCategory () {
 		//To Implement

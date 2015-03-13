@@ -40,7 +40,6 @@ public class CategoryManager : MonoBehaviour {
 			categoryEntry.name = category.name;//Name of entry inheirits from category name
 			categoryEntry.transform.SetParent( categoryList.transform );//CategoryEntry is child of category list
 			categoryEntry.tag = "ListItem";
-			Transform entryTransform = categoryEntry.transform;
 
 			CategoryListItem categoryListItem = categoryEntry.AddComponent<CategoryListItem>();
 			categoryListItem.itemText = category.name;
@@ -48,6 +47,7 @@ public class CategoryManager : MonoBehaviour {
 			categoryListItem.categoryManager =  this;
 
 			//Note: Positioning of these elements is handled In ListManager component
+			Transform entryTransform = categoryEntry.transform;
 			entryTransform.localScale = new Vector3( 1f, 1f, listItemHeight );
 			entryTransform.localRotation = Quaternion.Euler(Vector3.zero);
 
