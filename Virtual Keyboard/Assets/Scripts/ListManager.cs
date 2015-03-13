@@ -210,9 +210,11 @@ public class ListManager : MonoBehaviour {
 	
 	public void chooseActiveItem () {
 		if (activeItem == null) return;
-		ListItem listItem = activeItem.GetComponent<ListItem> ();
-		if( listItem != null ) {
-			listItem.onItemChosen();
+		ListItem[] listItems = activeItem.GetComponents<ListItem> ();
+		foreach( ListItem listItem in listItems ) {
+			if( listItem != null ) {
+				listItem.onItemChosen();
+			}
 		}
 	}
 }
