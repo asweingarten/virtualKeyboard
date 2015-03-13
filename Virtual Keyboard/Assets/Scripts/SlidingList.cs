@@ -77,7 +77,7 @@ public class SlidingList : MonoBehaviour {
 		}
 	}
 
-	void updateTitleText(string title) {
+	public void updateTitleText(string title) {
 		CategoryTitle[] titleComponents = gameObject.GetComponentsInChildren<CategoryTitle> ();
 		foreach( CategoryTitle component in titleComponents ) {
 			component.updateTitleText(title);

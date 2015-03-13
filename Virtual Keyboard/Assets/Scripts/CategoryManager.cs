@@ -227,6 +227,10 @@ public class CategoryManager : MonoBehaviour {
 				if( categoryList != null ) {
 					categoryList.SetActive(false);
 				}
+				SlidingList slidingList = transform.parent.gameObject.GetComponent<SlidingList>();
+				if( slidingList != null ) {
+					slidingList.updateTitleText(category.name);
+				}
 			}
 		}
 	}
