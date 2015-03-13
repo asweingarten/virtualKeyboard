@@ -56,6 +56,7 @@ public class SlidingList : MonoBehaviour {
 	void prevCategory() {
 		if( categoryManager != null ) {
 			string newCategory = categoryManager.prevCategory();
+			updateTitleText(newCategory);
 		}
 		//To Implement
 	}
