@@ -18,6 +18,9 @@ public abstract class SlidingListInteractionManager : MonoBehaviour {
 
 	public delegate void CategoryListView();
 	public static event CategoryListView OnCategoryListView;
+
+	public delegate void SelectionBoxChosen();
+	public static event SelectionBoxChosen OnSelectionBoxChosen;
 	
 	private SlidingList slidingList;
 
@@ -63,6 +66,12 @@ public abstract class SlidingListInteractionManager : MonoBehaviour {
 	protected void categoryListView() {
 		if( OnCategoryListView != null ) {
 			OnCategoryListView();
+		}
+	}
+
+	protected void selectionBoxChosen() {
+		if(OnSelectionBoxChosen != null ) {
+			OnSelectionBoxChosen();
 		}
 	}
 }

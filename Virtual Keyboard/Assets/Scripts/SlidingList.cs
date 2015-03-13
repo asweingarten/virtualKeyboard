@@ -14,7 +14,7 @@ public class SlidingList : MonoBehaviour {
 		SlidingListInteractionManager.OnNextListItem += nextListItem;
 		SlidingListInteractionManager.OnPrevListItem += prevListItem;
 		SlidingListInteractionManager.OnCategoryListView += categoryListView; 
-
+		SlidingListInteractionManager.OnSelectionBoxChosen += chooseActiveItem; 
 		categoryManager = gameObject.GetComponentInChildren<CategoryManager> ();
 	}
 
@@ -28,6 +28,7 @@ public class SlidingList : MonoBehaviour {
 		SlidingListInteractionManager.OnNextListItem -= nextListItem;
 		SlidingListInteractionManager.OnPrevListItem -= prevListItem;
 		SlidingListInteractionManager.OnCategoryListView -= categoryListView; 
+		SlidingListInteractionManager.OnSelectionBoxChosen -= chooseActiveItem; 
 	}
 
 	void prevListItem() {
@@ -67,6 +68,12 @@ public class SlidingList : MonoBehaviour {
 			}
 		}
 		//To Implement
+	}
+
+	void chooseActiveItem() {
+		if( categoryManager != null ) {
+			categoryManager.chooseActiveItem();
+		}
 	}
 
 	void updateTitleText(string title) {

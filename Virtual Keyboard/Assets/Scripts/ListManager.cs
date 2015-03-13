@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 public class ListManager : MonoBehaviour {
 	private List<GameObject> itemList;
+	private GameObject activeItem;
+
 	private float epsilon = 0.0001f;//Smudge factor when comparing float values
 
 	private float height = 0.1f;
@@ -28,7 +30,7 @@ public class ListManager : MonoBehaviour {
 			posistionListItems();
 		}
 	}
-
+	
 	[SerializeField]
 	private string categoryTitle = "Category";
 	public string title {
@@ -123,6 +125,7 @@ public class ListManager : MonoBehaviour {
 		for( int i = 0; i < itemList.Count; i++ ) {
 			Debug.Log(gameObject.name + " Pos listItem");
 			GameObject nextFromStart = itemList[i];
+			if( i == 0 ) activeItem = nextFromStart;
 			if( i != 0 && itemList.Count - i < i) break;
 			positionItemBelow( itemCount, nextFromStart );
 			if( i != 0  && itemList.Count - i != i ) {
@@ -151,16 +154,16 @@ public class ListManager : MonoBehaviour {
 		}
 	}
 
-	void OnValidate () {
-		gameObject.name = categoryTitle;
-	}
-	
 	public void nextListItem () {
 		bool firstActiveState = false;
 		Vector3 firstPos = Vector3.zero;
 		for( int i = itemList.Count - 1; i >= 0 ; i-- ) {
 			GameObject currentItem = itemList[i];
 			GameObject nextItem = itemList[(i+1) % itemList.Count];
+			if( currentItem == activeItem ) {
+				activeItem = nextItem;
+			}
+
 			if( i == itemList.Count - 1 ) {
 				firstActiveState = nextItem.activeSelf;
 				firstPos = nextItem.transform.localPosition;
@@ -182,6 +185,10 @@ public class ListManager : MonoBehaviour {
 		for( int i = 0; i < itemList.Count; i++ ) {
 			GameObject prevItem = itemList[i];
 			GameObject currentItem = itemList[(i+1) % itemList.Count];
+			if( currentItem == activeItem ) {
+				activeItem = prevItem;
+			}
+
 			if( i == 0 ) {
 				firstActiveState = prevItem.activeSelf;
 				firstPos = prevItem.transform.localPosition;
@@ -194,6 +201,18 @@ public class ListManager : MonoBehaviour {
 				prevItem.SetActive(currentItem.activeSelf);
 				prevItem.transform.localPosition = currentItem.transform.localPosition;
 			}
+		}
+	}
+
+	void OnValidate () {
+		gameObject.name = categoryTitle;
+	}
+	
+	public void chooseActiveItem () {
+		if (activeItem == null) return;
+		ListItem listItem = activeItem.GetComponent<ListItem> ();
+		if( listItem != null ) {
+			listItem.onItemChosen();
 		}
 	}
 }

@@ -8,6 +8,7 @@ public class SlidingListKeyboardInteractionManager : SlidingListInteractionManag
 	public string prevItemTrigger;
 	public string nextItemTrigger;
 	public string categoryListTrigger;
+	public string selectionBoxTrigger;
 
 	private char activeCharacter;
 
@@ -41,6 +42,10 @@ public class SlidingListKeyboardInteractionManager : SlidingListInteractionManag
 			if (inputString.Contains(categoryListTrigger)) {
 				activeCharacter = c;
 				categoryListView();
+			}
+			if (inputString.Contains(selectionBoxTrigger)) {
+				activeCharacter = c;
+				selectionBoxChosen();
 			}
 
 		}

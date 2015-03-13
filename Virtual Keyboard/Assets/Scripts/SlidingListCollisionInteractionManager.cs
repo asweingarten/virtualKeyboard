@@ -11,6 +11,7 @@ public class SlidingListCollisionInteractionManager : SlidingListInteractionMana
 	public GameObject prevItemTrigger;
 	public GameObject nextItemTrigger;
 	public GameObject categoryListTrigger;
+	public GameObject selectionBoxTrigger;
 	
 	void Awake () {
 	}
@@ -43,6 +44,8 @@ public class SlidingListCollisionInteractionManager : SlidingListInteractionMana
 			nextListItem();
 		} else if ( interactionObject == categoryListTrigger ) {
 			categoryListView();
+		} else if ( interactionObject == selectionBoxTrigger ) {
+			selectionBoxChosen();
 		}
 	}
 
@@ -54,10 +57,11 @@ public class SlidingListCollisionInteractionManager : SlidingListInteractionMana
 		attachInteractionBehaviour (prevItemTrigger);
 		attachInteractionBehaviour (nextItemTrigger);
 		attachInteractionBehaviour (categoryListTrigger);
+		attachInteractionBehaviour (selectionBoxTrigger);
 	}
 
 	void attachInteractionBehaviour ( GameObject interactionObject ) {
-		if( interactionObject.GetComponent<SlidingListInteractionOnCollision> () == null ) {
+		if( interactionObject != null && interactionObject.GetComponent<SlidingListInteractionOnCollision> () == null ) {
 			interactionObject.AddComponent<SlidingListInteractionOnCollision> ();
 		}
 	}

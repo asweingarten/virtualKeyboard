@@ -200,4 +200,18 @@ public class CategoryManager : MonoBehaviour {
 		}
 	}
 
+	public void chooseActiveItem () {
+		if( categoryList != null && categoryList.activeSelf == true ) {
+			ListManager categoryListManager = categoryList.GetComponentInChildren<ListManager> ();
+			if( categoryListManager != null ) {
+				categoryListManager.chooseActiveItem();
+			}
+		} else {
+			ListManager listManager = (categories [currentCategory]).GetComponentInChildren<ListManager> ();
+			if( listManager != null ) {
+				listManager.chooseActiveItem();
+			}
+		}
+	}
+
 }
