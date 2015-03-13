@@ -16,6 +16,7 @@ public class SlidingList : MonoBehaviour {
 		SlidingListInteractionManager.OnCategoryListView += categoryListView; 
 		SlidingListInteractionManager.OnSelectionBoxChosen += chooseActiveItem; 
 		categoryManager = gameObject.GetComponentInChildren<CategoryManager> ();
+		updateTitleText ();
 	}
 
 	// Update is called once per frame
@@ -47,16 +48,16 @@ public class SlidingList : MonoBehaviour {
 
 	void nextCategory() {
 		if( categoryManager != null ) {
-			string newCategory = categoryManager.nextCategory();
-			updateTitleText(newCategory);
+			categoryManager.nextCategory();
+			updateTitleText();
 		}
 		//To Implement
 	}
 	
 	void prevCategory() {
 		if( categoryManager != null ) {
-			string newCategory = categoryManager.prevCategory();
-			updateTitleText(newCategory);
+			categoryManager.prevCategory();
+			updateTitleText();
 		}
 		//To Implement
 	}
@@ -64,9 +65,7 @@ public class SlidingList : MonoBehaviour {
 	void categoryListView() {
 		if( categoryManager != null ) {
 			categoryManager.displayCatagoryList();
-			if( categoryManager.isDisplayingCategoryList() ) {
-				updateTitleText("Categories");
-			}
+			updateTitleText();
 		}
 		//To Implement
 	}
@@ -74,17 +73,18 @@ public class SlidingList : MonoBehaviour {
 	void chooseActiveItem() {
 		if( categoryManager != null ) {
 			categoryManager.chooseActiveItem();
+			updateTitleText();
 		}
 	}
 
-	public void updateTitleText(string title) {
-		CategoryTitle[] titleComponents = gameObject.GetComponentsInChildren<CategoryTitle> ();
-		foreach( CategoryTitle component in titleComponents ) {
-			component.updateTitleText(title);
+	public void updateTitleText() {
+		ListManager listManager = categoryManager.getActiveCategory();
+		if( listManager != null ) {
+			CategoryTitle[] titleComponents = gameObject.GetComponentsInChildren<CategoryTitle> ();
+			foreach( CategoryTitle component in titleComponents ) {
+				component.updateTitleText(listManager.title);
+			}
 		}
-	}
-	public void createNewListItem(string text){
-		//To Implement
 	}
 
 	[ContextMenu ("Add New List Item")]

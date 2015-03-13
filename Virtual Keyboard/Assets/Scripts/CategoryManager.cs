@@ -138,7 +138,7 @@ public class CategoryManager : MonoBehaviour {
 		categories [currentCategory].SetActive (true);
 	}
 	
-	public string nextCategory() {
+	public void nextCategory() {
 		//In the event categoryList is active return to last active category
 		if (categoryList != null && categoryList.activeSelf == true) {
 			returnToLastActiveCategory();
@@ -147,11 +147,9 @@ public class CategoryManager : MonoBehaviour {
 			currentCategory = (currentCategory + 1) % categories.Count;
 			categories [currentCategory].SetActive (true);
 		}
-		return categories [currentCategory].name;
-
 	}
 	
-	public string prevCategory() {
+	public void prevCategory() {
 		//In the event categoryList is active return to last active category
 		if (categoryList != null && categoryList.activeSelf == true) {
 			returnToLastActiveCategory();
@@ -164,7 +162,6 @@ public class CategoryManager : MonoBehaviour {
 			}
 			categories [currentCategory].SetActive (true);
 		}
-		return categories [currentCategory].name;
 	}
 	
 	public void displayCatagoryList() {
@@ -227,11 +224,15 @@ public class CategoryManager : MonoBehaviour {
 				if( categoryList != null ) {
 					categoryList.SetActive(false);
 				}
-				SlidingList slidingList = transform.parent.gameObject.GetComponent<SlidingList>();
-				if( slidingList != null ) {
-					slidingList.updateTitleText(category.name);
-				}
 			}
+		}
+	}
+
+	public ListManager getActiveCategory() {
+		if( categoryList != null && categoryList.activeSelf == true ) {
+			return categoryList.GetComponent<ListManager>();
+		} else {
+			return categories[currentCategory].GetComponent<ListManager>();
 		}
 	}
 
