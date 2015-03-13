@@ -42,6 +42,11 @@ public class CategoryManager : MonoBehaviour {
 			categoryEntry.tag = "ListItem";
 			Transform entryTransform = categoryEntry.transform;
 
+			CategoryListItem categoryListItem = categoryEntry.AddComponent<CategoryListItem>();
+			categoryListItem.itemText = category.name;
+			categoryListItem.category = category;
+			categoryListItem.categoryManager =  this;
+
 			//Note: Positioning of these elements is handled In ListManager component
 			entryTransform.localScale = new Vector3( 1f, 1f, listItemHeight );
 			entryTransform.localRotation = Quaternion.Euler(Vector3.zero);
@@ -210,6 +215,18 @@ public class CategoryManager : MonoBehaviour {
 			ListManager listManager = (categories [currentCategory]).GetComponentInChildren<ListManager> ();
 			if( listManager != null ) {
 				listManager.chooseActiveItem();
+			}
+		}
+	}
+
+	public void displayCategory(GameObject categoryToDisplay) {
+		foreach( GameObject category in categories ) {
+			if( category == categoryToDisplay ) {
+				categories[currentCategory].SetActive(false);
+				category.SetActive(true);
+				if( categoryList != null ) {
+					categoryList.SetActive(false);
+				}
 			}
 		}
 	}

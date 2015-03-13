@@ -20,7 +20,7 @@ public abstract class ListItem : MonoBehaviour
 	private void updateTextMesh () {
 		TextMesh textMesh = GetComponentInChildren<TextMesh> ();
 		if( textMesh != null ) {
-			textMesh.text = displayText;
+			textMesh.text = itemText;
 		}
 	}
 
