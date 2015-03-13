@@ -162,7 +162,13 @@ public class ListManager : MonoBehaviour {
 			GameObject nextItem = itemList[(i+1) % itemList.Count];
 			if( currentItem == activeItem ) {
 				activeItem = nextItem;
+				break;
 			}
+		}
+
+		for( int i = itemList.Count - 1; i >= 0 ; i-- ) {
+			GameObject currentItem = itemList[i];
+			GameObject nextItem = itemList[(i+1) % itemList.Count];
 
 			if( i == itemList.Count - 1 ) {
 				firstActiveState = nextItem.activeSelf;
@@ -178,7 +184,8 @@ public class ListManager : MonoBehaviour {
 			}
 		}
 	}
-	
+
+
 	public void prevListItem () {
 		bool firstActiveState = false;
 		Vector3 firstPos = Vector3.zero;
@@ -187,7 +194,13 @@ public class ListManager : MonoBehaviour {
 			GameObject currentItem = itemList[(i+1) % itemList.Count];
 			if( currentItem == activeItem ) {
 				activeItem = prevItem;
+				break;
 			}
+		}
+
+		for( int i = 0; i < itemList.Count; i++ ) {
+			GameObject prevItem = itemList[i];
+			GameObject currentItem = itemList[(i+1) % itemList.Count];
 
 			if( i == 0 ) {
 				firstActiveState = prevItem.activeSelf;
