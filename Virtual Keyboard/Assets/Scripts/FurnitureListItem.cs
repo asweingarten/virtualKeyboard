@@ -25,7 +25,6 @@ public class FurnitureListItem : ListItem
 	}
 
 	public override void onItemChosen() {
-		Debug.Log ("Create Furnitiure");
 		FurnitureCreated(createFurniture());
 	}
 }

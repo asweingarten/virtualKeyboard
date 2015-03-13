@@ -44,7 +44,6 @@ public class ListManager : MonoBehaviour {
 	}
 
 	void Awake () {
-		Debug.Log (gameObject.name);
 		itemList = new List<GameObject> ();
 
 	}
@@ -99,7 +98,6 @@ public class ListManager : MonoBehaviour {
 	}
 
 	public void positionItemAbove (int itemCount, GameObject item) {
-		Debug.Log (gameObject.name + " positionItemAbove" + itemCount);
 		item.transform.localPosition = calculateItemPosistion( itemCount, item, false );
 		//Check if item is above or below list bounds
 		if (isItemBelowList(item) || isItemAboveList(item)) {
@@ -110,7 +108,6 @@ public class ListManager : MonoBehaviour {
 	}
 	
 	public void positionItemBelow (int itemCount, GameObject item) {
-		Debug.Log (gameObject.name + " positionItemBelow" + itemCount );
 		item.transform.localPosition = calculateItemPosistion( itemCount, item, true );
 		//Check if item is above or below list bounds
 		if (isItemBelowList(item) || isItemAboveList(item)) {
@@ -123,7 +120,6 @@ public class ListManager : MonoBehaviour {
 	void posistionListItems () {
 		int itemCount = 0;
 		for( int i = 0; i < itemList.Count; i++ ) {
-			Debug.Log(gameObject.name + " Pos listItem");
 			GameObject nextFromStart = itemList[i];
 			if( i == 0 ) activeItem = nextFromStart;
 			if( i != 0 && itemList.Count - i < i) break;
@@ -144,11 +140,9 @@ public class ListManager : MonoBehaviour {
 
 	void getListItems () {
 		int childCount = transform.childCount;
-		Debug.Log (gameObject.name + " getListItems: " + childCount);
 		for( int i = 0; i < childCount; i++ ) {
 			GameObject child = transform.GetChild(i).gameObject;
 			if( child.tag.Equals("ListItem") ) {
-				Debug.Log ("Add list item");
 				itemList.Add( child );
 			}
 		}
