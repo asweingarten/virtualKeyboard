@@ -50,7 +50,7 @@ public class PanelCursor : MonoBehaviour
 		Frame currentFrame = controller.Frame();
 		Frame previousFrame = controller.Frame (1);
 
-		if (interactionPanel.isActiveAndEnabled == true) {
+		if (interactionPanel.enabled == true) {
 			Vector leapTranslation = currentFrame.Translation(previousFrame);
 			Vector3 unityTranslation = calculateUnityTranslationVector(leapTranslation);
 			TranslateCursor(unityTranslation);

@@ -29,10 +29,6 @@ public class LeapGestures : MonoBehaviour {
 	}
 	// Use this for initialization
 	void Start () {
-		interactionPanels = GameObject.FindGameObjectsWithTag("InteractionPanel");
-		foreach(GameObject interactionPanel in interactionPanels) {
-			interactionPanel.SetActive(false);
-		}
 
 		leapController.EnableGesture (Leap.Gesture.GestureType.TYPECIRCLE);
 		leapController.EnableGesture (Leap.Gesture.GestureType.TYPE_KEY_TAP);
@@ -69,7 +65,7 @@ public class LeapGestures : MonoBehaviour {
 	}
 
 	private void OnCircularGestureCompleted(object sender, System.EventArgs e) {
-		switchInputType();
+		// switchInputType();
 		if (CircularGestureTriggered != null) {
 			CircularGestureTriggered(sender, e);
 			Debug.Log("Circular gesture");
