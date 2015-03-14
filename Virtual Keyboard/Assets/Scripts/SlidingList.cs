@@ -36,14 +36,12 @@ public class SlidingList : MonoBehaviour {
 		if( categoryManager != null ) {
 			categoryManager.prevListItem();
 		}
-		//To Implement
 	}
 
 	void nextListItem() {
 		if( categoryManager != null ) {
 			categoryManager.nextListItem ();
 		}
-		//To Implement
 	}
 
 	void nextCategory() {
@@ -51,7 +49,6 @@ public class SlidingList : MonoBehaviour {
 			categoryManager.nextCategory();
 			updateTitleText();
 		}
-		//To Implement
 	}
 	
 	void prevCategory() {
@@ -59,7 +56,6 @@ public class SlidingList : MonoBehaviour {
 			categoryManager.prevCategory();
 			updateTitleText();
 		}
-		//To Implement
 	}
 
 	void categoryListView() {
@@ -67,7 +63,6 @@ public class SlidingList : MonoBehaviour {
 			categoryManager.displayCatagoryList();
 			updateTitleText();
 		}
-		//To Implement
 	}
 
 	void chooseActiveItem() {
@@ -85,10 +80,5 @@ public class SlidingList : MonoBehaviour {
 				component.updateTitleText(listManager.title);
 			}
 		}
-	}
-
-	[ContextMenu ("Add New Category")]
-	void AddNewCategory () {
-		//To Implement
 	}
 } 
