@@ -6,21 +6,29 @@ using System.Collections.Generic;
 public class Study : MonoBehaviour {
 	string untypedText;
 	string typedText;
-	int mistakeCount;
-
+	private UnityEngine.UI.Text untypedTextbox;
+	private UnityEngine.UI.Text typedTextbox;
 
 	private enum StudyType {
 		ENGLISH_PHYSICAL,
 		ENGLISH_VIRTUAL,
 		LATIN_PHYSICAL,
-		LATIN_VIRTUAL
+		LATIN_VIRTUAL,
+		DEBUG
 	}
-
-	private UnityEngine.UI.Text untypedTextbox;
-	private UnityEngine.UI.Text typedTextbox;
-
 	[SerializeField]
 	private StudyType studyType;
+
+	int mistakeCount;
+	bool studyFinished = false;
+	float startTime = 0;
+	float endTime = 0;
+
+	// @TODO: 
+	// - count mistakes (display on end of text for study)
+	// - time session (display time elapsed on end of text)
+
+	static Dictionary<string,bool> isKeyDownArray = new Dictionary<string,bool>();
 
 	void Awake() {
 		untypedText = getStudyText();
@@ -79,15 +87,31 @@ public class Study : MonoBehaviour {
 		isKeyDownArray[KeyCode.Y.ToString()] = false;
 		
 		isKeyDownArray[KeyCode.Z.ToString()] = false;
+
+		isKeyDownArray[getStringRepresentationOfKey(KeyCode.Space)] = false;
+
+		isKeyDownArray[getStringRepresentationOfKey(KeyCode.Comma)] = false;
+
+		isKeyDownArray[getStringRepresentationOfKey(KeyCode.Period)] = false;
+
+		isKeyDownArray[getStringRepresentationOfKey(KeyCode.Semicolon)] = false;
+
+		isKeyDownArray[getStringRepresentationOfKey(KeyCode.Minus)] = false;
+
+		isKeyDownArray[getStringRepresentationOfKey(KeyCode.Quote)] = false;
 	}
 
 	// Use this for initialization
 	void Start () {
 		Debug.Log(getStudyText());
+		startTime = Time.time;
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		if (studyFinished) {
+			return;
+		}
 		onKeyDown(KeyCode.A);
 		onKeyDown(KeyCode.B);
 		onKeyDown(KeyCode.C);
@@ -114,6 +138,12 @@ public class Study : MonoBehaviour {
 		onKeyDown(KeyCode.X);
 		onKeyDown(KeyCode.Y);
 		onKeyDown(KeyCode.Z);
+		onKeyDown(KeyCode.Space);
+		onKeyDown(KeyCode.Comma);
+		onKeyDown(KeyCode.Period);
+		onKeyDown(KeyCode.Semicolon);
+		onKeyDown(KeyCode.Minus);
+		onKeyDown(KeyCode.Quote);
 
 		onKeyUp(KeyCode.A);
 		onKeyUp(KeyCode.B);
@@ -141,33 +171,35 @@ public class Study : MonoBehaviour {
 		onKeyUp(KeyCode.X);
 		onKeyUp(KeyCode.Y);
 		onKeyUp(KeyCode.Z);
+		onKeyUp(KeyCode.Space);
+		onKeyUp(KeyCode.Comma);
+		onKeyUp(KeyCode.Period);
+		onKeyUp(KeyCode.Semicolon);
+		onKeyUp(KeyCode.Minus);
+		onKeyUp(KeyCode.Quote);
 
 	}
-	
+
 	private string getStudyText() {
 		switch(studyType) {
 			case StudyType.ENGLISH_PHYSICAL:
-			return "and how nobly it raises our conceit of the mighty, misty monster, to behold him solemnly sailing through a calm tropical sea; his vast, mild head overhung by a canopy of vapour, engendered by his incommunicable contemplations, and that vapour—as you will sometimes see it—glorified by a rainbow, as if Heaven itself had put its seal upon his thoughts. For, d'ye see, rainbows do not visit the clear air; they only irradiate vapour. And so, through all the thick mists of the dim doubts in my mind, divine intuitions now and then shoot, enkindling my fog with a heavenly ray. And for this I thank God; for all have doubts; many deny; but doubts or denials, few along with them, have intuitions. Doubts of all things earthly, and intuitions of some things heavenly; this combination makes neither believer nor infidel, but makes a man who regards them both with equal eye.";
-			break;
+			return "and how nobly it raises our conceit of the mighty, misty monster, to behold him solemnly sailing through a calm tropical sea; his vast, mild head overhung by a canopy of vapour, engendered by his incommunicable contemplations, and that vapour-as you will sometimes see it-glorified by a rainbow, as if heaven itself had put its seal upon his thoughts. for, d'ye see, rainbows do not visit the clear air; they only irradiate vapour. and so, through all the thick mists of the dim doubts in my mind, divine intuitions now and then shoot, enkindling my fog with a heavenly ray. and for this i thank god; for all have doubts; many deny; but doubts or denials, few along with them, have intuitions. doubts of all things earthly, and intuitions of some things heavenly; this combination makes neither believer nor infidel, but makes a man who regards them both with equal eye.";
 
 			case StudyType.ENGLISH_VIRTUAL:
-			return "Reckoning the largest sized Sperm Whale's tail to begin at that point of the trunk where it tapers to about the girth of a man, it comprises upon its upper surface alone, an area of at least fifty square feet. The compact round body of its root expands into two broad, firm, flat palms or flukes, gradually shoaling away to less than an inch in thickness. At the crotch or junction, these flukes slightly overlap, then sideways recede from each other like wings, leaving a wide vacancy between. In no living thing are the lines of beauty more exquisitely defined than in the crescentic borders of these flukes. At its utmost expansion in the full grown whale, the tail will considerably exceed twenty feet across. Nor does this—its amazing strength, at all tend to cripple the graceful flexion of its motions; where infantileness of ease undulates through a Titanism of power.";
-			break;
+			return "reckoning the largest sized sperm whale's tail to begin at that point of the trunk where it tapers to about the girth of a man, it comprises upon its upper surface alone, an area of at least fifty square feet. the compact round body of its root expands into two broad, firm, flat palms or flukes, gradually shoaling away to less than an inch in thickness. at the crotch or junction, these flukes slightly overlap, then sideways recede from each other like wings, leaving a wide vacancy between. in no living thing are the lines of beauty more exquisitely defined than in the crescentic borders of these flukes. at its utmost expansion in the full grown whale, the tail will considerably exceed twenty feet across. nor does this-its amazing strength, at all tend to cripple the graceful flexion of its motions; where infantileness of ease undulates through a titanism of power.";
 
 			case StudyType.LATIN_PHYSICAL:
-			return "Consectetur adipiscing elit. Nunc a quam elementum velit aliquam porta. Nunc eu blandit augue, a tempus risus. Etiam dignissim porttitor neque, ut ullamcorper lectus ullamcorper at. Fusce vulputate mattis magna luctus fringilla. Aliquam erat volutpat. Nulla ac diam arcu. Suspendisse vel efficitur justo. In condimentum eget metus vel lobortis. Cras vestibulum at sapien sed lobortis. Proin accumsan, odio ac placerat tempor, lectus metus consectetur tortor, ut vehicula augue lacus sed urna. Pellentesque nisl est, blandit id malesuada eget, tristique in sem. Fusce eget enim id velit accumsan cursus sit amet non ligula. Integer aliquet libero eu porta faucibus. Quisque sed enim semper eros scelerisque scelerisque. Sed mauris enim, bibendum id libero at, vulputate porta elit.";
-			break;
+			return "consectetur adipiscing elit. nunc a quam elementum velit aliquam porta. nunc eu blandit augue, a tempus risus. etiam dignissim porttitor neque, ut ullamcorper lectus ullamcorper at. fusce vulputate mattis magna luctus fringilla. aliquam erat volutpat. nulla ac diam arcu. suspendisse vel efficitur justo. in condimentum eget metus vel lobortis. cras vestibulum at sapien sed lobortis. proin accumsan, odio ac placerat tempor, lectus metus consectetur tortor, ut vehicula augue lacus sed urna. pellentesque nisl est, blandit id malesuada eget, tristique in sem. fusce eget enim id velit accumsan cursus sit amet non ligula. integer aliquet libero eu porta faucibus. quisque sed enim semper eros scelerisque scelerisque. sed mauris enim, bibendum id libero at, vulputate porta elit.";
 
 			case StudyType.LATIN_VIRTUAL:
-			return "Nam dictum ligula nisl, nec dapibus massa fermentum a. Phasellus et eleifend est, vel rutrum nibh. Cras sit amet sagittis quam, ut accumsan magna. Integer sit amet eros in nisl egestas mattis. Nulla auctor aliquam dui ut mattis. Suspendisse pharetra accumsan dui eget fermentum. Donec id leo vel purus pellentesque aliquam. Sed consectetur leo sed odio fermentum, a faucibus enim efficitur. Nulla eu imperdiet turpis, vel rhoncus magna. Phasellus non ullamcorper augue. Maecenas a nibh massa. Etiam ex mi, ornare lacinia mi ut, commodo interdum nisi. Pellentesque vel lorem sit amet lorem maximus efficitur eu molestie sem. Ut ullamcorper rutrum ligula sit amet maximus. Maecenas tellus sem, mollis sit amet urna ac, eleifend eleifend ex. Ut a enim ut dui posuere fermentum ac at odio.";
-			break;
+			return "nam dictum ligula nisl, nec dapibus massa fermentum a. phasellus et eleifend est, vel rutrum nibh. cras sit amet sagittis quam, ut accumsan magna. integer sit amet eros in nisl egestas mattis. nulla auctor aliquam dui ut mattis. suspendisse pharetra accumsan dui eget fermentum. donec id leo vel purus pellentesque aliquam. sed consectetur leo sed odio fermentum, a faucibus enim efficitur. nulla eu imperdiet turpis, vel rhoncus magna. phasellus non ullamcorper augue. maecenas a nibh massa. etiam ex mi, ornare lacinia mi ut, commodo interdum nisi. pellentesque vel lorem sit amet lorem maximus efficitur eu molestie sem. ut ullamcorper rutrum ligula sit amet maximus. maecenas tellus sem, mollis sit amet urna ac, eleifend eleifend ex. ut a enim ut dui posuere fermentum ac at odio.";
 		}
-		return "Dewey Cox";
+		return "dewey cox";
 	}
 
 	private void updateStudyText(char keyPressed) {
-		// @TODO: make characters appear in typed text bod
-		////      - listen for space key
+		Debug.Log("key pressed: " + keyPressed + "|");
+
 		if (keyPressed == untypedText[0]) {
 			typedText += keyPressed;
 			untypedText = untypedText.Substring(1);
@@ -176,24 +208,64 @@ public class Study : MonoBehaviour {
 		} else {
 			mistakeCount++;
 		}
+
+		if (untypedText.Length == 0) {
+			endTime = Time.time;
+			studyFinished = true;
+			Debug.Log ("Study over!");
+			Debug.Log ("Mistake count: " + mistakeCount);
+			Debug.Log("Time taken (in seconds): " + (endTime - startTime));
+		}
 	}
 
-	static Dictionary<string,bool> isKeyDownArray = new Dictionary<string,bool>();
 	private void onKeyDown(KeyCode key) {
-		if (isKeyDownArray[key.ToString()]) {
+		string keyPressed = getStringRepresentationOfKey(key);
+
+		if (isKeyDownArray[keyPressed]) {
 			return;
 		} else if (Input.GetKeyDown(key)){
-			updateStudyText(key.ToString().ToLower()[0]);
+			updateStudyText(keyPressed.ToLower()[0]);
 			Debug.Log("Key down: " + key.ToString());
-			isKeyDownArray[key.ToString()] = true;;
+			isKeyDownArray[keyPressed] = true;;
 		}
 	}
 
 	private void onKeyUp(KeyCode key) {
-		if (!isKeyDownArray[key.ToString()]) {
+		string keyPressed = getStringRepresentationOfKey(key);
+		if (!isKeyDownArray[keyPressed]) {
 			return;
 		} else if (Input.GetKeyUp(key)){
-			isKeyDownArray[key.ToString()] = false;
+			isKeyDownArray[keyPressed] = false;
 		}
+	}
+
+	private string getStringRepresentationOfKey(KeyCode key) {
+		switch(key) {
+			case KeyCode.Comma:
+				return ",";
+
+			case KeyCode.Period:
+				return ".";
+
+			case KeyCode.Space:
+				return " ";
+
+			case KeyCode.Semicolon:
+				return ";";
+
+			case KeyCode.Minus:
+				return "-";
+
+			case KeyCode.Quote:
+				return "'";
+
+			default:
+				return key.ToString();
+		}
+	}
+
+	private void displayResults() {
+		// stop and display timer
+		// display mistake counter
 	}
 }
