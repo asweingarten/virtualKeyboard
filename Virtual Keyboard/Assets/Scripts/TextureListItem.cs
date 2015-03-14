@@ -9,19 +9,7 @@ public class TextureListItem : ListItem
 	[SerializeField]
 	Texture texture;
 
-	// Use this for initialization
-	void Start ()
-	{
-
-	}
-
-	// Update is called once per frame
-	void Update ()
-	{
-
-	}
-
-	public override void execute() {
+	public override void onItemChosen() {
 		if (texture == null) return;
 		Debug.Log("firing texture applied event");
 		TextureApplied(texture);
