@@ -12,10 +12,10 @@ public class LeapGestures : MonoBehaviour {
 	private int interactionPanel = 0;
 
 	// Set a timeout for gestures of 1 second - anything longer than this is ignored.
-	private float gestureTimeout = 1.0f; 
+	public float gestureTimeout = 1.0f; 
 
 	// Set a grab threshold for the custom HandClosed gesture.
-	private float grabThreshold = 0.9f;
+	public float grabThreshold = 0.9f;
 
 	public delegate void CircularGestureAction(object sender, System.EventArgs e);
 	public delegate void KeyTapGestureAction(object sender, System.EventArgs e);
