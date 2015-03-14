@@ -15,6 +15,7 @@ public class PanelCursor : MonoBehaviour
 	private Controller controller;
 	private BoxCollider collider;
 	private Vector3 interactionPanelSize = Vector3.zero;
+	private Vector3 interactionPanelCenter = Vector3.zero;
 
 	// Use this for initialization
 	void Start ()
@@ -80,26 +81,35 @@ public class PanelCursor : MonoBehaviour
 
 	// Helper function to translate the cursor by a position determined by the leap motion
 	void TranslateCursor(Vector3 translation) {
-
-/*
 		// Calculate bounds of the interaction panel
-		Vector3 minBounds = interactionPanel.transform.position - interactionPanelSize;
-		Vector3 maxBounds = interactionPanel.transform.position + interactionPanelSize;
+		interactionPanelCenter = interactionPanel.transform.TransformPoint(interactionPanelSize);
+		Vector3 minBounds =  interactionPanelCenter - this.transform.parent.TransformDirection(interactionPanelSize);
+		minBounds = this.transform.parent.InverseTransformPoint(minBounds);
+		Vector3 maxBounds = interactionPanelCenter + this.transform.parent.TransformDirection(interactionPanelSize);
+		maxBounds = this.transform.parent.InverseTransformPoint(maxBounds);
 
 		// Calculate cursor size and the position of the cursor
-		Vector3 cursorSize = collider.bounds.size;
 		Vector3 cursorPosition = this.transform.position + this.transform.parent.TransformDirection(translation);
-		// These are used to add some leeway to the cursor translation - allow upto half the cursor size to leave the interactionPanel
-		Vector3 minCursorPosition = cursorPosition + (cursorSize / 2);
-		Vector3 maxCursorPosition = cursorPosition - (cursorSize / 2);
+		cursorPosition = this.transform.parent.InverseTransformPoint(cursorPosition);
 
+		Vector3 minTest = cursorPosition - minBounds;
+		Vector3 maxTest = maxBounds - cursorPosition;
+
+		if (minTest.x < 0 || minTest.y < 0 || minTest.z < 0 || maxTest.x < 0 || maxTest.y < 0 || maxTest.z < 0) {
+			Debug.Log("Out of bounds");
+		} else {
+			this.transform.Translate(translation, this.transform.parent);
+		}
+
+/*
 		// If the cursor is within the interaction panel's boundaries, allow it to be moved.
 		if (minCursorPosition.x > minBounds.x && minCursorPosition.y > minBounds.y && minCursorPosition.z > minBounds.z &&
 			maxCursorPosition.x < maxBounds.x && maxCursorPosition.y < maxBounds.y && maxCursorPosition.z < maxBounds.z) {
 			this.transform.Translate(translation, this.transform.parent);
+		} else {
+			Debug.Log("Out of bounds");
 		}
-*/
-		this.transform.Translate(translation, this.transform.parent);
+		*/
 	}
 
 	// When a key tap gesture is triggered, call the interaction panel to trigger its action
@@ -130,6 +140,7 @@ public class PanelCursor : MonoBehaviour
 	        }
 
 	        interactionPanelSize = (maxBounds - minBounds) / 2;
+	       // interactionPanelCenter =  maxBounds - minBounds;
 			Debug.Log("Computed new bounds. Min: " + minBounds + " , Max: " + maxBounds);
 		}
 	}
