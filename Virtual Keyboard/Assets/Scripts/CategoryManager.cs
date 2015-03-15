@@ -249,21 +249,25 @@ public class CategoryManager : MonoBehaviour {
 
 	[ContextMenu("Add New Category")]
 	void addCategory() {
-		Debug.Log ("Add New Category");
-
 		GameObject newCategory = new GameObject ();
-		newCategory.transform.SetParent (transform);
-		newCategory.name = "New Category";
+		newCategory.transform.SetParent(transform, false);
 		newCategory.tag = "Category";
-		newCategory.transform.localScale = Vector3.one;
-		newCategory.transform.localPosition = Vector3.zero;
-		newCategory.transform.localRotation = Quaternion.Euler (Vector3.zero); 
 
 		ListManager listManager = newCategory.AddComponent<ListManager> ();
-		listManager.title = "New Category";
+
 
 		ListTextFormatter listTextFormatter = newCategory.AddComponent<ListTextFormatter> ();
 
-		newCategory.SetActive (false);
+		//Make new category the active category
+		if(categories == null) {
+			categories = new List<GameObject> ();
+		} else if( categories.Count != 0) {
+			categories.Clear();
+		}
+		findCategories();
+		displayCategory (newCategory);
+
+		// int itemNumber = categories.Count;
+		listManager.title = "AutoCategory_" + categories.Count;
 	}
 	}
