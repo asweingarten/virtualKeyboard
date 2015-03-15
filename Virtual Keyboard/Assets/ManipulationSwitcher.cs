@@ -28,6 +28,10 @@ public class ManipulationSwitcher : MonoBehaviour {
 	
 	}
 
+	void OnDestroy() {
+		ArcMeshDrawer.OnRadialMenuActionTrigger -= changeManipulatorMode;
+	}
+
 	void changeManipulatorMode(GameObject source) {
 		Debug.Log ("changeManipulatorMode");
 		if (source != gameObject) return;

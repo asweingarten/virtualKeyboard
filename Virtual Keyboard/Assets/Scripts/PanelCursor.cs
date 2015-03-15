@@ -6,11 +6,22 @@ public class PanelCursor : MonoBehaviour
 {
 	public InteractionPanel interactionPanel;
 
+<<<<<<< HEAD
 	// Set up sensitivity and noise threshold values. These can be customized in the editor
 	public float sensitivityX = 15f;
 	public float sensitivityY = 12f;
 	public float sensitivityZ = 0f;
 	public float noiseThreshold = 2f;
+=======
+	[SerializeField]
+	float sensitivityX = 15f;
+	[SerializeField]
+	float sensitivityY = 12f;
+	[SerializeField]
+	float sensitivityZ = 0f;
+	[SerializeField]
+	float noiseThreshold = 2f;
+>>>>>>> 321dcfa4193e56e98ac317a48b3d07112fd5607a
 
 	private Controller controller;
 	private BoxCollider collider;
@@ -100,6 +111,7 @@ public class PanelCursor : MonoBehaviour
 		} else {
 			this.transform.Translate(translation, this.transform.parent);
 		}
+<<<<<<< HEAD
 
 /*
 		// If the cursor is within the interaction panel's boundaries, allow it to be moved.
@@ -110,6 +122,9 @@ public class PanelCursor : MonoBehaviour
 			Debug.Log("Out of bounds");
 		}
 		*/
+=======
+		
+>>>>>>> 321dcfa4193e56e98ac317a48b3d07112fd5607a
 	}
 
 	// When a key tap gesture is triggered, call the interaction panel to trigger its action
@@ -140,7 +155,10 @@ public class PanelCursor : MonoBehaviour
 	        }
 
 	        interactionPanelSize = (maxBounds - minBounds) / 2;
+<<<<<<< HEAD
 	       // interactionPanelCenter =  maxBounds - minBounds;
+=======
+>>>>>>> 321dcfa4193e56e98ac317a48b3d07112fd5607a
 			Debug.Log("Computed new bounds. Min: " + minBounds + " , Max: " + maxBounds);
 		}
 	}

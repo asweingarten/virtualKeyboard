@@ -1,24 +1,30 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public abstract class ListItem : MonoBehaviour
-{
-	private bool isActive;
-	public bool IsActive{
-		get{
-			return isActive;
+{	
+	[SerializeField]
+	private string displayText = "";
+	public string itemText {
+		get {
+			return displayText;
 		}
-		set{
-			isActive = value;
-		}
-	}
-
-	void OnCollisionEnter(Collision collision) {
-		Debug.Log ("INTERACTING WITH LIST ITEM");
-		if (isActive) {
-			execute ();
+		set {
+			displayText = value;
+			updateTextMesh();
 		}
 	}
 	
-	public abstract void execute();
+	public abstract void onItemChosen();
+
+	private void updateTextMesh () {
+		TextMesh textMesh = GetComponentInChildren<TextMesh> ();
+		if( textMesh != null ) {
+			textMesh.text = itemText;
+		}
+	}
+
+	void OnValidate() {
+		updateTextMesh ();
+	}
 }

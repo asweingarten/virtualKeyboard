@@ -20,6 +20,10 @@ public class DestroySelected : MonoBehaviour {
 	
 	}
 
+	void OnDestroy() {
+		ArcMeshDrawer.OnRadialMenuActionTrigger -= deleteSelected;
+	}
+
 	private void deleteSelected(GameObject source) {
 		if (source != gameObject) return;
 		if( itemManipulator ) itemManipulator.deleteSelected();

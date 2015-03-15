@@ -10,10 +10,67 @@ public class ArcMeshDrawer : MonoBehaviour {
 	public float radius = 3f;
 	public float rimWidth = 0.4f;
 	public Vector3 selectedScaleFactor = new Vector3(1.2f, 1.2f, 1.2f);
-	public string label = "Hello World";
+
+	[SerializeField]
+	private string initialLabel = "Hello World";
+	public string label {
+		get {
+			return initialLabel;
+		}
+		set {
+			initialLabel = value;
+			Transform textTransform = transform.FindChild ("ArcText");
+			if (textTransform != null ) {
+				arcText = textTransform.gameObject;
+				TextMesh textMesh = arcText.GetComponent<TextMesh> ();
+				textMesh.text = initialLabel;
+			}
+		}
+	}
 	private Vector3 originalScale;
-	public Material arcRimMaterial;
-	public Material arcBodyMaterial;
+	[SerializeField]
+	private Material rimMaterial;
+	public Material arcRimMaterial {
+		get { 
+			return rimMaterial;
+		} 
+		set {
+			rimMaterial = value;
+			if( arcRim == null ) {
+				Transform arcRimTransform = transform.FindChild("ArcRim");
+				if( arcRimTransform != null ) {
+					arcRim = arcRimTransform.gameObject;
+					MeshRenderer arcRimRenderer = arcRim.GetComponent<MeshRenderer> ();
+					arcRimRenderer.material = arcRimMaterial;
+				}
+			} else {
+				MeshRenderer arcRimRenderer = arcRim.GetComponent<MeshRenderer> ();
+				arcRimRenderer.material = arcRimMaterial;
+			}
+		}
+	}
+	[SerializeField]
+	private Material bodyMaterial;
+	public Material arcBodyMaterial {
+		get { 
+			return bodyMaterial;
+		} 
+		set {
+			bodyMaterial = value;
+			if( arcBody == null ) {
+				Transform arcBodyTransform = transform.FindChild("ArcBody");
+				if( arcBodyTransform != null ) {
+					arcBody = arcBodyTransform.gameObject;
+					MeshRenderer arcBodyRenderer = arcBody.GetComponent<MeshRenderer> ();
+					arcBodyRenderer.material = arcBodyMaterial;
+				}
+			} else {
+				MeshRenderer arcBodyRenderer = arcBody.GetComponent<MeshRenderer> ();
+				arcBodyRenderer.material = arcBodyMaterial;
+			}
+		}
+	}
+
 	private float privArcLength = (2*Mathf.PI);//Private member gaurded by arcLength Property
 	public float arcLength {
 		get {
@@ -105,7 +162,6 @@ public class ArcMeshDrawer : MonoBehaviour {
 	private void addArcTextComponents() {
 		arcText.name = "ArcText";
 		arcText.transform.parent = gameObject.transform;
-		Debug.Log (arcText.transform.localPosition);
 		arcText.transform.localPosition = Vector3.zero;
 		arcText.transform.localScale = Vector3.one;
 		arcText.transform.localRotation = Quaternion.identity;
@@ -150,7 +206,6 @@ public class ArcMeshDrawer : MonoBehaviour {
 			Transform textTransform = transform.FindChild ("ArcText");
 			if( textTransform != null ) {
 				arcText = textTransform.gameObject;
-				Debug.Log ( "Remocing arcText" );
 				DestroyImmediate(arcText);
 			} 
 		} else {
@@ -210,6 +265,10 @@ public class ArcMeshDrawer : MonoBehaviour {
 		}
 	}
 
+	void OnDestroy() {
+		RadialActionSelection.OnRadialActionSelected -= fireRadialAction;
+	}
+
 	private void fireRadialAction(GameObject selected) {
 		if (OnRadialMenuActionTrigger != null) {
 			OnRadialMenuActionTrigger (gameObject);
@@ -218,6 +277,13 @@ public class ArcMeshDrawer : MonoBehaviour {
 		transform.parent.gameObject.SetActive (false);
 	}
 
+	void OnDisable() {
+		if (selected) {
+			deselectSection();
+		}
+	}
+
+	private bool selected = false;
 	public void selectSection() {
 		//Save current scale and calculate the selected scale based on scale factor
 		originalScale = transform.localScale;
@@ -227,6 +293,7 @@ public class ArcMeshDrawer : MonoBehaviour {
 		RadialActionSelection radialActionSelection = arcRim.AddComponent<RadialActionSelection> ();
 		radialActionSelection.selectionObjectName = selectionObjectName;
 		RadialActionSelection.OnRadialActionSelected += fireRadialAction;
+		selected = true;
 	}
 
 	public void deselectSection() {
@@ -235,6 +302,7 @@ public class ArcMeshDrawer : MonoBehaviour {
 		//Remove delegate and destroy the RadialActionSelection component
 		RadialActionSelection.OnRadialActionSelected -= fireRadialAction;
 		Destroy (arcRim.GetComponent<RadialActionSelection> ());
+		selected = false;
 	}
 
 	public void createMeshes() {
