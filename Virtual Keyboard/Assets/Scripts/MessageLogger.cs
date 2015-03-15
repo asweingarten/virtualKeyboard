@@ -39,7 +39,6 @@ public class MessageLogger : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		updateText( System.DateTime.Now.ToLongTimeString() );
 	}
 
 	/// <summary>
