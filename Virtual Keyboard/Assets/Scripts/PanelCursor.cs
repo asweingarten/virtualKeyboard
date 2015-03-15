@@ -32,10 +32,8 @@ public class PanelCursor : MonoBehaviour
 		rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ 
 							  | RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ;
 
-		// Transform the cursor to be right on top of the interation panel, with the same rotation
-		this.transform.position = interactionPanel.transform.position;
-		this.transform.rotation = interactionPanel.transform.rotation;
-		this.transform.parent = interactionPanel.transform.parent;
+		// Translate the cursor to the center of the keyboard
+		transform.localPosition = new Vector3(0,0,0);
 		
 		calculateInteractionPanelBounds();
 
@@ -74,23 +72,18 @@ public class PanelCursor : MonoBehaviour
 		float yDirection = vec.y >= 0 ? 1f : -1f;
 		float zDirection = vec.z <= 0 ? 1f : -1f;
 		
-		Vector3 unityVector = new Vector3 (xDirection * movementIncrementX, yDirection * movementIncrementY, zDirection * movementIncrementZ);
-		
-		return unityVector;
+		return new Vector3 (xDirection * movementIncrementX, yDirection * movementIncrementY, zDirection * movementIncrementZ);
 	}
 
 	// Helper function to translate the cursor by a position determined by the leap motion
 	void TranslateCursor(Vector3 translation) {
 		// Calculate bounds of the interaction panel
-		interactionPanelCenter = interactionPanel.transform.TransformPoint(interactionPanelSize);
-		Vector3 minBounds =  interactionPanelCenter - this.transform.parent.TransformDirection(interactionPanelSize);
-		minBounds = this.transform.parent.InverseTransformPoint(minBounds);
-		Vector3 maxBounds = interactionPanelCenter + this.transform.parent.TransformDirection(interactionPanelSize);
-		maxBounds = this.transform.parent.InverseTransformPoint(maxBounds);
+		interactionPanelCenter = new Vector3(0,0,0);
+		Vector3 minBounds =  interactionPanelCenter - interactionPanelSize/2;
+		Vector3 maxBounds = interactionPanelCenter + interactionPanelSize/2;
 
 		// Calculate cursor size and the position of the cursor
-		Vector3 cursorPosition = this.transform.position + this.transform.parent.TransformDirection(translation);
-		cursorPosition = this.transform.parent.InverseTransformPoint(cursorPosition);
+		Vector3 cursorPosition = this.transform.localPosition;
 
 		Debug.Log("Center: " + interactionPanelCenter + ", Cursor: " + cursorPosition + ", MinBounds: " + minBounds + ", maxBounds: " + maxBounds);
 
@@ -100,7 +93,7 @@ public class PanelCursor : MonoBehaviour
 		if (minTest.x < 0 || minTest.y < 0 || minTest.z < 0 || maxTest.x < 0 || maxTest.y < 0 || maxTest.z < 0) {
 			Debug.Log("Out of bounds: Mintest: " + minTest + ", Maxtest: " + maxTest);
 		} else {
-			this.transform.Translate(translation, this.transform.parent);
+			transform.localPosition += translation;
 		}
 	}
 
