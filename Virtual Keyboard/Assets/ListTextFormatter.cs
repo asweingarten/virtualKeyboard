@@ -35,7 +35,7 @@ public class ListTextFormatter : MonoBehaviour {
 		meshRenderer.material = textMesh.font.material;
 		textMesh.alignment = textAlignment;
 		textMesh.anchor = textAnchor;
-		toFormat.transform.localScale = new Vector3 (1, 10, 1);
+		toFormat.transform.localScale = new Vector3 (1, 10, 1);//Magic numbers for now
 		textMesh.fontSize = 20;
 		textMesh.characterSize = 0.045f;
 	}

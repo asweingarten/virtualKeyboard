@@ -218,13 +218,12 @@ public class CategoryManager : MonoBehaviour {
 	}
 
 	private void updateActiveCategory() {
-		int indexCount = 0;
-		foreach( GameObject category in categories ) {
+		for( int i  = 0; i < categories.Count; i++ ) {
+			GameObject category = categories[i];
 			if( category.activeSelf ) {
-				currentCategory = indexCount;
+				currentCategory = i;
 				break;
 			}
-			indexCount++;
 		}
 	}
 
