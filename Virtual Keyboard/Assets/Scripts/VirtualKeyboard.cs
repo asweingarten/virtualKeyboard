@@ -3,14 +3,10 @@ using System.Collections;
 
 [RequireComponent(typeof(InteractionPanel))]
 public class VirtualKeyboard : MonoBehaviour
-{
-	// Define the user that the keyboard is associated with - set via the editor
-	public GameObject user;
-	
+{	
 	private InteractionPanel interactionPanel;
 	private KeyActivator activeKey = null;
 	private string currentString = "";
-	public BoxCollider collider;
 
 	// Use this for initialization
 	void Start ()

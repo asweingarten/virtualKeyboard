@@ -6,13 +6,6 @@ public class PanelCursor : MonoBehaviour
 {
 	public InteractionPanel interactionPanel;
 
-<<<<<<< HEAD
-	// Set up sensitivity and noise threshold values. These can be customized in the editor
-	public float sensitivityX = 15f;
-	public float sensitivityY = 12f;
-	public float sensitivityZ = 0f;
-	public float noiseThreshold = 2f;
-=======
 	[SerializeField]
 	float sensitivityX = 15f;
 	[SerializeField]
@@ -21,7 +14,6 @@ public class PanelCursor : MonoBehaviour
 	float sensitivityZ = 0f;
 	[SerializeField]
 	float noiseThreshold = 2f;
->>>>>>> 321dcfa4193e56e98ac317a48b3d07112fd5607a
 
 	private Controller controller;
 	private BoxCollider collider;
@@ -40,16 +32,13 @@ public class PanelCursor : MonoBehaviour
 		rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ 
 							  | RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ;
 
-		// Transform the cursor to be right on top of the interation panel
-		//TODO: Get an appropriate size of the cursor (equal to the smallest element in the interaction panel maybe?)
-		this.transform.localScale = new Vector3(0.04f, 0.04f, 0.04f);
+		// Transform the cursor to be right on top of the interation panel, with the same rotation
 		this.transform.position = interactionPanel.transform.position;
 		this.transform.rotation = interactionPanel.transform.rotation;
 		this.transform.parent = interactionPanel.transform.parent;
 		
 		calculateInteractionPanelBounds();
-		// TODO: Determine a general way to translate the object so it's just imposed in the interactionPanel
-		//this.transform.Translate(0, 0, -0.035f, this.transform.parent);
+
 
 		// Add support for a HandClosed gesture where the interaction panel is triggered
 		LeapGestures.HandClosedGestureTriggered += HandClosedGestureTriggered;
@@ -103,28 +92,16 @@ public class PanelCursor : MonoBehaviour
 		Vector3 cursorPosition = this.transform.position + this.transform.parent.TransformDirection(translation);
 		cursorPosition = this.transform.parent.InverseTransformPoint(cursorPosition);
 
+		Debug.Log("Center: " + interactionPanelCenter + ", Cursor: " + cursorPosition + ", MinBounds: " + minBounds + ", maxBounds: " + maxBounds);
+
 		Vector3 minTest = cursorPosition - minBounds;
 		Vector3 maxTest = maxBounds - cursorPosition;
 
 		if (minTest.x < 0 || minTest.y < 0 || minTest.z < 0 || maxTest.x < 0 || maxTest.y < 0 || maxTest.z < 0) {
-			Debug.Log("Out of bounds");
+			Debug.Log("Out of bounds: Mintest: " + minTest + ", Maxtest: " + maxTest);
 		} else {
 			this.transform.Translate(translation, this.transform.parent);
 		}
-<<<<<<< HEAD
-
-/*
-		// If the cursor is within the interaction panel's boundaries, allow it to be moved.
-		if (minCursorPosition.x > minBounds.x && minCursorPosition.y > minBounds.y && minCursorPosition.z > minBounds.z &&
-			maxCursorPosition.x < maxBounds.x && maxCursorPosition.y < maxBounds.y && maxCursorPosition.z < maxBounds.z) {
-			this.transform.Translate(translation, this.transform.parent);
-		} else {
-			Debug.Log("Out of bounds");
-		}
-		*/
-=======
-		
->>>>>>> 321dcfa4193e56e98ac317a48b3d07112fd5607a
 	}
 
 	// When a key tap gesture is triggered, call the interaction panel to trigger its action
@@ -155,11 +132,6 @@ public class PanelCursor : MonoBehaviour
 	        }
 
 	        interactionPanelSize = (maxBounds - minBounds) / 2;
-<<<<<<< HEAD
-	       // interactionPanelCenter =  maxBounds - minBounds;
-=======
->>>>>>> 321dcfa4193e56e98ac317a48b3d07112fd5607a
-			Debug.Log("Computed new bounds. Min: " + minBounds + " , Max: " + maxBounds);
 		}
 	}
 
