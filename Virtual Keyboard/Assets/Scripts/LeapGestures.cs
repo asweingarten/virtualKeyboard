@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Leap;
 
 public class LeapGestures : MonoBehaviour {
@@ -15,7 +16,12 @@ public class LeapGestures : MonoBehaviour {
 	public float gestureTimeout = 1.0f; 
 
 	// Set a grab threshold for the custom HandClosed gesture.
-	public float grabThreshold = 0.9f;
+	public float grabThreshold = 0.95f;
+
+	// Once a grab gesture is detected, set a timeout (in ms) so that it can't be performed for a short time afterwards. 
+	// This is a form of debouncing the event
+	private long grabTimeout = 800;
+	private Stopwatch grabTimer = new Stopwatch();
 
 	public delegate void CircularGestureAction(object sender, System.EventArgs e);
 	public delegate void KeyTapGestureAction(object sender, System.EventArgs e);
@@ -32,6 +38,7 @@ public class LeapGestures : MonoBehaviour {
 
 		leapController.EnableGesture (Leap.Gesture.GestureType.TYPECIRCLE);
 		leapController.EnableGesture (Leap.Gesture.GestureType.TYPE_KEY_TAP);
+		grabTimer.Start();
 	}
 	
 	// Update is called once per frame
@@ -54,12 +61,16 @@ public class LeapGestures : MonoBehaviour {
 			}
 		}
 
-		HandList hands = frame.Hands;
-		foreach (Hand hand in hands) {
-			// Look at the frame's hands. If above the grab threshold, fire the HandClosed event
-			if (hand.GrabStrength >= grabThreshold) {
-				OnHandClosedGesture(this, null);
-				return;
+		if (grabTimer.ElapsedMilliseconds > grabTimeout) {
+			HandList hands = frame.Hands;
+			foreach (Hand hand in hands) {
+				// Look at the frame's hands. If above the grab threshold, fire the HandClosed event
+				if (hand.GrabStrength >= grabThreshold) {
+					grabTimer.Reset();
+					grabTimer.Start();
+					OnHandClosedGesture(this, null);
+					return;
+				}
 			}
 		}
 	}
@@ -68,19 +79,19 @@ public class LeapGestures : MonoBehaviour {
 		// switchInputType();
 		if (CircularGestureTriggered != null) {
 			CircularGestureTriggered(sender, e);
-			Debug.Log("Circular gesture");
+			UnityEngine.Debug.Log("Circular gesture");
 		}
 	}
 
 	private void OnKeyTapGesture(object sender, System.EventArgs e) {
 		if (KeyTapGestureTriggered != null) {
 			KeyTapGestureTriggered(sender, e);
-			Debug.Log("Key tap gesture");
+			UnityEngine.Debug.Log("Key tap gesture");
 		}
 	}
 
 	private void OnHandClosedGesture(object sender, System.EventArgs e) {
-		Debug.Log("Hand closed gesture");
+		UnityEngine.Debug.Log("Hand closed gesture");
 		if (HandClosedGestureTriggered != null) {
 			HandClosedGestureTriggered(sender, e);
 		}

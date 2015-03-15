@@ -9,6 +9,7 @@ public class VirtualKeyboard : MonoBehaviour
 	
 	private InteractionPanel interactionPanel;
 	private KeyActivator activeKey = null;
+	private string currentString = "";
 	public BoxCollider collider;
 
 	// Use this for initialization
@@ -26,7 +27,7 @@ public class VirtualKeyboard : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
-		
+		MessageLogger.Instance.updateText(currentString);
 	}
 
 	void onKeyLeapFocus(KeyActivator key) {
@@ -42,7 +43,11 @@ public class VirtualKeyboard : MonoBehaviour
 	void onKeyLeapPressed() {
 		// Get the active key's value (if there is one) and update the text prompt with the character.
 		if (activeKey != null) {
-			Debug.Log("Active key pressed: " + activeKey.keyId);
+			if (activeKey.keyId == "space") {
+				currentString += " ";
+			} else {
+				currentString += activeKey.keyId;
+			}
 		}
 	}
 }
