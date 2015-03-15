@@ -25,18 +25,10 @@ public class PanelCursor : MonoBehaviour
 	{
 		controller = new Controller();
 
-		// Add collision properties to the object so it can trigger collision events with interactible items
-		collider = gameObject.AddComponent<BoxCollider>();
-		Rigidbody rigidBody = gameObject.AddComponent<Rigidbody>(); 
-		rigidBody.useGravity = false;
-		rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ 
-							  | RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ;
-
 		// Translate the cursor to the center of the keyboard
 		transform.localPosition = new Vector3(0,0,0);
 		
 		calculateInteractionPanelBounds();
-
 
 		// Add support for a HandClosed gesture where the interaction panel is triggered
 		LeapGestures.HandClosedGestureTriggered += HandClosedGestureTriggered;
