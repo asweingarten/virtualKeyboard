@@ -43,9 +43,11 @@ public class ListManager : MonoBehaviour {
 		}
 	}
 
+	private ListTextFormatter formatter;
+
 	void Awake () {
 		itemList = new List<GameObject> ();
-
+		formatter = GetComponent<ListTextFormatter> ();
 	}
 
 	// Use this for initialization
@@ -99,6 +101,10 @@ public class ListManager : MonoBehaviour {
 
 	public void positionItemAbove (int itemCount, GameObject item) {
 		item.transform.localPosition = calculateItemPosistion( itemCount, item, false );
+		if (formatter != null) {
+			TextMesh textMesh = item.GetComponentInChildren<TextMesh>();
+			if( textMesh != null ) formatter.applyFormat(textMesh.gameObject);
+		}
 		//Check if item is above or below list bounds
 		if (isItemBelowList(item) || isItemAboveList(item)) {
 			item.SetActive(false);
@@ -109,6 +115,10 @@ public class ListManager : MonoBehaviour {
 	
 	public void positionItemBelow (int itemCount, GameObject item) {
 		item.transform.localPosition = calculateItemPosistion( itemCount, item, true );
+		if (formatter != null) {
+			TextMesh textMesh = item.GetComponentInChildren<TextMesh>();
+			if( textMesh != null ) formatter.applyFormat(textMesh.gameObject);
+		}
 		//Check if item is above or below list bounds
 		if (isItemBelowList(item) || isItemAboveList(item)) {
 			item.SetActive(false);
@@ -223,5 +233,47 @@ public class ListManager : MonoBehaviour {
 				listItem.onItemChosen();
 			}
 		}
+	}
+
+	[ContextMenu("Add List Item")]
+	void addListItem() {
+		//Inititialize the list if needed
+		if (itemList == null) {
+			itemList = new List<GameObject>();
+		}
+		//Clear the list if it has any items in it
+		if (itemList.Count > 0) {
+			itemList.Clear ();
+		}
+		getListItems();
+		int itemNumber = itemList.Count;
+
+		GameObject newListItem = GameObject.CreatePrimitive(PrimitiveType.Cube);
+		newListItem.name = "AutoListItem_" + itemNumber;
+		newListItem.transform.SetParent( transform );
+		newListItem.tag = "ListItem";
+
+		newListItem.transform.localScale = new Vector3( 1f, 1f, listItemHeight );
+		newListItem.transform.localRotation = Quaternion.Euler(Vector3.zero);
+		
+		GameObject itemText = new GameObject();
+		itemText.name = "List_Item_Text";
+		itemText.transform.SetParent(newListItem.transform);
+		TextMesh textMesh = itemText.AddComponent<TextMesh> ();
+		textMesh.text = newListItem.name;
+		itemText.transform.localPosition = Vector3.zero;
+		itemText.transform.localRotation = Quaternion.Euler(new Vector3(90, 0, 0));
+		itemText.transform.localScale = new Vector3( 1f, 10f, 1f );
+
+		itemList.Add (newListItem);
+		posistionListItems ();
+
+		//Want to apply format only to the new item which is why the global formatter is not used
+		ListTextFormatter itemFormatter = gameObject.GetComponent<ListTextFormatter> ();
+		if (itemFormatter == null) {
+			itemFormatter = gameObject.AddComponent<ListTextFormatter>();
+			itemFormatter.font = Resources.GetBuiltinResource (typeof(Font), "Arial.ttf") as Font;
+		}
+		itemFormatter.applyFormat (itemText);
 	}
 }
