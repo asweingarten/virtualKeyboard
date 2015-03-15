@@ -246,4 +246,24 @@ public class CategoryManager : MonoBehaviour {
 			return categories[currentCategory].GetComponent<ListManager>();
 		}
 	}
-}
+
+	[ContextMenu("Add New Category")]
+	void addCategory() {
+		GameObject newCategory = new GameObject ();
+		newCategory.transform.SetParent(transform, false);
+		newCategory.tag = "Category";
+
+		ListManager listManager = newCategory.AddComponent<ListManager> ();
+		
+		//Make new category the active category
+		if(categories == null) {
+			categories = new List<GameObject> ();
+		} else if( categories.Count != 0) {
+			categories.Clear();
+		}
+		findCategories();
+		displayCategory (newCategory);
+
+		listManager.title = "AutoCategory_" + categories.Count;
+	}
+	}
