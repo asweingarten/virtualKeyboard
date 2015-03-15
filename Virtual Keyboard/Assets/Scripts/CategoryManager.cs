@@ -254,10 +254,7 @@ public class CategoryManager : MonoBehaviour {
 		newCategory.tag = "Category";
 
 		ListManager listManager = newCategory.AddComponent<ListManager> ();
-
-
-		ListTextFormatter listTextFormatter = newCategory.AddComponent<ListTextFormatter> ();
-
+		
 		//Make new category the active category
 		if(categories == null) {
 			categories = new List<GameObject> ();
@@ -267,7 +264,6 @@ public class CategoryManager : MonoBehaviour {
 		findCategories();
 		displayCategory (newCategory);
 
-		// int itemNumber = categories.Count;
 		listManager.title = "AutoCategory_" + categories.Count;
 	}
 	}
