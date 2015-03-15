@@ -25,6 +25,7 @@ public class ListTextFormatter : MonoBehaviour {
 	}
 
 	public void applyFormat(GameObject toFormat) {
+		Debug.Log ("Apply Format");
 		if (toFormat == null) return;
 		TextMesh textMesh= toFormat.GetComponent<TextMesh>();
 		MeshRenderer meshRenderer = toFormat.GetComponent<MeshRenderer>();
