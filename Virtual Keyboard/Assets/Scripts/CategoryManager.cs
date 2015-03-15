@@ -207,12 +207,24 @@ public class CategoryManager : MonoBehaviour {
 			ListManager categoryListManager = categoryList.GetComponentInChildren<ListManager> ();
 			if( categoryListManager != null ) {
 				categoryListManager.chooseActiveItem();
+				updateActiveCategory();
 			}
 		} else {
 			ListManager listManager = (categories [currentCategory]).GetComponentInChildren<ListManager> ();
 			if( listManager != null ) {
 				listManager.chooseActiveItem();
 			}
+		}
+	}
+
+	private void updateActiveCategory() {
+		int indexCount = 0;
+		foreach( GameObject category in categories ) {
+			if( category.activeSelf ) {
+				currentCategory = indexCount;
+				break;
+			}
+			indexCount++;
 		}
 	}
 
