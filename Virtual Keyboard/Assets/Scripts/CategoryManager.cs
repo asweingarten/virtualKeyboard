@@ -246,5 +246,4 @@ public class CategoryManager : MonoBehaviour {
 			return categories[currentCategory].GetComponent<ListManager>();
 		}
 	}
-
 }
