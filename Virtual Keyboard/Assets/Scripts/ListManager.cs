@@ -235,6 +235,21 @@ public class ListManager : MonoBehaviour {
 		}
 	}
 
+	[ContextMenu("Recalculate Item Posistions")]
+	void recalculateItemPosistions() {
+		if (itemList == null) {
+			itemList = new List<GameObject>();
+		}
+		//Clear the list if it has any items in it
+		if (itemList.Count > 0) {
+			itemList.Clear ();
+		}
+		getListItems();
+		formatter = gameObject.GetComponent<ListTextFormatter> ();
+		posistionListItems ();
+
+	}
+
 	[ContextMenu("Add List Item")]
 	void addListItem() {
 		//Inititialize the list if needed
