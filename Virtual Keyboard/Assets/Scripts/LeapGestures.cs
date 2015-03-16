@@ -26,9 +26,11 @@ public class LeapGestures : MonoBehaviour {
 	public delegate void CircularGestureAction(object sender, System.EventArgs e);
 	public delegate void KeyTapGestureAction(object sender, System.EventArgs e);
 	public delegate void HandClosedGestureAction(object sender, System.EventArgs e);
+	public delegate void HandOpenedGestureAction(object sender, System.EventArgs e);
 	public static event CircularGestureAction CircularGestureTriggered;
 	public static event KeyTapGestureAction KeyTapGestureTriggered;
 	public static event HandClosedGestureAction HandClosedGestureTriggered;
+	public static event HandOpenedGestureAction HandOpenedGestureTriggered;
 
 	void Awake () {
 		leapController = new Controller ();
@@ -40,7 +42,8 @@ public class LeapGestures : MonoBehaviour {
 		leapController.EnableGesture (Leap.Gesture.GestureType.TYPE_KEY_TAP);
 		grabTimer.Start();
 	}
-	
+
+	private bool handStateOpened = true;
 	// Update is called once per frame
 	void Update () {
 		Frame frame = leapController.Frame();
@@ -65,11 +68,16 @@ public class LeapGestures : MonoBehaviour {
 			HandList hands = frame.Hands;
 			foreach (Hand hand in hands) {
 				// Look at the frame's hands. If above the grab threshold, fire the HandClosed event
-				if (hand.GrabStrength >= grabThreshold) {
+				if (hand.GrabStrength >= grabThreshold && handStateOpened) {
 					grabTimer.Reset();
 					grabTimer.Start();
+					handStateOpened = false;
 					OnHandClosedGesture(this, null);
-					return;
+				} else if(hand.GrabStrength < grabThreshold && !handStateOpened){
+					grabTimer.Reset();
+					grabTimer.Start();
+					handStateOpened = true;
+					OnHandOpenedGesture(this, null);
 				}
 			}
 		}
@@ -94,6 +102,13 @@ public class LeapGestures : MonoBehaviour {
 		UnityEngine.Debug.Log("Hand closed gesture");
 		if (HandClosedGestureTriggered != null) {
 			HandClosedGestureTriggered(sender, e);
+		}
+	}
+
+	private void OnHandOpenedGesture(object sender, System.EventArgs e) {
+		UnityEngine.Debug.Log("Hand Opened gesture");
+		if (HandOpenedGestureTriggered != null) {
+			HandOpenedGestureTriggered(sender, e);
 		}
 	}
 

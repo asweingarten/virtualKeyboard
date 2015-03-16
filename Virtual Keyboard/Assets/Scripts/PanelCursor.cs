@@ -20,6 +20,21 @@ public class PanelCursor : MonoBehaviour
 	private Vector3 interactionPanelSize = Vector3.zero;
 	private Vector3 interactionPanelCenter = Vector3.zero;
 
+	private float prevXYMagnitude = 0f;
+	private float speedModifier = 1f;
+	public float pointerAcceleration = 0.1f;
+	public float maxSpeedModifier = 2f;
+	public float minSpeedModifier = 0.5f;
+	
+	public Material handOpenedCursor;
+	public Material handClosedCursor;
+
+	void Awake() {
+		if(renderer != null) {
+			renderer.material = handOpenedCursor;
+		}
+	}
+
 	// Use this for initialization
 	void Start ()
 	{
@@ -27,7 +42,10 @@ public class PanelCursor : MonoBehaviour
 		//controller.SetPolicy(Controller.PolicyFlag.POLICY_OPTIMIZE_HMD);
 		// Translate the cursor to the center of the keyboard
 		transform.localPosition = new Vector3(0,0,0);
-		
+
+		LeapGestures.HandClosedGestureTriggered += onHandClosed;
+		LeapGestures.HandOpenedGestureTriggered += onHandOpened;
+
 		// Add support for a HandClosed gesture where the interaction panel is triggered
 		LeapGestures.HandClosedGestureTriggered += HandClosedGestureTriggered;
 	}
@@ -46,11 +64,18 @@ public class PanelCursor : MonoBehaviour
 		}
 	}
 
-	private float prevXYMagnitude = 0f;
-	private float speedModifier = 1f;
-	public float pointerAcceleration = 0.1f;
-	public float maxSpeedModifier = 2f;
-	public float minSpeedModifier = 0.5f;
+	void onHandClosed(object sender, System.EventArgs e) {
+		if(renderer != null) {
+			renderer.material = handClosedCursor;
+		}
+	}
+
+	void onHandOpened(object sender, System.EventArgs e) {
+		if(renderer != null) {
+			renderer.material = handOpenedCursor;
+		}
+	}
+
 	// Calculate how much the cursor should move, based on how much the user moved their hands.
 	Vector3 calculateUnityTranslationVector(Vector vec) {
 		float magnitude = vec.Magnitude;
