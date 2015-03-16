@@ -29,6 +29,12 @@ public class VirtualKeyboard : InteractionPanel
 		if(activeKey != null ) activeKey.setActive (false);
 		key.setActive(true);
 		activeKey = key;
+
+		char inputChar = (activeKey.keyId == "space")
+			? ' '
+				: activeKey.keyId.ToCharArray()[0];
+		Debug.Log("Leap press: " + inputChar);
+		study.updateStudyText(inputChar);
 	}
 
 	void onKeyLeapFocusLost(KeyActivator key) {
@@ -39,13 +45,13 @@ public class VirtualKeyboard : InteractionPanel
 
 	void onKeyLeapPressed(object sender, System.EventArgs e) {
 		// Get the active key's value (if there is one) and update the text prompt with the character.
-		if (activeKey != null) {
+		/*if (activeKey != null) {
 			char inputChar = (activeKey.keyId == "space")
 					? ' '
 					: activeKey.keyId.ToCharArray()[0];
 			Debug.Log("Leap press: " + inputChar);
 			study.updateStudyText(inputChar);
-		}
+		}*/
 	}
 
 	public override void calculateBounds() {
@@ -58,13 +64,9 @@ public class VirtualKeyboard : InteractionPanel
 		foreach (Renderer r in GetComponentsInChildren<Renderer>()) {
 			bounds.Encapsulate(r.bounds);
 		}	
-		Debug.Log ( "MIN BOUNDS: " + bounds.min );
-		Debug.Log ( "MAX BOUNDS: " + bounds.max );
-		Debug.Log ( "CENTER BOUNDS: " + bounds.center );
 	}
 
 	public override bool withinBounds(Vector3 coordinate) {
-		Debug.Log ("Cor: " + coordinate);
 		return bounds.Contains(coordinate);
 	}
 }

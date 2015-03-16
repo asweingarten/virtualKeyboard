@@ -50,7 +50,6 @@ public class PanelCursor : MonoBehaviour
 	// Calculate how much the cursor should move, based on how much the user moved their hands.
 	Vector3 calculateUnityTranslationVector(Vector vec) {
 		float magnitude = vec.Magnitude;
-		Debug.Log ("MAG: " + magnitude);
 		if( magnitude > noiseThreshold ) {
 			float xyMagnitude = Mathf.Abs(vec.y)+Mathf.Abs(vec.x);
 			float xRatio = vec.x/xyMagnitude;
@@ -80,11 +79,12 @@ public class PanelCursor : MonoBehaviour
 
 			if(!interactionPanel.withinBounds(transform.position)) {
 				transform.position = cursorPosition;
-				Debug.Log ("translation undone");
+				//Debug.Log ("translation undone");
 			}
 
 		} else {
-			Debug.Log ("Out of bounds");
+			transform.localPosition = new Vector3(0,0,0);
+			//Debug.Log ("Out of bounds");
 		}
 		
 	}
