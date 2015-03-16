@@ -12,6 +12,10 @@ public abstract class InteractionPanel : MonoBehaviour
 	public delegate void TriggerEvent();
 	public event TriggerEvent OnAction;
 
+	void Awake() {
+		calculateBounds();
+	}
+
 	// Use this for initialization
 	void Start ()
 	{
@@ -38,6 +42,8 @@ public abstract class InteractionPanel : MonoBehaviour
 		}
 	}
 
-	public abstract Vector3 calculateSize();
+	public abstract void calculateBounds();
+
+	public abstract bool withinBounds(Vector3 coordinate);
 }
 

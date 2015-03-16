@@ -28,8 +28,6 @@ public class PanelCursor : MonoBehaviour
 		// Translate the cursor to the center of the keyboard
 		transform.localPosition = new Vector3(0,0,0);
 		
-		interactionPanelSize = interactionPanel.calculateSize();
-
 		// Add support for a HandClosed gesture where the interaction panel is triggered
 		LeapGestures.HandClosedGestureTriggered += HandClosedGestureTriggered;
 	}
@@ -70,22 +68,29 @@ public class PanelCursor : MonoBehaviour
 	// Helper function to translate the cursor by a position determined by the leap motion
 	void TranslateCursor(Vector3 translation) {
  		// Calculate cursor size and the position of the cursor
-		Vector3 cursorPosition = this.transform.localPosition; 
+		Vector3 cursorPosition = this.transform.position; 
 
-		interactionPanelCenter = transform.InverseTransformVector(transform.parent.position);
-		Vector3 minBounds =  interactionPanelCenter - interactionPanelSize/2;
-		minBounds = transform.TransformVector(minBounds);
-		Vector3 maxBounds = interactionPanelCenter + interactionPanelSize/2;
-		maxBounds = transform.TransformVector(minBounds);
+		//interactionPanelCenter = transform.InverseTransformVector(transform.parent.position);
+		//Vector3 minBounds =  interactionPanelCenter - interactionPanelSize/2;
+		//minBounds = transform.TransformVector(minBounds);
+		//Vector3 maxBounds = interactionPanelCenter + interactionPanelSize/2;
+		//maxBounds = transform.TransformVector(minBounds);
 
-		Debug.Log ("Parent center: " + interactionPanelCenter );
-		Debug.Log ( "Min bounds: " + minBounds );
-		Debug.Log ("Max bounds: " + maxBounds );
+		//Debug.Log ("Parent center: " + interactionPanelCenter );
+		//Debug.Log ( "Min bounds: " + minBounds );
+		//Debug.Log ("Max bounds: " + maxBounds );
 
-		Vector3 minTest = cursorPosition - minBounds;
-		Vector3 maxTest = maxBounds - cursorPosition;
+		//Vector3 minTest = cursorPosition - minBounds;
+		//Vector3 maxTest = maxBounds - cursorPosition;
+
+		Vector3 nextLocation = cursorPosition + translation;
+
+		if (interactionPanel.withinBounds(nextLocation)) {
+			this.transform.Translate(translation, interactionPanel.transform.parent);
+		} else {
+			Debug.Log ("Out of bounds");
+		}
 		
-		this.transform.Translate(translation, interactionPanel.transform.parent);
 	}
 
 	// When a key tap gesture is triggered, call the interaction panel to trigger its action

@@ -1,11 +1,12 @@
 using UnityEngine;
 using System.Collections;
 
-[RequireComponent(typeof(InteractionPanel))]
 public class VirtualKeyboard : InteractionPanel
 {	
 	private KeyActivator activeKey = null;
 	private string currentString = "";
+	private Mesh mesh;
+	private Bounds bounds;
 
 	// Use this for initialization
 	void Start ()
@@ -41,29 +42,38 @@ public class VirtualKeyboard : InteractionPanel
 		}
 	}
 
-
-	public override Vector3 calculateSize() {
-		Vector3 minBounds = new Vector3(1000, 1000, 1000);
-		Vector3 maxBounds = new Vector3(-1000, -1000, -1000);
-		
-		Collider[] childColliders = GetComponentsInChildren<Collider>();
-		foreach(Collider childCollider in childColliders) {
-			if (childCollider != null) {
-				Vector3 min = childCollider.bounds.min;
-				Vector3 max = childCollider.bounds.max;
-				
-				minBounds.x = Mathf.Min(min.x, minBounds.x);
-				minBounds.y = Mathf.Min(min.y, minBounds.y);
-				minBounds.z = Mathf.Min(min.z, minBounds.z);
-				
-				maxBounds.x = Mathf.Max(max.x, maxBounds.x);
-				maxBounds.y = Mathf.Max(max.y, maxBounds.y);
-				maxBounds.z = Mathf.Max(max.z, maxBounds.z);
-			}
+	public override void calculateBounds() {
+		if (renderer == null) {
+			gameObject.AddComponent<MeshRenderer>();
 		}
-		return maxBounds - minBounds;
-		//interactionPanelSize = (maxBounds - minBounds);
-		//Debug.Log("Panel Size: " + interactionPanelSize);
+		bounds = renderer.bounds;
+
+		foreach (Renderer r in GetComponentsInChildren<Renderer>()) {
+			bounds.Encapsulate(r.bounds);
+		}
+
+		Debug.Log ("Bounds min: " + bounds.min);
+		Debug.Log ("Bounds max: " + bounds.max);
+		Debug.Log ("Bounds center: " + bounds.center);
+
+//		mesh = new Mesh(); // Do not persist mesh across calculations
+//
+//		MeshFilter[] meshFilters = GetComponentsInChildren<MeshFilter>();
+//		foreach (MeshFilter filter in meshFilters) {
+//			Mesh tempMesh = filter.sharedMesh;
+//			Debug.Log ("Mesh found: " + tempMesh.bounds.min);
+//			
+//			mesh.bounds.Encapsulate(tempMesh.bounds);
+//			
+//		}
+
+		
+	}
+
+	public override bool withinBounds(Vector3 coordinate) {
+		//coordinate = transform.TransformPoint(coordinate);
+		Debug.Log("Coordinate: " + coordinate);
+		return bounds.Contains(coordinate);
 	}
 }
 
