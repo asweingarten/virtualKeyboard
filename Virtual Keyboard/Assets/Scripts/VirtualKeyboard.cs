@@ -4,37 +4,47 @@ using System.Collections;
 public class VirtualKeyboard : InteractionPanel
 {	
 	private KeyActivator activeKey = null;
-	private string currentString = "";
+	private KeyActivator prevActiveKey = null;
+
+	//private string currentString = "";
 	private Mesh mesh;
 	private Bounds bounds;
 	public GameObject studyObject;
 	private Study study;
 
 	public float hoverActivationTime = 0.15f;
-	private bool isHandOpen = true;
+	public float typingDelayMultiplier = 2.5f;
+
+	private enum TypingState {Enabled, Disabled, Delayed};
+	private TypingState typingState = TypingState.Enabled;
 	// Use this for initialization
 	void Start ()
 	{
 		study = studyObject.GetComponent<Study>();
 		KeyActivator.OnKeyLeapFocus += onKeyLeapFocus;
 		KeyActivator.OnKeyLeapFocusLost += onKeyLeapFocusLost;
-		LeapGestures.HandClosedGestureTriggered += onHandClosed;
-		LeapGestures.HandOpenedGestureTriggered += onHandOpened;
+		LeapGestures.HandClosedGestureTriggered += delayTyping;
+		LeapGestures.HandHalfClosedGestureTriggered += enableTyping;
+		LeapGestures.HandOpenedGestureTriggered += disableTyping;
 	}
 	
 	// Update is called once per frame
 	void Update ()
 	{
-		MessageLogger.Instance.updateText(currentString);
+		//MessageLogger.Instance.updateText(currentString);
 	}
 
 
-	void onHandOpened(object sender, System.EventArgs e) {
-		isHandOpen = true;
+	void disableTyping(object sender, System.EventArgs e) {
+		typingState = TypingState.Disabled;
 	}
 
-	void onHandClosed(object sender, System.EventArgs e) {
-		isHandOpen = false;
+	void enableTyping(object sender, System.EventArgs e) {
+		typingState = TypingState.Enabled;
+	}
+
+	void delayTyping(object sender, System.EventArgs e) {
+		typingState = TypingState.Delayed;
 	}
 
 
@@ -53,14 +63,21 @@ public class VirtualKeyboard : InteractionPanel
 	}
 	
 	IEnumerator WaitAndTriggerKey(KeyActivator key) {
-		yield return new WaitForSeconds(hoverActivationTime);
-		while( key == activeKey &&!isHandOpen ) {
+		//Extra delay for TypingState.Delayed and repeated characters
+		if( typingState == TypingState.Delayed || key == prevActiveKey) yield return new WaitForSeconds(hoverActivationTime*typingDelayMultiplier);
+		else yield return new WaitForSeconds(hoverActivationTime);
+
+		prevActiveKey = null;//Clear active key as we have waited long enough now
+
+		//Wait until typing is not disabled or activeKey changes
+		while( key == activeKey && typingState == TypingState.Disabled ) {
 			yield return new WaitForSeconds(0.5f*hoverActivationTime);
 		}
-		if( key == activeKey && isHandOpen) {
+
+		if( key == activeKey && typingState != TypingState.Disabled) {
+			prevActiveKey = activeKey;
 			typeStudyText(activeKey.keyId);
 		}
-		
 	}
 
 	private void typeStudyText(string key) {

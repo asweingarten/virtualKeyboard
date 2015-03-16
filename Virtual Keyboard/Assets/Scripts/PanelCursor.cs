@@ -33,7 +33,7 @@ public class PanelCursor : MonoBehaviour
 
 	void Awake() {
 		if(renderer != null) {
-			renderer.material = handOpenedCursor;
+			renderer.material = handHalfClosedCursor;
 		}
 	}
 
@@ -65,32 +65,37 @@ public class PanelCursor : MonoBehaviour
 			Vector3 unityTranslation = calculateUnityTranslationVector(leapTranslation);
 			TranslateCursor(unityTranslation);
 		}
+		currentFrame.Dispose();
+		previousFrame.Dispose();
 	}
 
 	void onHandClosed(object sender, System.EventArgs e) {
 		if(renderer != null) {
 			renderer.material = handClosedCursor;
 		}
-		trackingPaused = true;
+		StartCoroutine(unpauseHandTracking(0.5f));
+		//trackingPaused = false;
+		//StartCoroutine(pauseHandTracking(0.5f));
 	}
 
 	void onHandHalfClosed(object sender, System.EventArgs e) {
 		if(renderer != null) {
 			renderer.material = handHalfClosedCursor;
 		}
-		trackingPaused = false;
+		StartCoroutine(unpauseHandTracking(0.5f));
+		//trackingPaused = false;
 	}
 
 	void onHandOpened(object sender, System.EventArgs e) {
+
+
 		if(renderer != null) {
 			renderer.material = handOpenedCursor;
 		}
-		trackingPaused = false;
-		//StartCoroutine(pauseHandTracking(0.5f));
+		trackingPaused = true;
 	}
 
-	IEnumerator pauseHandTracking(float pauseTime) {
-		trackingPaused = true;
+	IEnumerator unpauseHandTracking(float pauseTime) {
 		yield return new WaitForSeconds(pauseTime);
 		trackingPaused = false;
 	}

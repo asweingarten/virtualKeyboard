@@ -68,22 +68,23 @@ public class LeapGestures : MonoBehaviour {
 				OnCircularGestureCompleted(this, null);
 			}
 		}
-
+		gestures.Dispose();//gestureList realted to memory leak?
 		if (grabTimer.ElapsedMilliseconds > grabTimeout) {
 			HandList hands = frame.Hands;
 			foreach (Hand hand in hands) {
+				//UnityEngine.Debug.Log ("Grab Strength: " + hand.GrabStrength);
 				// Look at the frame's hands. If above the grab threshold, fire the HandClosed event
 				if (hand.GrabStrength >= grabThreshold && handState != HandStates.Closed) {
 					grabTimer.Reset();
 					grabTimer.Start();
 					handState = HandStates.Closed;
 					OnHandClosedGesture(this, null);
-				} else if(hand.GrabStrength < grabThreshold && hand.GrabStrength >= halfGrabThreshold && handState != HandStates.HalfClosed){
+				} else if(hand.GrabStrength < grabThreshold && hand.GrabStrength > halfGrabThreshold && handState != HandStates.HalfClosed){
 					grabTimer.Reset();
 					grabTimer.Start();
 					handState = HandStates.HalfClosed;
 					OnHandHalfClosedGesture(this, null);
-				} else if(hand.GrabStrength < halfGrabThreshold && handState != HandStates.Open) {
+				} else if(hand.GrabStrength <= halfGrabThreshold && handState != HandStates.Open) {
 					grabTimer.Reset();
 					grabTimer.Start();
 					handState = HandStates.Open;
@@ -91,6 +92,7 @@ public class LeapGestures : MonoBehaviour {
 				}
 			}
 		}
+
 	}
 
 	private void OnCircularGestureCompleted(object sender, System.EventArgs e) {
@@ -129,11 +131,4 @@ public class LeapGestures : MonoBehaviour {
 		}
 	}
 
-	void switchInputType() {
-		interactionPanels[interactionPanel%2].SetActive(false);
-
-		interactionPanel++;
-
-		interactionPanels[interactionPanel%2].SetActive(true);
-	}
 }
