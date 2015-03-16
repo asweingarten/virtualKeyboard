@@ -79,14 +79,14 @@ public class LeapGestures : MonoBehaviour {
 		// switchInputType();
 		if (CircularGestureTriggered != null) {
 			CircularGestureTriggered(sender, e);
-			UnityEngine.Debug.Log("Circular gesture");
+			//UnityEngine.Debug.Log("Circular gesture");
 		}
 	}
 
 	private void OnKeyTapGesture(object sender, System.EventArgs e) {
 		if (KeyTapGestureTriggered != null) {
 			KeyTapGestureTriggered(sender, e);
-			UnityEngine.Debug.Log("Key tap gesture");
+			//UnityEngine.Debug.Log("Key tap gesture");
 		}
 	}
 

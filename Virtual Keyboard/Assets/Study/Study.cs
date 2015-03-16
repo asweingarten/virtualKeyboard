@@ -35,6 +35,7 @@ public class Study : MonoBehaviour {
 		untypedText = getStudyText();
 		typedTextbox = GameObject.Find("TypedText").GetComponent("Text") as Text;
 		untypedTextbox = GameObject.Find("UntypedText").GetComponent("Text") as Text;
+		results = GameObject.Find ("Results").GetComponent ("Text") as Text;
 		untypedTextbox.text = untypedText;
 
 		isKeyDownArray[KeyCode.A.ToString()] = false;
@@ -184,16 +185,20 @@ public class Study : MonoBehaviour {
 	private string getStudyText() {
 		switch(studyType) {
 			case StudyType.ENGLISH_PHYSICAL:
-			return "and how nobly it raises our conceit of the mighty, misty monster, to behold him solemnly sailing through a calm tropical sea; his vast, mild head overhung by a canopy of vapour, engendered by his incommunicable contemplations, and that vapour-as you will sometimes see it-glorified by a rainbow, as if heaven itself had put its seal upon his thoughts. for, d'ye see, rainbows do not visit the clear air; they only irradiate vapour. and so, through all the thick mists of the dim doubts in my mind, divine intuitions now and then shoot, enkindling my fog with a heavenly ray. and for this i thank god; for all have doubts; many deny; but doubts or denials, few along with them, have intuitions. doubts of all things earthly, and intuitions of some things heavenly; this combination makes neither believer nor infidel, but makes a man who regards them both with equal eye.";
-
+			return "and how nobly it raises our conceit of the mighty, misty monster, to behold him solemnly s";
+			//return "and how nobly it raises our conceit of the mighty, misty monster, to behold him solemnly sailing through a calm tropical sea; his vast, mild head overhung by a canopy of vapour, en";
+			
 			case StudyType.ENGLISH_VIRTUAL:
-			return "reckoning the largest sized sperm whale's tail to begin at that point of the trunk where it tapers to about the girth of a man, it comprises upon its upper surface alone, an area of at least fifty square feet. the compact round body of its root expands into two broad, firm, flat palms or flukes, gradually shoaling away to less than an inch in thickness. at the crotch or junction, these flukes slightly overlap, then sideways recede from each other like wings, leaving a wide vacancy between. in no living thing are the lines of beauty more exquisitely defined than in the crescentic borders of these flukes. at its utmost expansion in the full grown whale, the tail will considerably exceed twenty feet across. nor does this-its amazing strength, at all tend to cripple the graceful flexion of its motions; where infantileness of ease undulates through a titanism of power.";
-
+			return "reckoning the largest sized sperm whale's tail to begin at that point of the trunk where i";
+			//return "reckoning the largest sized sperm whale's tail to begin at that point of the trunk where it tapers to about the girth of a man, it comprises upon its upper surface alone, an area o";
+			
 			case StudyType.LATIN_PHYSICAL:
-			return "consectetur adipiscing elit. nunc a quam elementum velit aliquam porta. nunc eu blandit augue, a tempus risus. etiam dignissim porttitor neque, ut ullamcorper lectus ullamcorper at. fusce vulputate mattis magna luctus fringilla. aliquam erat volutpat. nulla ac diam arcu. suspendisse vel efficitur justo. in condimentum eget metus vel lobortis. cras vestibulum at sapien sed lobortis. proin accumsan, odio ac placerat tempor, lectus metus consectetur tortor, ut vehicula augue lacus sed urna. pellentesque nisl est, blandit id malesuada eget, tristique in sem. fusce eget enim id velit accumsan cursus sit amet non ligula. integer aliquet libero eu porta faucibus. quisque sed enim semper eros scelerisque scelerisque. sed mauris enim, bibendum id libero at, vulputate porta elit.";
-
+			return "consectetur adipiscing elit. nunc a quam elementum velit aliquam porta. nunc eu blandit au";
+			//return "consectetur adipiscing elit. nunc a quam elementum velit aliquam porta. nunc eu blandit augue, a tempus risus. etiam dignissim porttitor neque, ut ullamcorper lectus ullamcorper at";
+			
 			case StudyType.LATIN_VIRTUAL:
-			return "nam dictum ligula nisl, nec dapibus massa fermentum a. phasellus et eleifend est, vel rutrum nibh. cras sit amet sagittis quam, ut accumsan magna. integer sit amet eros in nisl egestas mattis. nulla auctor aliquam dui ut mattis. suspendisse pharetra accumsan dui eget fermentum. donec id leo vel purus pellentesque aliquam. sed consectetur leo sed odio fermentum, a faucibus enim efficitur. nulla eu imperdiet turpis, vel rhoncus magna. phasellus non ullamcorper augue. maecenas a nibh massa. etiam ex mi, ornare lacinia mi ut, commodo interdum nisi. pellentesque vel lorem sit amet lorem maximus efficitur eu molestie sem. ut ullamcorper rutrum ligula sit amet maximus. maecenas tellus sem, mollis sit amet urna ac, eleifend eleifend ex. ut a enim ut dui posuere fermentum ac at odio.";
+			return "nam dictum ligula nisl, nec dapibus massa fermentum a. phasellus et eleifend est, vel rutr";
+			//return "nam dictum ligula nisl, nec dapibus massa fermentum a. phasellus et eleifend est, vel rutrum nibh. cras sit amet sagittis quam, ut accumsan magna. integer sit amet eros in nisl ege";
 		}
 		return "dewey cox";
 	}
@@ -267,8 +272,6 @@ public class Study : MonoBehaviour {
 	}
 
 	private void displayResults() {
-		results.text = ("RESULTS:: m: + " + "   t: " + (endTime - startTime));
-		// stop and display timer
-		// display mistake counter
+		results.text = ("RESULTS:: m: " + mistakeCount + "   t: " + (endTime - startTime));
 	}
 }

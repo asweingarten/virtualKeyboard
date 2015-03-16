@@ -26,12 +26,14 @@ public class VirtualKeyboard : InteractionPanel
 	}
 
 	void onKeyLeapFocus(KeyActivator key) {
+		if(activeKey != null ) activeKey.setActive (false);
 		key.setActive(true);
 		activeKey = key;
 	}
 
 	void onKeyLeapFocusLost(KeyActivator key) {
 		key.setActive(false);
+		if( key != activeKey ) return;
 		activeKey = null;
 	}
 
@@ -58,6 +60,7 @@ public class VirtualKeyboard : InteractionPanel
 	}
 
 	public override bool withinBounds(Vector3 coordinate) {
+		Debug.Log ("Cor: " + coordinate);
 		return bounds.Contains(coordinate);
 	}
 }

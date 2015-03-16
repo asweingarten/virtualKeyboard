@@ -39,7 +39,7 @@ public class KeyActivator : MonoBehaviour
 	}
 
 	void OnCollisionEnter(Collision collision) {
-		Debug.Log ("Something hit the " + keyId + " key");
+		//Debug.Log ("Something hit the " + keyId + " key");
 		if (collision.gameObject.name == "Plane")
 			return;
 		OnKeyLeapFocus(this);
@@ -62,5 +62,11 @@ public class KeyActivator : MonoBehaviour
 	public void setColor(Color color) {
 		textMesh.color = color;
 	}
+
+	/*void OnValidate() {
+		TextMesh textMesh = gameObject.GetComponentInChildren<TextMesh>();
+		textMesh.text = keyId;
+		gameObject.name = "Key_" + keyId;
+	}*/
 }
 

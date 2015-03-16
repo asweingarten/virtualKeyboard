@@ -24,7 +24,7 @@ public class PanelCursor : MonoBehaviour
 	void Start ()
 	{
 		controller = new Controller();
-
+		//controller.SetPolicy(Controller.PolicyFlag.POLICY_OPTIMIZE_HMD);
 		// Translate the cursor to the center of the keyboard
 		transform.localPosition = new Vector3(0,0,0);
 		
@@ -50,31 +50,38 @@ public class PanelCursor : MonoBehaviour
 	// Calculate how much the cursor should move, based on how much the user moved their hands.
 	Vector3 calculateUnityTranslationVector(Vector vec) {
 		float movementIncrementX = vec.x != 0 && Mathf.Abs(vec.x) > noiseThreshold 
-			? 0.001f*sensitivityX
+			? Mathf.Min ((vec.x*0.001f*sensitivityX)/noiseThreshold, (vec.x/Mathf.Abs(vec.x))*2*0.001f*sensitivityX)
 			: 0;
 		float movementIncrementY = vec.y != 0 && Mathf.Abs (vec.y) > noiseThreshold 
-			? 0.001f*sensitivityY
+			? Mathf.Min((vec.y*0.001f*sensitivityY)/noiseThreshold, (vec.y/Mathf.Abs(vec.y))*2*0.001f*sensitivityY)
 			: 0;
-		float movementIncrementZ = vec.z != 0 && Mathf.Abs(vec.y) > noiseThreshold
-			? 0.001f*sensitivityZ 
-			: 0;
-		float xDirection = vec.x >= 0 ? 1f : -1f;
-		float yDirection = vec.y >= 0 ? 1f : -1f;
-		float zDirection = vec.z <= 0 ? 1f : -1f;
-		
-		return new Vector3 (xDirection * movementIncrementX, yDirection * movementIncrementY, 0);
+		return new Vector3 (movementIncrementX, movementIncrementY, 0);
 	}
 
 	// Helper function to translate the cursor by a position determined by the leap motion
+	static int outOfBoundsCount = 0;
 	void TranslateCursor(Vector3 translation) {
+
  		// Calculate cursor size and the position of the cursor
-		Vector3 cursorPosition = this.transform.position; 
+		Vector3 cursorPosition = transform.position; 
 
 		Vector3 nextLocation = cursorPosition + translation;
 
 		if (interactionPanel.withinBounds(nextLocation)) {
-			this.transform.Translate(translation, interactionPanel.transform.parent);
+			transform.Translate(translation, interactionPanel.transform.parent);
+			if(!interactionPanel.withinBounds(transform.position)) {
+				transform.position = cursorPosition;
+			}
+			//transform.position = nextLocation;
+			//transform.localPosition = new Vector3(transform.localPosition.x, 0, transform.localPosition.z);
+			Debug.Log ("POS: " + transform.position);
+			//transform.Translate(new Vector3(0,0, -1*transform.position.z), interactionPanel.transform.parent);
 		} else {
+			/*outOfBoundsCount++;
+			if (outOfBoundsCount > 50) { 
+				outOfBoundsCount = 0;
+				transform.localPosition = new Vector3(0,0,0);
+			}*/
 			Debug.Log ("Out of bounds");
 		}
 		
