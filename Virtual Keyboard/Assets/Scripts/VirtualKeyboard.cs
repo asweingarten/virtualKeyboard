@@ -54,10 +54,13 @@ public class VirtualKeyboard : InteractionPanel
 	
 	IEnumerator WaitAndTriggerKey(KeyActivator key) {
 		yield return new WaitForSeconds(hoverActivationTime);
+		while( key == activeKey &&!isHandOpen ) {
+			yield return new WaitForSeconds(0.5f*hoverActivationTime);
+		}
 		if( key == activeKey && isHandOpen) {
 			typeStudyText(activeKey.keyId);
 		}
-
+		
 	}
 
 	private void typeStudyText(string key) {
