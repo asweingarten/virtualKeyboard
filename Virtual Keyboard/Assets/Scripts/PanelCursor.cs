@@ -69,44 +69,23 @@ public class PanelCursor : MonoBehaviour
 
 	// Helper function to translate the cursor by a position determined by the leap motion
 	void TranslateCursor(Vector3 translation) {
-		// Calculate bounds of the interaction panel
-
-		//****  ISSUES: ****
-		//	- (0,0,0) is not the center of the keyboard to start. So automatically our bounds are going to be off
-		//	- We also don't account for the transform of the keyboard when using the interactionPanelSize. 
-		//	  Because of this the bounds are calculated in the wrong plane (keyboard is in x/z plane, size is x/y)
-		//  - I used the world coordinates before because they don't worry about what plane we are in. 
-		
-		//**** SOLUTIONS? ****
-		//	- If the keyboard prefab was correctly centered (or even better bottom left) on (0,0,0) this would be way easier
-		//  - Also would be simpler if the prefab was in the x/y plane, which is where it is always used.
-
-		//  - Alternatively more math can be done to try and figure this out. Need a mental break though.
-		
-		//interactionPanelCenter = interactionPanel.transform.TransformPoint(interactionPanelSize/2);
-		//Vector3 minBounds =  interactionPanel.transform.TransformPoint(Vector3.zero);//interactionPanelCenter - interactionPanel.transform.TransformDirection(interactionPanelSize/2);
-		//minBounds = interactionPanel.transform.parent.InverseTransformPoint(minBounds);
-		//Vector3 maxBounds = interactionPanel.transform.TransformDirection(interactionPanelSize);//interactionPanelCenter + interactionPanel.transform.parent.TransformDirection(interactionPanelSize/2);
-		//maxBounds = interactionPanel.transform.parent.InverseTransformPoint(maxBounds);
- 
-
  		// Calculate cursor size and the position of the cursor
-		Vector3 cursorPosition = this.transform.localPosition; //+ interactionPanel.transform.parent.TransformDirection(translation);
-		//cursorPosition = interactionPanel.transform.InverseTransformPoint(cursorPosition);
-		
+		Vector3 cursorPosition = this.transform.localPosition; 
 
-		interactionPanelCenter = new Vector3(0,0,0);
+		interactionPanelCenter = transform.InverseTransformVector(transform.parent.position);
 		Vector3 minBounds =  interactionPanelCenter - interactionPanelSize/2;
+		minBounds = transform.TransformVector(minBounds);
 		Vector3 maxBounds = interactionPanelCenter + interactionPanelSize/2;
+		maxBounds = transform.TransformVector(minBounds);
+
+		Debug.Log ("Parent center: " + interactionPanelCenter );
+		Debug.Log ( "Min bounds: " + minBounds );
+		Debug.Log ("Max bounds: " + maxBounds );
 
 		Vector3 minTest = cursorPosition - minBounds;
 		Vector3 maxTest = maxBounds - cursorPosition;
-
-		//if (minTest.x < 0 || minTest.y < 0 || minTest.z < 0 || maxTest.x < 0 || maxTest.y < 0 || maxTest.z < 0) {
-		//	Debug.Log("Out of bounds: Mintest: " + minTest + ", Maxtest: " + maxTest);
-		//} else {
-			this.transform.Translate(translation, interactionPanel.transform.parent);
-		//}
+		
+		this.transform.Translate(translation, interactionPanel.transform.parent);
 	}
 
 	// When a key tap gesture is triggered, call the interaction panel to trigger its action
