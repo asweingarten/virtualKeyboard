@@ -50,29 +50,10 @@ public class VirtualKeyboard : InteractionPanel
 
 		foreach (Renderer r in GetComponentsInChildren<Renderer>()) {
 			bounds.Encapsulate(r.bounds);
-		}
-
-		Debug.Log ("Bounds min: " + bounds.min);
-		Debug.Log ("Bounds max: " + bounds.max);
-		Debug.Log ("Bounds center: " + bounds.center);
-
-//		mesh = new Mesh(); // Do not persist mesh across calculations
-//
-//		MeshFilter[] meshFilters = GetComponentsInChildren<MeshFilter>();
-//		foreach (MeshFilter filter in meshFilters) {
-//			Mesh tempMesh = filter.sharedMesh;
-//			Debug.Log ("Mesh found: " + tempMesh.bounds.min);
-//			
-//			mesh.bounds.Encapsulate(tempMesh.bounds);
-//			
-//		}
-
-		
+		}		
 	}
 
 	public override bool withinBounds(Vector3 coordinate) {
-		//coordinate = transform.TransformPoint(coordinate);
-		Debug.Log("Coordinate: " + coordinate);
 		return bounds.Contains(coordinate);
 	}
 }
