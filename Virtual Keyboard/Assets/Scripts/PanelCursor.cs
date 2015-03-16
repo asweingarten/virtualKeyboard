@@ -26,7 +26,7 @@ public class PanelCursor : MonoBehaviour
 		controller = new Controller();
 
 		// Translate the cursor to the center of the keyboard
-		transform.localPosition = new Vector3(3,0,5);
+		transform.localPosition = new Vector3(0,0,0);
 		
 		calculateInteractionPanelBounds();
 
@@ -64,7 +64,7 @@ public class PanelCursor : MonoBehaviour
 		float yDirection = vec.y >= 0 ? 1f : -1f;
 		float zDirection = vec.z <= 0 ? 1f : -1f;
 		
-		return new Vector3 (xDirection * movementIncrementX, yDirection * movementIncrementY, zDirection * movementIncrementZ);
+		return new Vector3 (xDirection * movementIncrementX, yDirection * movementIncrementY, 0);
 	}
 
 	// Helper function to translate the cursor by a position determined by the leap motion
