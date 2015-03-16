@@ -205,6 +205,7 @@ public class Study : MonoBehaviour {
 
 	public void updateStudyText(char keyPressed) {
 		Debug.Log("key pressed: " + keyPressed + "|");
+		if (untypedText.Length == 0) return;
 
 		if (keyPressed == untypedText[0]) {
 			typedText += keyPressed;
