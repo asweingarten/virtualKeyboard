@@ -1,13 +1,12 @@
 using UnityEngine;
 using System.Collections;
 
-public class InteractionPanel : MonoBehaviour
+public abstract class InteractionPanel : MonoBehaviour
 {
 	public Collider[] collisionExclusionsList;
 
 	public GameObject user;
 
-	//private OVRPlayerController playerController;
 	private BoxCollider[] childColliders;
 
 	public delegate void TriggerEvent();
@@ -16,8 +15,6 @@ public class InteractionPanel : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
-		//playerController = user.GetComponent<OVRPlayerController>() as OVRPlayerController;
-		//Debug.Log (playerController);
 		childColliders = gameObject.GetComponentsInChildren<BoxCollider>() as BoxCollider[];
 		foreach( Collider childCollider in childColliders ) {
 			if( childCollider.enabled == true ) {
@@ -40,5 +37,7 @@ public class InteractionPanel : MonoBehaviour
 			OnAction();
 		}
 	}
+
+	public abstract Vector3 calculateSize();
 }
 

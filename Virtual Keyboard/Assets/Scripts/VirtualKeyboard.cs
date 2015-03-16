@@ -2,9 +2,8 @@ using UnityEngine;
 using System.Collections;
 
 [RequireComponent(typeof(InteractionPanel))]
-public class VirtualKeyboard : MonoBehaviour
+public class VirtualKeyboard : InteractionPanel
 {	
-	private InteractionPanel interactionPanel;
 	private KeyActivator activeKey = null;
 	private string currentString = "";
 
@@ -13,11 +12,6 @@ public class VirtualKeyboard : MonoBehaviour
 	{
 		KeyActivator.OnKeyLeapFocus += onKeyLeapFocus;
 		KeyActivator.OnKeyLeapFocusLost += onKeyLeapFocusLost;
-
-		interactionPanel = GetComponent<InteractionPanel>();
-		if (interactionPanel != null) {
-			interactionPanel.OnAction += onKeyLeapPressed;
-		}
 	}
 	
 	// Update is called once per frame
@@ -45,6 +39,31 @@ public class VirtualKeyboard : MonoBehaviour
 				currentString += activeKey.keyId;
 			}
 		}
+	}
+
+
+	public override Vector3 calculateSize() {
+		Vector3 minBounds = new Vector3(1000, 1000, 1000);
+		Vector3 maxBounds = new Vector3(-1000, -1000, -1000);
+		
+		Collider[] childColliders = GetComponentsInChildren<Collider>();
+		foreach(Collider childCollider in childColliders) {
+			if (childCollider != null) {
+				Vector3 min = childCollider.bounds.min;
+				Vector3 max = childCollider.bounds.max;
+				
+				minBounds.x = Mathf.Min(min.x, minBounds.x);
+				minBounds.y = Mathf.Min(min.y, minBounds.y);
+				minBounds.z = Mathf.Min(min.z, minBounds.z);
+				
+				maxBounds.x = Mathf.Max(max.x, maxBounds.x);
+				maxBounds.y = Mathf.Max(max.y, maxBounds.y);
+				maxBounds.z = Mathf.Max(max.z, maxBounds.z);
+			}
+		}
+		return maxBounds - minBounds;
+		//interactionPanelSize = (maxBounds - minBounds);
+		//Debug.Log("Panel Size: " + interactionPanelSize);
 	}
 }
 

@@ -28,7 +28,7 @@ public class PanelCursor : MonoBehaviour
 		// Translate the cursor to the center of the keyboard
 		transform.localPosition = new Vector3(0,0,0);
 		
-		calculateInteractionPanelBounds();
+		interactionPanelSize = interactionPanel.calculateSize();
 
 		// Add support for a HandClosed gesture where the interaction panel is triggered
 		LeapGestures.HandClosedGestureTriggered += HandClosedGestureTriggered;
@@ -93,32 +93,7 @@ public class PanelCursor : MonoBehaviour
 		interactionPanel.TriggerAction();
 	}
 
-	//TODO: Determine bounds of containing interactionPanel, and don't let the cursor go outside of those bounds.
-	void calculateInteractionPanelBounds() {
-		Vector3 minBounds = new Vector3(1000, 1000, 1000);
-		Vector3 maxBounds = new Vector3(-1000, -1000, -1000);
 
-		if (interactionPanel != null) {
-			Collider[] childColliders = interactionPanel.GetComponentsInChildren<Collider>();
-			foreach(Collider childCollider in childColliders) {
-				if (childCollider != null) {
-					Vector3 min = childCollider.bounds.min;
-					Vector3 max = childCollider.bounds.max;
-
-					minBounds.x = Mathf.Min(min.x, minBounds.x);
-					minBounds.y = Mathf.Min(min.y, minBounds.y);
-					minBounds.z = Mathf.Min(min.z, minBounds.z);
-
-					maxBounds.x = Mathf.Max(max.x, maxBounds.x);
-					maxBounds.y = Mathf.Max(max.y, maxBounds.y);
-					maxBounds.z = Mathf.Max(max.z, maxBounds.z);
-				}
-	        }
-
-	        interactionPanelSize = (maxBounds - minBounds);
-	        Debug.Log("Panel Size: " + interactionPanelSize);
-		}
-	}
 
 }
 
