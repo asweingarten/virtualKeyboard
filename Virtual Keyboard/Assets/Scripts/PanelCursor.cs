@@ -50,11 +50,13 @@ public class PanelCursor : MonoBehaviour
 	// Calculate how much the cursor should move, based on how much the user moved their hands.
 	Vector3 calculateUnityTranslationVector(Vector vec) {
 		float movementIncrementX = vec.x != 0 && Mathf.Abs(vec.x) > noiseThreshold 
-			? Mathf.Min ((vec.x*0.001f*sensitivityX)/noiseThreshold, (vec.x/Mathf.Abs(vec.x))*2*0.001f*sensitivityX)
+			? (vec.x/Mathf.Abs(vec.x))*0.001f*sensitivityX // Mathf.Min (((vec.x/Mathf.Abs(vec.x))*0.001f*sensitivityX), (vec.x/Mathf.Abs(vec.x))*2*0.001f*sensitivityX)
 			: 0;
 		float movementIncrementY = vec.y != 0 && Mathf.Abs (vec.y) > noiseThreshold 
-			? Mathf.Min((vec.y*0.001f*sensitivityY)/noiseThreshold, (vec.y/Mathf.Abs(vec.y))*2*0.001f*sensitivityY)
+			? (vec.y/Mathf.Abs(vec.y))*0.001f*sensitivityY// Mathf.Min(((vec.y/Mathf.Abs(vec.y)*0.001f*sensitivityY)), (vec.y/Mathf.Abs(vec.y))*2*0.001f*sensitivityY)
 			: 0;
+		//Debug.Log ("x: " + movementIncrementX);
+		//Debug.Log ("y: " + movementIncrementY);
 		return new Vector3 (movementIncrementX, movementIncrementY, 0);
 	}
 
@@ -65,23 +67,23 @@ public class PanelCursor : MonoBehaviour
  		// Calculate cursor size and the position of the cursor
 		Vector3 cursorPosition = transform.position; 
 
-		Vector3 nextLocation = cursorPosition + translation;
+		Vector3 nextLocation = cursorPosition + transform.InverseTransformVector(translation);
 
+		//if (interactionPanel.withinBounds(interactionPanel.transform.InverseTransformPoint(transform.TransformPoint(nextLocation)))) {
 		if (interactionPanel.withinBounds(nextLocation)) {
 			transform.Translate(translation, interactionPanel.transform.parent);
+			//interactionPanel.transform.InverseTransformPoint(transform.TransformPoint(nextLocation))
 			if(!interactionPanel.withinBounds(transform.position)) {
 				transform.position = cursorPosition;
 			}
+
+
+
 			//transform.position = nextLocation;
 			//transform.localPosition = new Vector3(transform.localPosition.x, 0, transform.localPosition.z);
-			Debug.Log ("POS: " + transform.position);
+			//Debug.Log ("POS: " + transform.position);
 			//transform.Translate(new Vector3(0,0, -1*transform.position.z), interactionPanel.transform.parent);
 		} else {
-			/*outOfBoundsCount++;
-			if (outOfBoundsCount > 50) { 
-				outOfBoundsCount = 0;
-				transform.localPosition = new Vector3(0,0,0);
-			}*/
 			Debug.Log ("Out of bounds");
 		}
 		

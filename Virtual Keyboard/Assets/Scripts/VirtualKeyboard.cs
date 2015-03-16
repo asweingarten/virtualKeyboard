@@ -54,9 +54,13 @@ public class VirtualKeyboard : InteractionPanel
 		}
 		bounds = renderer.bounds;
 
+		 
 		foreach (Renderer r in GetComponentsInChildren<Renderer>()) {
 			bounds.Encapsulate(r.bounds);
-		}		
+		}	
+		Debug.Log ( "MIN BOUNDS: " + bounds.min );
+		Debug.Log ( "MAX BOUNDS: " + bounds.max );
+		Debug.Log ( "CENTER BOUNDS: " + bounds.center );
 	}
 
 	public override bool withinBounds(Vector3 coordinate) {
