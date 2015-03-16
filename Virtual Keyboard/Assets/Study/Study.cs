@@ -110,7 +110,7 @@ public class Study : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (studyFinished) {
+		if (studyFinished || studyType == StudyType.ENGLISH_VIRTUAL || studyType == StudyType.LATIN_VIRTUAL) {
 			return;
 		}
 		onKeyDown(KeyCode.A);
