@@ -7,12 +7,16 @@ public class VirtualKeyboard : InteractionPanel
 	private string currentString = "";
 	private Mesh mesh;
 	private Bounds bounds;
+	public GameObject studyObject;
+	private Study study;
 
 	// Use this for initialization
 	void Start ()
 	{
+		study = studyObject.GetComponent<Study>();
 		KeyActivator.OnKeyLeapFocus += onKeyLeapFocus;
 		KeyActivator.OnKeyLeapFocusLost += onKeyLeapFocusLost;
+		LeapGestures.HandClosedGestureTriggered += onKeyLeapPressed;
 	}
 	
 	// Update is called once per frame
@@ -31,14 +35,14 @@ public class VirtualKeyboard : InteractionPanel
 		activeKey = null;
 	}
 
-	void onKeyLeapPressed() {
+	void onKeyLeapPressed(object sender, System.EventArgs e) {
 		// Get the active key's value (if there is one) and update the text prompt with the character.
 		if (activeKey != null) {
-			if (activeKey.keyId == "space") {
-				currentString += " ";
-			} else {
-				currentString += activeKey.keyId;
-			}
+			char inputChar = (activeKey.keyId == "space")
+					? ' '
+					: activeKey.keyId.ToCharArray()[0];
+			Debug.Log("Leap press: " + inputChar);
+			study.updateStudyText(inputChar);
 		}
 	}
 

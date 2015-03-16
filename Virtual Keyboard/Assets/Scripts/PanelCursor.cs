@@ -70,19 +70,6 @@ public class PanelCursor : MonoBehaviour
  		// Calculate cursor size and the position of the cursor
 		Vector3 cursorPosition = this.transform.position; 
 
-		//interactionPanelCenter = transform.InverseTransformVector(transform.parent.position);
-		//Vector3 minBounds =  interactionPanelCenter - interactionPanelSize/2;
-		//minBounds = transform.TransformVector(minBounds);
-		//Vector3 maxBounds = interactionPanelCenter + interactionPanelSize/2;
-		//maxBounds = transform.TransformVector(minBounds);
-
-		//Debug.Log ("Parent center: " + interactionPanelCenter );
-		//Debug.Log ( "Min bounds: " + minBounds );
-		//Debug.Log ("Max bounds: " + maxBounds );
-
-		//Vector3 minTest = cursorPosition - minBounds;
-		//Vector3 maxTest = maxBounds - cursorPosition;
-
 		Vector3 nextLocation = cursorPosition + translation;
 
 		if (interactionPanel.withinBounds(nextLocation)) {
@@ -95,7 +82,6 @@ public class PanelCursor : MonoBehaviour
 
 	// When a key tap gesture is triggered, call the interaction panel to trigger its action
 	void HandClosedGestureTriggered(object sender, System.EventArgs e) {
-		interactionPanel.TriggerAction();
 	}
 
 

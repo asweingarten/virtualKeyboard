@@ -8,6 +8,7 @@ public class Study : MonoBehaviour {
 	string typedText;
 	private UnityEngine.UI.Text untypedTextbox;
 	private UnityEngine.UI.Text typedTextbox;
+	private UnityEngine.UI.Text results;
 
 	private enum StudyType {
 		ENGLISH_PHYSICAL,
@@ -197,7 +198,7 @@ public class Study : MonoBehaviour {
 		return "dewey cox";
 	}
 
-	private void updateStudyText(char keyPressed) {
+	public void updateStudyText(char keyPressed) {
 		Debug.Log("key pressed: " + keyPressed + "|");
 
 		if (keyPressed == untypedText[0]) {
@@ -212,6 +213,7 @@ public class Study : MonoBehaviour {
 		if (untypedText.Length == 0) {
 			endTime = Time.time;
 			studyFinished = true;
+			displayResults();
 			Debug.Log ("Study over!");
 			Debug.Log ("Mistake count: " + mistakeCount);
 			Debug.Log("Time taken (in seconds): " + (endTime - startTime));
@@ -265,6 +267,7 @@ public class Study : MonoBehaviour {
 	}
 
 	private void displayResults() {
+		results.text = ("RESULTS:: m: + " + "   t: " + (endTime - startTime));
 		// stop and display timer
 		// display mistake counter
 	}

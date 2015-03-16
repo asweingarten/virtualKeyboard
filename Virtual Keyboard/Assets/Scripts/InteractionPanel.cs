@@ -35,13 +35,6 @@ public abstract class InteractionPanel : MonoBehaviour
 
 	}
 
-	public void TriggerAction() {
-		Debug.Log("Action triggered");
-		if (OnAction != null) {
-			OnAction();
-		}
-	}
-
 	public abstract void calculateBounds();
 
 	public abstract bool withinBounds(Vector3 coordinate);
