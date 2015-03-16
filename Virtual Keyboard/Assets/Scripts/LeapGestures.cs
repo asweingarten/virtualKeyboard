@@ -17,6 +17,7 @@ public class LeapGestures : MonoBehaviour {
 
 	// Set a grab threshold for the custom HandClosed gesture.
 	public float grabThreshold = 0.95f;
+	public float halfGrabThreshold = 0.75f;
 
 	// Once a grab gesture is detected, set a timeout (in ms) so that it can't be performed for a short time afterwards. 
 	// This is a form of debouncing the event
@@ -26,10 +27,12 @@ public class LeapGestures : MonoBehaviour {
 	public delegate void CircularGestureAction(object sender, System.EventArgs e);
 	public delegate void KeyTapGestureAction(object sender, System.EventArgs e);
 	public delegate void HandClosedGestureAction(object sender, System.EventArgs e);
+	public delegate void HandHalfClosedGestureAction(object sender, System.EventArgs e);
 	public delegate void HandOpenedGestureAction(object sender, System.EventArgs e);
 	public static event CircularGestureAction CircularGestureTriggered;
 	public static event KeyTapGestureAction KeyTapGestureTriggered;
 	public static event HandClosedGestureAction HandClosedGestureTriggered;
+	public static event HandHalfClosedGestureAction HandHalfClosedGestureTriggered;
 	public static event HandOpenedGestureAction HandOpenedGestureTriggered;
 
 	void Awake () {
@@ -43,6 +46,8 @@ public class LeapGestures : MonoBehaviour {
 		grabTimer.Start();
 	}
 
+	private enum HandStates {Open, HalfClosed, Closed};
+	private HandStates handState = HandStates.Open;
 	private bool handStateOpened = true;
 	// Update is called once per frame
 	void Update () {
@@ -68,15 +73,20 @@ public class LeapGestures : MonoBehaviour {
 			HandList hands = frame.Hands;
 			foreach (Hand hand in hands) {
 				// Look at the frame's hands. If above the grab threshold, fire the HandClosed event
-				if (hand.GrabStrength >= grabThreshold && handStateOpened) {
+				if (hand.GrabStrength >= grabThreshold && handState != HandStates.Closed) {
 					grabTimer.Reset();
 					grabTimer.Start();
-					handStateOpened = false;
+					handState = HandStates.Closed;
 					OnHandClosedGesture(this, null);
-				} else if(hand.GrabStrength < grabThreshold && !handStateOpened){
+				} else if(hand.GrabStrength < grabThreshold && hand.GrabStrength >= halfGrabThreshold && handState != HandStates.HalfClosed){
 					grabTimer.Reset();
 					grabTimer.Start();
-					handStateOpened = true;
+					handState = HandStates.HalfClosed;
+					OnHandHalfClosedGesture(this, null);
+				} else if(hand.GrabStrength < halfGrabThreshold && handState != HandStates.Open) {
+					grabTimer.Reset();
+					grabTimer.Start();
+					handState = HandStates.Open;
 					OnHandOpenedGesture(this, null);
 				}
 			}
@@ -102,6 +112,13 @@ public class LeapGestures : MonoBehaviour {
 		UnityEngine.Debug.Log("Hand closed gesture");
 		if (HandClosedGestureTriggered != null) {
 			HandClosedGestureTriggered(sender, e);
+		}
+	}
+
+	private void OnHandHalfClosedGesture(object sender, System.EventArgs e) {
+		UnityEngine.Debug.Log("Hand half closed gesture");
+		if (HandHalfClosedGestureTriggered != null) {
+			HandHalfClosedGestureTriggered(sender, e);
 		}
 	}
 

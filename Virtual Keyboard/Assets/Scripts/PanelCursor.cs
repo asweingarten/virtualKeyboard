@@ -25,8 +25,10 @@ public class PanelCursor : MonoBehaviour
 	public float pointerAcceleration = 0.1f;
 	public float maxSpeedModifier = 2f;
 	public float minSpeedModifier = 0.5f;
-	
+	private bool trackingPaused = false;
+
 	public Material handOpenedCursor;
+	public Material handHalfClosedCursor;
 	public Material handClosedCursor;
 
 	void Awake() {
@@ -44,6 +46,7 @@ public class PanelCursor : MonoBehaviour
 		transform.localPosition = new Vector3(0,0,0);
 
 		LeapGestures.HandClosedGestureTriggered += onHandClosed;
+		LeapGestures.HandHalfClosedGestureTriggered += onHandHalfClosed;
 		LeapGestures.HandOpenedGestureTriggered += onHandOpened;
 
 		// Add support for a HandClosed gesture where the interaction panel is triggered
@@ -57,7 +60,7 @@ public class PanelCursor : MonoBehaviour
 		Frame currentFrame = controller.Frame();
 		Frame previousFrame = controller.Frame (1);
 
-		if (interactionPanel.enabled == true) {
+		if (interactionPanel.enabled == true && !trackingPaused) {
 			Vector leapTranslation = currentFrame.Translation(previousFrame);
 			Vector3 unityTranslation = calculateUnityTranslationVector(leapTranslation);
 			TranslateCursor(unityTranslation);
@@ -68,12 +71,28 @@ public class PanelCursor : MonoBehaviour
 		if(renderer != null) {
 			renderer.material = handClosedCursor;
 		}
+		trackingPaused = true;
+	}
+
+	void onHandHalfClosed(object sender, System.EventArgs e) {
+		if(renderer != null) {
+			renderer.material = handHalfClosedCursor;
+		}
+		trackingPaused = false;
 	}
 
 	void onHandOpened(object sender, System.EventArgs e) {
 		if(renderer != null) {
 			renderer.material = handOpenedCursor;
 		}
+		trackingPaused = false;
+		//StartCoroutine(pauseHandTracking(0.5f));
+	}
+
+	IEnumerator pauseHandTracking(float pauseTime) {
+		trackingPaused = true;
+		yield return new WaitForSeconds(pauseTime);
+		trackingPaused = false;
 	}
 
 	// Calculate how much the cursor should move, based on how much the user moved their hands.
