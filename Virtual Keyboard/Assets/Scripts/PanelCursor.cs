@@ -46,7 +46,11 @@ public class PanelCursor : MonoBehaviour
 		}
 	}
 
-
+	private float prevXYMagnitude = 0f;
+	private float speedModifier = 1f;
+	public float pointerAcceleration = 0.1f;
+	public float maxSpeedModifier = 2f;
+	public float minSpeedModifier = 0.5f;
 	// Calculate how much the cursor should move, based on how much the user moved their hands.
 	Vector3 calculateUnityTranslationVector(Vector vec) {
 		float magnitude = vec.Magnitude;
@@ -55,11 +59,19 @@ public class PanelCursor : MonoBehaviour
 			float xRatio = vec.x/xyMagnitude;
 			float yRatio = vec.y/xyMagnitude;
 
-			float movementIncrementX = xRatio*0.001f*sensitivityX;
-			float movementIncrementY = yRatio*0.001f*sensitivityY;
+			if( prevXYMagnitude < xyMagnitude && speedModifier < maxSpeedModifier) {
+				speedModifier = Mathf.Min(speedModifier+pointerAcceleration, maxSpeedModifier);
+			} else if(speedModifier > minSpeedModifier){
+				speedModifier = Mathf.Max (speedModifier - pointerAcceleration, minSpeedModifier);
+			}
+			prevXYMagnitude = xyMagnitude;
+			float movementIncrementX = speedModifier*xRatio*0.001f*sensitivityX;
+			float movementIncrementY = speedModifier*yRatio*0.001f*sensitivityY;
 			return new Vector3 (movementIncrementX, movementIncrementY, 0);
 			
 		} else {
+			speedModifier = 1;
+			prevXYMagnitude = 0;
 			return new Vector3(0,0,0);
 		}
 	}
