@@ -22,7 +22,7 @@ public class Study : MonoBehaviour {
 
 	int mistakeCount;
 	bool studyFinished = false;
-	float startTime = 0;
+	float startTime = -1f;
 	float endTime = 0;
 
 	static Dictionary<string,bool> isKeyDownArray = new Dictionary<string,bool>();
@@ -201,6 +201,7 @@ public class Study : MonoBehaviour {
 
 	public void updateStudyText(char keyPressed) {
 		Debug.Log("key pressed: " + keyPressed + "|");
+		if (startTime < 0) startTime = Time.time;
 		if (untypedText.Length == 0) return;
 
 		if (keyPressed == untypedText[0]) {

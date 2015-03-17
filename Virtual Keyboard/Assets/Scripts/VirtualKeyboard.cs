@@ -23,9 +23,9 @@ public class VirtualKeyboard : InteractionPanel
 		study = studyObject.GetComponent<Study>();
 		KeyActivator.OnKeyLeapFocus += onKeyLeapFocus;
 		KeyActivator.OnKeyLeapFocusLost += onKeyLeapFocusLost;
-		LeapGestures.HandClosedGestureTriggered += delayTyping;
-		LeapGestures.HandHalfClosedGestureTriggered += enableTyping;
-		LeapGestures.HandOpenedGestureTriggered += disableTyping;
+		//LeapGestures.HandClosedGestureTriggered += delayTyping;
+		//LeapGestures.HandHalfClosedGestureTriggered += enableTyping;
+		//LeapGestures.HandOpenedGestureTriggered += disableTyping;
 	}
 	
 	// Update is called once per frame

@@ -21,7 +21,10 @@ public class PanelCursor : MonoBehaviour
 	private Vector3 interactionPanelCenter = Vector3.zero;
 
 	private float prevXYMagnitude = 0f;
-	private float speedModifier = 1f;
+	private float prevX = 0f;
+	private float prevY = 0f;
+	private float accelX = 1f;
+	private float accelY = 1f;
 	public float pointerAcceleration = 0.1f;
 	public float maxSpeedModifier = 2f;
 	public float minSpeedModifier = 0.5f;
@@ -45,9 +48,9 @@ public class PanelCursor : MonoBehaviour
 		// Translate the cursor to the center of the keyboard
 		transform.localPosition = new Vector3(0,0,0);
 
-		LeapGestures.HandClosedGestureTriggered += onHandClosed;
-		LeapGestures.HandHalfClosedGestureTriggered += onHandHalfClosed;
-		LeapGestures.HandOpenedGestureTriggered += onHandOpened;
+		//LeapGestures.HandClosedGestureTriggered += onHandClosed;
+		//LeapGestures.HandHalfClosedGestureTriggered += onHandHalfClosed;
+		//LeapGestures.HandOpenedGestureTriggered += onHandOpened;
 
 		// Add support for a HandClosed gesture where the interaction panel is triggered
 		LeapGestures.HandClosedGestureTriggered += HandClosedGestureTriggered;
@@ -71,7 +74,7 @@ public class PanelCursor : MonoBehaviour
 
 	void onHandClosed(object sender, System.EventArgs e) {
 		if(renderer != null) {
-			renderer.material = handClosedCursor;
+			renderer.sharedMaterial = handClosedCursor;
 		}
 		StartCoroutine(unpauseHandTracking(0.5f));
 		//trackingPaused = false;
@@ -80,7 +83,7 @@ public class PanelCursor : MonoBehaviour
 
 	void onHandHalfClosed(object sender, System.EventArgs e) {
 		if(renderer != null) {
-			renderer.material = handHalfClosedCursor;
+			renderer.sharedMaterial = handHalfClosedCursor;
 		}
 		StartCoroutine(unpauseHandTracking(0.5f));
 		//trackingPaused = false;
@@ -90,7 +93,7 @@ public class PanelCursor : MonoBehaviour
 
 
 		if(renderer != null) {
-			renderer.material = handOpenedCursor;
+			renderer.sharedMaterial = handOpenedCursor;
 		}
 		trackingPaused = true;
 	}
@@ -108,18 +111,28 @@ public class PanelCursor : MonoBehaviour
 			float xRatio = vec.x/xyMagnitude;
 			float yRatio = vec.y/xyMagnitude;
 
-			if( prevXYMagnitude < xyMagnitude && speedModifier < maxSpeedModifier) {
-				speedModifier = Mathf.Min(speedModifier+pointerAcceleration, maxSpeedModifier);
-			} else if(speedModifier > minSpeedModifier){
-				speedModifier = Mathf.Max (speedModifier - pointerAcceleration, minSpeedModifier);
+			if (xRatio*prevX > 0) {
+				accelX = Mathf.Min (accelX+0.0125f, 1.0125f);
+			} else {
+				accelX = 1;
 			}
+			if (yRatio*prevY > 0) {
+				accelY = Mathf.Min (accelY + 0.0125f, 1.1f);
+			} else {
+				accelY = 1;
+			}
+
 			prevXYMagnitude = xyMagnitude;
-			float movementIncrementX = speedModifier*xRatio*0.001f*sensitivityX;
-			float movementIncrementY = speedModifier*yRatio*0.001f*sensitivityY;
+			float movementIncrementX = accelX*xRatio*0.001f*sensitivityX;
+			float movementIncrementY = accelY*yRatio*0.001f*sensitivityY;
+			prevX = movementIncrementX;
+			prevY = movementIncrementY;
 			return new Vector3 (movementIncrementX, movementIncrementY, 0);
 			
 		} else {
-			speedModifier = 1;
+			// speedModifier = 1;
+			accelX = 1;
+			accelY = 1;
 			prevXYMagnitude = 0;
 			return new Vector3(0,0,0);
 		}
