@@ -196,7 +196,7 @@ public class Study : MonoBehaviour {
 			return "nam dictum ligula nisl, nec dapibus massa fermentum a. phasellus et eleifend est, vel rutr";
 			//return "nam dictum ligula nisl, nec dapibus massa fermentum a. phasellus et eleifend est, vel rutrum nibh. cras sit amet sagittis quam, ut accumsan magna. integer sit amet eros in nisl ege";
 		}
-		return "dewey cox";
+		return "the quick, brown fox jumped over the lazy, black dog's tail.";
 	}
 
 	public void updateStudyText(char keyPressed) {
