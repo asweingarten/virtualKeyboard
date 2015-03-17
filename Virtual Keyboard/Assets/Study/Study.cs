@@ -25,10 +25,6 @@ public class Study : MonoBehaviour {
 	float startTime = 0;
 	float endTime = 0;
 
-	// @TODO: 
-	// - count mistakes (display on end of text for study)
-	// - time session (display time elapsed on end of text)
-
 	static Dictionary<string,bool> isKeyDownArray = new Dictionary<string,bool>();
 
 	void Awake() {
