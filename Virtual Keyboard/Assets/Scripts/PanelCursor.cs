@@ -34,10 +34,15 @@ public class PanelCursor : MonoBehaviour
 	public Material handHalfClosedCursor;
 	public Material handClosedCursor;
 
+	private Frame[] frameBuffer;
+	private int frameIndex = 0;
+	public int frameAverage = 4;
+
 	void Awake() {
 		if(renderer != null) {
 			renderer.material = handHalfClosedCursor;
 		}
+		frameBuffer = new Frame[frameAverage];
 	}
 
 	// Use this for initialization
@@ -55,21 +60,37 @@ public class PanelCursor : MonoBehaviour
 		// Add support for a HandClosed gesture where the interaction panel is triggered
 		LeapGestures.HandClosedGestureTriggered += HandClosedGestureTriggered;
 	}
-
+	
 	// Update is called once per frame
 	void Update ()
 	{
-		// Each frame, check the change in hand position from the last frame. Compute how much to move the cursor with this.
-		Frame currentFrame = controller.Frame();
-		Frame previousFrame = controller.Frame (1);
 
-		if (interactionPanel.enabled == true && !trackingPaused) {
+		// Each frame, check the change in hand position from the last frame. Compute how much to move the cursor with this.
+		//Frame currentFrame = controller.Frame();
+		//Frame previousFrame = controller.Frame (1);
+
+		frameBuffer[frameIndex] = controller.Frame ();
+		frameIndex++;
+
+		if(frameIndex==frameBuffer.Length) {
+			Vector3 translationAverage = Vector3.zero;
+			for( int i = 0; i < frameBuffer.Length-1; i++ ) {
+				Vector leapTranslation = frameBuffer[i+1].Translation(frameBuffer[i]);
+				Vector3 unityTranslation = calculateUnityTranslationVector(leapTranslation);
+				translationAverage += unityTranslation;
+			}
+			translationAverage = translationAverage/frameBuffer.Length;
+			TranslateCursor(translationAverage);
+			frameIndex = 0;
+		}
+
+		/*if (interactionPanel.enabled == true && !trackingPaused) {
 			Vector leapTranslation = currentFrame.Translation(previousFrame);
 			Vector3 unityTranslation = calculateUnityTranslationVector(leapTranslation);
 			TranslateCursor(unityTranslation);
 		}
 		currentFrame.Dispose();
-		previousFrame.Dispose();
+		previousFrame.Dispose();*/
 	}
 
 	void onHandClosed(object sender, System.EventArgs e) {
