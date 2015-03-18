@@ -14,6 +14,8 @@ public class VirtualKeyboard : InteractionPanel
 
 	public float hoverActivationTime = 0.15f;
 	public float typingDelayMultiplier = 2.5f;
+	public float debounceTime = 0.3f;
+	private KeyActivator debouncedKey;
 
 	private enum TypingState {Enabled, Disabled, Delayed};
 	private TypingState typingState = TypingState.Enabled;
@@ -23,10 +25,12 @@ public class VirtualKeyboard : InteractionPanel
 		study = studyObject.GetComponent<Study>();
 		KeyActivator.OnKeyLeapFocus += onKeyLeapFocus;
 		KeyActivator.OnKeyLeapFocusLost += onKeyLeapFocusLost;
-		//LeapGestures.HandClosedGestureTriggered += delayTyping;
-		//LeapGestures.HandHalfClosedGestureTriggered += enableTyping;
-		//LeapGestures.HandOpenedGestureTriggered += disableTyping;
+		LeapGestures.HandClosedGestureTriggered += disableTyping;
+		LeapGestures.HandHalfClosedGestureTriggered += enableTyping;
+		LeapGestures.HandOpenedGestureTriggered += enableTyping;
+		LeapGestures.KeyTapGestureTriggered += onKeyTap;
 	}
+
 	
 	// Update is called once per frame
 	void Update ()
@@ -47,12 +51,24 @@ public class VirtualKeyboard : InteractionPanel
 		typingState = TypingState.Delayed;
 	}
 
+	void onKeyTap(object sender, System.EventArgs e) {
+		if(activeKey != null && (activeKey != debouncedKey)) {
+			Debug.Log ("Key Tap");
+			StartCoroutine(TypingDebounce(activeKey));
+			typeStudyText(activeKey.keyId);
+		} else {
+			if( activeKey == null ) {
+				Debug.Log ("Spurious Key Tap");
+			}
+		}
+
+	}
 
 	void onKeyLeapFocus(KeyActivator key) {
 		if(activeKey != null ) activeKey.setActive (false);
 		key.setActive(true);
 		activeKey = key;
-		StartCoroutine(WaitAndTriggerKey(key));
+		//StartCoroutine(WaitAndTriggerKey(key));
 
 	}
 
@@ -61,7 +77,16 @@ public class VirtualKeyboard : InteractionPanel
 		if( key != activeKey ) return;
 		activeKey = null;
 	}
-	
+
+
+
+	IEnumerator TypingDebounce(KeyActivator key ) {
+		debouncedKey = key;
+		yield return new WaitForSeconds(debounceTime);
+		debouncedKey = null;
+
+	}
+
 	IEnumerator WaitAndTriggerKey(KeyActivator key) {
 		//Extra delay for TypingState.Delayed and repeated characters
 		if( typingState == TypingState.Delayed || key == prevActiveKey) yield return new WaitForSeconds(hoverActivationTime*typingDelayMultiplier);
@@ -84,7 +109,7 @@ public class VirtualKeyboard : InteractionPanel
 		char inputChar = (key == "space")
 			? ' '
 			: key.ToCharArray()[0];
-		Debug.Log("Leap press: " + inputChar);
+		//Debug.Log("Leap press: " + inputChar);
 		study.updateStudyText(inputChar);
 	}
 

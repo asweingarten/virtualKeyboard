@@ -38,11 +38,16 @@ public class LeapGestures : MonoBehaviour {
 	void Awake () {
 		leapController = new Controller ();
 	}
+
 	// Use this for initialization
 	void Start () {
 
 		leapController.EnableGesture (Leap.Gesture.GestureType.TYPECIRCLE);
 		leapController.EnableGesture (Leap.Gesture.GestureType.TYPE_KEY_TAP);
+		leapController.Config.SetFloat("Gesture.KeyTap.MinDownVelocity", 35.0f);
+		leapController.Config.SetFloat("Gesture.KeyTap.HistorySeconds", .2f);
+		leapController.Config.SetFloat("Gesture.KeyTap.MinDistance", 0.7f);
+		leapController.Config.Save();
 		grabTimer.Start();
 	}
 
@@ -68,7 +73,7 @@ public class LeapGestures : MonoBehaviour {
 				OnCircularGestureCompleted(this, null);
 			}
 		}
-		gestures.Dispose();//gestureList realted to memory leak?
+		//gestures.Dispose();//gestureList realted to memory leak?
 		if (grabTimer.ElapsedMilliseconds > grabTimeout) {
 			HandList hands = frame.Hands;
 			foreach (Hand hand in hands) {
@@ -96,36 +101,30 @@ public class LeapGestures : MonoBehaviour {
 	}
 
 	private void OnCircularGestureCompleted(object sender, System.EventArgs e) {
-		// switchInputType();
 		if (CircularGestureTriggered != null) {
 			CircularGestureTriggered(sender, e);
-			//UnityEngine.Debug.Log("Circular gesture");
 		}
 	}
 
 	private void OnKeyTapGesture(object sender, System.EventArgs e) {
 		if (KeyTapGestureTriggered != null) {
 			KeyTapGestureTriggered(sender, e);
-			//UnityEngine.Debug.Log("Key tap gesture");
 		}
 	}
 
 	private void OnHandClosedGesture(object sender, System.EventArgs e) {
-		UnityEngine.Debug.Log("Hand closed gesture");
 		if (HandClosedGestureTriggered != null) {
 			HandClosedGestureTriggered(sender, e);
 		}
 	}
 
 	private void OnHandHalfClosedGesture(object sender, System.EventArgs e) {
-		UnityEngine.Debug.Log("Hand half closed gesture");
 		if (HandHalfClosedGestureTriggered != null) {
 			HandHalfClosedGestureTriggered(sender, e);
 		}
 	}
 
 	private void OnHandOpenedGesture(object sender, System.EventArgs e) {
-		UnityEngine.Debug.Log("Hand Opened gesture");
 		if (HandOpenedGestureTriggered != null) {
 			HandOpenedGestureTriggered(sender, e);
 		}
