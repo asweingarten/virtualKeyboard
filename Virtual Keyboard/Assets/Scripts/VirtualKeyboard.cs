@@ -45,6 +45,7 @@ public class VirtualKeyboard : InteractionPanel
 			Debug.Log ("Key Tap");
 			StartCoroutine(TypingDebounce(activeKey));
 			typeStudyText(activeKey.keyId);
+			activeKey.setTyped();
 		} else {
 			if( activeKey == null ) {
 				Debug.Log ("Spurious Key Tap");
@@ -53,7 +54,6 @@ public class VirtualKeyboard : InteractionPanel
 	}
 
 	void onKeyLeapFocus(KeyActivator key) {
-		Debug.Log("FOCUS: " + key.keyId);
 		if(activeKey != null ) activeKey.setActive (false);
 		key.setActive(true);
 		activeKey = key;

@@ -39,14 +39,18 @@ public class LeapGestures : MonoBehaviour {
 		leapController = new Controller ();
 	}
 
+	public float keyTapMinVelocity = 30.0f;
+	public float keyTapHistorySeconds = 0.3f;
+	public float keyTapMinDistance = 0.7f;
+
 	// Use this for initialization
 	void Start () {
 
 		leapController.EnableGesture (Leap.Gesture.GestureType.TYPECIRCLE);
 		leapController.EnableGesture (Leap.Gesture.GestureType.TYPE_KEY_TAP);
-		leapController.Config.SetFloat("Gesture.KeyTap.MinDownVelocity", 35.0f);
-		leapController.Config.SetFloat("Gesture.KeyTap.HistorySeconds", .2f);
-		leapController.Config.SetFloat("Gesture.KeyTap.MinDistance", 0.7f);
+		leapController.Config.SetFloat("Gesture.KeyTap.MinDownVelocity", keyTapMinVelocity);
+		leapController.Config.SetFloat("Gesture.KeyTap.HistorySeconds", keyTapHistorySeconds);
+		leapController.Config.SetFloat("Gesture.KeyTap.MinDistance", keyTapMinDistance);
 		leapController.Config.Save();
 		grabTimer.Start();
 	}

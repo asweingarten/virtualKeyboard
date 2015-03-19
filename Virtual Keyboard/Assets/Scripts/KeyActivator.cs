@@ -9,6 +9,7 @@ public class KeyActivator : MonoBehaviour
 	public static event KeyLeapFocusLostAction OnKeyLeapFocusLost;
 
 	public Color activeColor;
+	public Color typedColor = Color.cyan;
 	public string keyId;
 	public bool setTextMeshManually = false;
 	public float selectedColliderSizeModifier = 1.7f;
@@ -66,6 +67,12 @@ public class KeyActivator : MonoBehaviour
 		} else {
 			setColor(baseColor);
 			decreaseCollider();
+		}
+	}
+
+	public void setTyped() {
+		if(isActive) {
+			setColor(typedColor);
 		}
 	}
 
