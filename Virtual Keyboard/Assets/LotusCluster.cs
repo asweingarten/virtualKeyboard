@@ -10,10 +10,20 @@ public class LotusCluster : MonoBehaviour {
 	public AllignStrategy allignStrategy;
 	private GameObject boundary;
 
+	private Vector3 originalScale;
+	public float selectedScaleFactor = 1.5f;
+
+	private Vector3 originalBoundaryScale;
+	public float selectedBoundaryScaleFactor = 1.5f;
+
+	public float activeKeySpaceFactor = 1.25f;
+
 	void Awake() {
 		boundary = transform.FindChild("Boundary").gameObject;
 		boundary.transform.position = transform.position;
+		originalBoundaryScale = boundary.transform.localScale;
 		originalLocation = transform.localPosition;
+		originalScale = transform.localScale;
 	}
 
 	// Use this for initialization
@@ -28,14 +38,20 @@ public class LotusCluster : MonoBehaviour {
 	public void activate() {
 		transform.localPosition = Vector3.zero;
 		allignKeys();
-		boundary.transform.localScale = new Vector3(1.75f, 0.01f, 1.75f);
+		transform.localScale = new Vector3(originalScale.x * selectedScaleFactor, 
+		                                   originalScale.y * selectedScaleFactor, 
+		                                   originalScale.z );
+		boundary.transform.localScale = new Vector3(originalBoundaryScale.x * selectedBoundaryScaleFactor, 
+		                                   			originalBoundaryScale.y, 
+		                                  			originalBoundaryScale.z * selectedBoundaryScaleFactor);
 		setKeyActivation(true);
 	}
 
 	public void deactivate() {
 		setKeyActivation(false);
 		transform.localPosition = originalLocation;
-		boundary.transform.localScale = new Vector3(1.25f,0.01f,1.25f);
+		transform.localScale = originalScale;
+		boundary.transform.localScale = originalBoundaryScale;
 
 		GameObject keys = transform.FindChild("keys").gameObject;
 		CircleAranger arranger = keys.GetComponent<CircleAranger>();
@@ -51,10 +67,10 @@ public class LotusCluster : MonoBehaviour {
 
 			switch (allignStrategy) {
 			case AllignStrategy.VERTICAL:
-				key.transform.localPosition = new Vector3( (-3*keySize.x) + i*2*keySize.x, 0, 0);
+				key.transform.localPosition = new Vector3( (-3*activeKeySpaceFactor*keySize.x) + i*2*activeKeySpaceFactor*keySize.x, 0, 0);
 				break;
 			case AllignStrategy.HORIZONTAL:
-				key.transform.localPosition = new Vector3( 0, (-3*keySize.y) + i*2*keySize.y, 0);
+				key.transform.localPosition = new Vector3( 0, (-3*activeKeySpaceFactor*keySize.y) + i*2*activeKeySpaceFactor*keySize.y, 0);
 				break;
 			}
 		}

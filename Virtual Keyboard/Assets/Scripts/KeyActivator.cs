@@ -9,6 +9,7 @@ public class KeyActivator : MonoBehaviour
 	public static event KeyLeapFocusLostAction OnKeyLeapFocusLost;
 
 	public Color activeColor;
+	public Color typedColor = Color.cyan;
 	public string keyId;
 	public bool setTextMeshManually = false;
 	public float selectedColliderSizeModifier = 1.7f;
@@ -20,10 +21,7 @@ public class KeyActivator : MonoBehaviour
 	private BoxCollider collider;
 	private Vector3 initialColliderSize;
 
-	void Start ()
-	{
-		collider = GetComponent<BoxCollider>();
-		if(collider != null ) initialColliderSize = collider.size;
+	void Awake () {
 		Transform children = transform.Find ("Key_Text");
 		if (children)
 		{
@@ -32,16 +30,20 @@ public class KeyActivator : MonoBehaviour
 			setTextMeshText(keyId);
 		}
 	}
+	void Start ()
+	{
+		collider = GetComponent<BoxCollider>();
+		if(collider != null ) initialColliderSize = collider.size;
+	}
 
 	void OnTriggerEnter(Collider collision) {
-		Debug.Log("Collsion ENTER!!! " + collision.collider.name);
 		if (collision.gameObject.name == "Plane")
 			return;
+		Debug.Log ("LEAP KEY FOCUS: " + collision.name);
 		if (OnKeyLeapFocus != null) OnKeyLeapFocus(this);
 	}
 
 	void OnTriggerExit(Collider collision) {
-		Debug.Log("Collsion EXIT!!! " + collision.collider.name);
 		if (collision.gameObject.name == "Plane")
 			return;
 		if (OnKeyLeapFocusLost != null) OnKeyLeapFocusLost(this);
@@ -65,6 +67,12 @@ public class KeyActivator : MonoBehaviour
 		} else {
 			setColor(baseColor);
 			decreaseCollider();
+		}
+	}
+
+	public void setTyped() {
+		if(isActive) {
+			setColor(typedColor);
 		}
 	}
 
