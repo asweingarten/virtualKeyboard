@@ -18,15 +18,15 @@ public class LeapCursor : HandModel
 	}
 
 	//Finger Count without thumb
-	public void getFingerCount() {
+	public int getFingerCount() {
 		FingerList fingerList = controller_.GetFrame().Fingers.Extended();
 		int count = 0;
 		foreach( Finger finger in fingerList ) {
-			if( !finger.Type == Finger.FingerType.TYPE_THUMB ) {
+			if( finger.Type != Finger.FingerType.TYPE_THUMB ) {
 				count++;
 			}
-			return count;
 		}
+		return count;
 	}
 
 	public override void InitHand ()
