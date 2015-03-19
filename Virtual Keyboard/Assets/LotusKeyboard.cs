@@ -7,6 +7,7 @@ public class LotusKeyboard : MonoBehaviour {
 	public GameObject studyObject;
 	private Study study;
 	KeyActivator activeKey;
+	public bool deactiveClusterAfterKeyType = false;
 	
 	void Awake() {
 		LotusClusterBoundary.LotusClusterSelected += updateActiveLotusCluster;
@@ -28,7 +29,9 @@ public class LotusKeyboard : MonoBehaviour {
 		if (activeCluster == lotusCluster) return;
 
 		if (activeCluster != null) {
-			activeCluster.GetComponent<LotusCluster>().deactivate();
+			LotusCluster activeLotusCluster = activeCluster.GetComponent<LotusCluster>();
+			if( activeLotusCluster != null ) activeLotusCluster.deactivate();
+
 		}
 
 		LotusCluster cluster = lotusCluster.GetComponent<LotusCluster>();
@@ -40,12 +43,21 @@ public class LotusKeyboard : MonoBehaviour {
 		}
 	}
 
+	void deactiveActiveLotusCluster() {
+		if( activeCluster == null ) return;
+
+		LotusCluster activeLotusCluster = activeCluster.GetComponent<LotusCluster>();
+		if( activeLotusCluster != null ) activeLotusCluster.deactivate();
+		activeCluster = null;
+	}
+
 	void onKeyLeapFocus(KeyActivator key) {
 		if (key == activeKey || key.isActive) return;
 
 		activeKey = key;
 		key.setActive(true);
 		typeStudyText(key.keyId);
+		if( deactiveClusterAfterKeyType) deactiveActiveLotusCluster();
 	}
 	
 	void onKeyLeapFocusLost(KeyActivator key) {
