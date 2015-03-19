@@ -4,9 +4,6 @@ using System;
 using System.Collections.Generic;
 
 public class textInput : MonoBehaviour {
-
-	private float mouseX;
-	private float mouseY;
 	
 	private float mouseXDelta;
 	private float mouseYDelta;
@@ -23,8 +20,6 @@ public class textInput : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		mouseX = Input.mousePosition.x;
-		mouseY = Input.mousePosition.y;
 
 	}
 

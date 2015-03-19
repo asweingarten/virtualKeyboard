@@ -8,7 +8,7 @@ public class ItemSpawner : MonoBehaviour
 	public GameObject[] Walls = new GameObject[4];
 	public GameObject MainCamera = null;
 
-	private float lastSpawnTime;
+	private float lastSpawnTime = 0f;
 
 	// Use this for initialization
 	void Start ()
@@ -45,10 +45,8 @@ public class ItemSpawner : MonoBehaviour
 		switch(mounting) {
 			case Furniture.Mounting.CEILING:
 				return calculateSpawnLocationOnSurface(Ceiling);
-				break;
 			case Furniture.Mounting.FLOOR:
 				return calculateSpawnLocationOnSurface(Floor);
-				break;
 			case Furniture.Mounting.WALL:
 				Vector3 collisionSpot;
 	    		for (int i = 0; i < 4; i++) {
@@ -91,7 +89,7 @@ public class ItemSpawner : MonoBehaviour
 	}
 
 	void spawnFurniture(Furniture furniture) {
-		if( lastSpawnTime != null && Time.time - lastSpawnTime < 3f ) return;
+		if(Time.time - lastSpawnTime < 3f ) return;
 		lastSpawnTime = Time.time;
 		Debug.Log ("THE SPAWNER HAS SPOKEN");
 		Vector3 spawnLocation = calculateSpawnLocation(furniture.mounting);

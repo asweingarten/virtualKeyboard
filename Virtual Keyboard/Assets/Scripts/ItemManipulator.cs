@@ -8,8 +8,6 @@ public class ItemManipulator : MonoBehaviour
 	 
 	private Controller controller;
 
-	private bool trackingActive = false;
-
 	public bool translationEnabled = false;
 	public bool rotationEnabled = false;
 	public bool scalingEnabled = false;
@@ -25,7 +23,6 @@ public class ItemManipulator : MonoBehaviour
 	// Update is called once per frame
 	void Update () {
 		if (selectedItem == null) return;
-		// if ( !isHandClosed() ) return;
 
 		if (translationEnabled) {
 			translateItem ();
@@ -92,7 +89,6 @@ public class ItemManipulator : MonoBehaviour
 		Frame currentFrame = controller.Frame ();
 		Frame prevFrame = controller.Frame (5);
 		float leapScaleFactor = 0.001f*(currentFrame.ScaleFactor(prevFrame)-1f);
-		Vector3 scalingVector = new Vector3(leapScaleFactor, leapScaleFactor, leapScaleFactor);
 
 		selectedItem.GetComponent<TransformationManager>().scale(leapScaleFactor);
 	}
@@ -117,12 +113,10 @@ public class ItemManipulator : MonoBehaviour
 	}
 
 	public void disableSelection() {
-		trackingActive = false;
 		ItemSelection.OnItemSelected -= updateSelectedItem;
 	}
 
 	public void enableSelection() {
-		trackingActive = true;
 		ItemSelection.OnItemSelected += updateSelectedItem;
 	}
 

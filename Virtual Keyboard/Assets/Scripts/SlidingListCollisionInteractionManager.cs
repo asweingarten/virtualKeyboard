@@ -4,7 +4,7 @@ using System.Collections;
 public class SlidingListCollisionInteractionManager : SlidingListInteractionManager {
 
 	public float repeatedInteractionDelay = 0.5f;
-	private float lastInteractionTime;
+	private float lastInteractionTime = 0f;
 
 	public GameObject prevCategoryTrigger;
 	public GameObject nextCategoryTrigger;
@@ -32,7 +32,7 @@ public class SlidingListCollisionInteractionManager : SlidingListInteractionMana
 	}
 
 	void handleInteraction ( GameObject interactionObject ) {
-		if( lastInteractionTime != null && Time.time - lastInteractionTime < repeatedInteractionDelay ) return;
+		if(Time.time - lastInteractionTime < repeatedInteractionDelay ) return;
 		lastInteractionTime = Time.time;
 		if( interactionObject == prevCategoryTrigger ) {
 			prevCatagory();

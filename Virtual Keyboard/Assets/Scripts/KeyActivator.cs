@@ -3,60 +3,79 @@ using System.Collections;
 
 public class KeyActivator : MonoBehaviour
 {
-	public delegate void KeyLeapPressAction(string keyId);
-	public delegate void KeyLeapReleaseAction(string keyId);
-	public static event KeyLeapPressAction OnKeyLeapPressed;
-	public static event KeyLeapReleaseAction OnKeyLeapReleased;
+	public delegate void KeyLeapFocusAction(KeyActivator keyId);
+	public delegate void KeyLeapFocusLostAction(KeyActivator keyId);
+	public static event KeyLeapFocusAction OnKeyLeapFocus;
+	public static event KeyLeapFocusLostAction OnKeyLeapFocusLost;
 
 	public Color activeColor;
 	public string keyId;
+	public bool setTextMeshManually = false;
+	public float selectedColliderSizeModifier = 1.7f;
+	public bool isActive;
 
 	private TextMesh textMesh;
 	private Color baseColor;
-	// Use this for initialization
+
+	private BoxCollider collider;
+	private Vector3 initialColliderSize;
+
 	void Start ()
 	{
+		collider = GetComponent<BoxCollider>();
+		if(collider != null ) initialColliderSize = collider.size;
 		Transform children = transform.Find ("Key_Text");
 		if (children)
 		{
 			textMesh = children.GetComponent<TextMesh>();
 			baseColor = textMesh.color;
-			textMesh.text = keyId;
+			setTextMeshText(keyId);
 		}
 	}
 
-	// Update is called once per frame
-	void Update ()
-	{
-		if (Input.GetKeyDown (keyId)) {
-			OnKeyLeapPressed (keyId);
+	void OnTriggerEnter(Collider collision) {
+		Debug.Log("Collsion ENTER!!! " + collision.collider.name);
+		if (collision.gameObject.name == "Plane")
+			return;
+		if (OnKeyLeapFocus != null) OnKeyLeapFocus(this);
+	}
+
+	void OnTriggerExit(Collider collision) {
+		Debug.Log("Collsion EXIT!!! " + collision.collider.name);
+		if (collision.gameObject.name == "Plane")
+			return;
+		if (OnKeyLeapFocusLost != null) OnKeyLeapFocusLost(this);
+	}
+
+	private void increaseCollider() {
+		if( collider == null ) return;
+		collider.size = initialColliderSize*selectedColliderSizeModifier;
+	}
+
+	private void decreaseCollider() {
+		if( collider == null ) return;
+		collider.size = initialColliderSize;
+	}
+
+	public void setActive(bool active) {
+		isActive = active;
+		if (active == true) {
 			setColor(activeColor);
-		} else if (Input.GetKeyUp (keyId)) 
-		{
-			OnKeyLeapReleased (keyId);
+			increaseCollider();
+		} else {
 			setColor(baseColor);
+			decreaseCollider();
 		}
 	}
 
-	void OnCollisionEnter(Collision collision) {
-		if (collision.gameObject.name == "Plane")
-			return;
-		OnKeyLeapPressed (keyId);
-		Debug.Log ("Something hit the " + keyId + " key");
-		setColor(activeColor);
-	}
-
-	void OnCollisionExit(Collision collision) {
-		if (collision.gameObject.name == "Plane")
-			return;
-		OnKeyLeapReleased (keyId);
-		setColor(baseColor);
-	}
-
-	void setColor(Color color) {
+	public void setColor(Color color) {
 		textMesh.color = color;
 	}
 
-
+	private void setTextMeshText(string text) {
+		if( textMesh != null && !setTextMeshManually ) {
+			textMesh.text = text;
+		}
+	}
 }
 

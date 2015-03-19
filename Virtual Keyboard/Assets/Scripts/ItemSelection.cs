@@ -9,7 +9,7 @@ public class ItemSelection : MonoBehaviour {
 	public bool selected {get;set;}
 	
 	private ItemManipulator itemManipulator;
-	private ParticleSystem particleSystem;
+	private new ParticleSystem particleSystem;
 
 	void Awake () {
 		itemManipulator = (ItemManipulator)GameObject.FindObjectOfType ( typeof (ItemManipulator) );
