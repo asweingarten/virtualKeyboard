@@ -20,10 +20,7 @@ public class KeyActivator : MonoBehaviour
 	private BoxCollider collider;
 	private Vector3 initialColliderSize;
 
-	void Start ()
-	{
-		collider = GetComponent<BoxCollider>();
-		if(collider != null ) initialColliderSize = collider.size;
+	void Awake () {
 		Transform children = transform.Find ("Key_Text");
 		if (children)
 		{
@@ -31,6 +28,12 @@ public class KeyActivator : MonoBehaviour
 			baseColor = textMesh.color;
 			setTextMeshText(keyId);
 		}
+	}
+	void Start ()
+	{
+		collider = GetComponent<BoxCollider>();
+		if(collider != null ) initialColliderSize = collider.size;
+
 	}
 
 	void OnTriggerEnter(Collider collision) {

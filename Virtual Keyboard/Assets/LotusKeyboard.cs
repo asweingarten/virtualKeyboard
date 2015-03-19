@@ -44,14 +44,12 @@ public class LotusKeyboard : MonoBehaviour {
 		if (key == activeKey || key.isActive) return;
 
 		activeKey = key;
-		Debug.Log ("FOCUS ON: " + key.keyId);
 		key.setActive(true);
 		typeStudyText(key.keyId);
 	}
 	
 	void onKeyLeapFocusLost(KeyActivator key) {
 		if (!key.isActive) return;
-		Debug.Log ("FOCUS LOST: " + key.keyId);
 		key.setActive(false);
 		if( key != activeKey ) return;
 		activeKey = null;
