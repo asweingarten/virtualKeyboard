@@ -17,6 +17,18 @@ public class LeapCursor : HandModel
 
 	}
 
+	//Finger Count without thumb
+	public void getFingerCount() {
+		FingerList fingerList = controller_.GetFrame().Fingers.Extended();
+		int count = 0;
+		foreach( Finger finger in fingerList ) {
+			if( !finger.Type == Finger.FingerType.TYPE_THUMB ) {
+				count++;
+			}
+			return count;
+		}
+	}
+
 	public override void InitHand ()
 	{
 		SetPositions();
@@ -31,6 +43,5 @@ public class LeapCursor : HandModel
 			cursor.transform.position = GetPalmPosition();
 		}
 	}
-
 }
 

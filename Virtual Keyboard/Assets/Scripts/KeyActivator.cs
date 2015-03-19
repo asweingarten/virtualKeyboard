@@ -34,12 +34,12 @@ public class KeyActivator : MonoBehaviour
 	{
 		collider = GetComponent<BoxCollider>();
 		if(collider != null ) initialColliderSize = collider.size;
-
 	}
 
 	void OnTriggerEnter(Collider collision) {
 		if (collision.gameObject.name == "Plane")
 			return;
+		Debug.Log ("LEAP KEY FOCUS: " + collision.name);
 		if (OnKeyLeapFocus != null) OnKeyLeapFocus(this);
 	}
 
