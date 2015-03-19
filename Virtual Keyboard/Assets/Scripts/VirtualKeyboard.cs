@@ -42,13 +42,12 @@ public class VirtualKeyboard : InteractionPanel
 
 	void onKeyTap(object sender, System.EventArgs e) {
 		if(activeKey != null && (activeKey != debouncedKey)) {
-			Debug.Log ("Key Tap");
 			StartCoroutine(TypingDebounce(activeKey));
 			typeStudyText(activeKey.keyId);
 			activeKey.setTyped();
 		} else {
 			if( activeKey == null ) {
-				Debug.Log ("Spurious Key Tap");
+				Debug.LogWarning ("Spurious Key Tap: You may want to adjust threshold values");
 			}
 		}
 	}
