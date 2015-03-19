@@ -22,11 +22,8 @@ public class LotusFingerCountKeyboard : MonoBehaviour {
 
 	void onLotusClusterSelected(GameObject cluster) {
 		LotusFingerCountCluster fingerCountCluster = cluster.GetComponent<LotusFingerCountCluster>();
-		Debug.Log ("fingerCountCluster: " +fingerCountCluster == null);
 		if( fingerCountCluster != null ) {
-			Debug.Log("in if");
 			KeyActivator activeKey = fingerCountCluster.getActiveKey();
-			Debug.Log("activeKey");
 			if( activeKey != null ) {
 				typeStudyText(activeKey.keyId);
 			}

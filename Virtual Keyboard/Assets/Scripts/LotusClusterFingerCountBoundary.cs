@@ -17,7 +17,6 @@ public class LotusClusterFingerCountBoundary : MonoBehaviour {
 	}
 
 	void OnTriggerEnter (Collider collision) {
-		Debug.Log ("Cluster selected");
 		if (LotusClusterSelected != null ) LotusClusterSelected(transform.parent.gameObject);
 	}
 }
