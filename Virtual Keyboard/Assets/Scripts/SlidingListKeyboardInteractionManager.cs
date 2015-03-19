@@ -10,8 +10,6 @@ public class SlidingListKeyboardInteractionManager : SlidingListInteractionManag
 	public string categoryListTrigger;
 	public string selectionBoxTrigger;
 
-	private char activeCharacter;
-
 	void Awake () {
 	}
 
@@ -24,27 +22,21 @@ public class SlidingListKeyboardInteractionManager : SlidingListInteractionManag
 		string inputString = Input.inputString;
 		foreach( char c in inputString ) {
 			if (inputString.Contains(prevCategoryTrigger)) {
-				activeCharacter = c;
 				prevCatagory();
 			}
 			if (inputString.Contains(nextCategoryTrigger)){
-				activeCharacter = c;
 				nextCategory();
 			}
 			if (inputString.Contains(prevItemTrigger)) {
-				activeCharacter = c;
 				prevListItem();
 			}
 			if (inputString.Contains(nextItemTrigger)) {
-				activeCharacter = c;
 				nextListItem();
 			}
 			if (inputString.Contains(categoryListTrigger)) {
-				activeCharacter = c;
 				categoryListView();
 			}
 			if (inputString.Contains(selectionBoxTrigger)) {
-				activeCharacter = c;
 				selectionBoxChosen();
 			}
 

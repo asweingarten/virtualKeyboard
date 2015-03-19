@@ -9,9 +9,6 @@ public class LeapGestures : MonoBehaviour {
 	private Controller leapController;
 	private int gestureId;
 
-	GameObject[] interactionPanels;
-	private int interactionPanel = 0;
-
 	// Set a timeout for gestures of 1 second - anything longer than this is ignored.
 	public float gestureTimeout = 1.0f; 
 
@@ -35,6 +32,9 @@ public class LeapGestures : MonoBehaviour {
 	public static event HandHalfClosedGestureAction HandHalfClosedGestureTriggered;
 	public static event HandOpenedGestureAction HandOpenedGestureTriggered;
 
+	private enum HandStates {Open, HalfClosed, Closed};
+	private HandStates handState = HandStates.Open;
+
 	void Awake () {
 		leapController = new Controller ();
 	}
@@ -51,9 +51,7 @@ public class LeapGestures : MonoBehaviour {
 		grabTimer.Start();
 	}
 
-	private enum HandStates {Open, HalfClosed, Closed};
-	private HandStates handState = HandStates.Open;
-	private bool handStateOpened = true;
+
 	// Update is called once per frame
 	void Update () {
 		Frame frame = leapController.Frame();

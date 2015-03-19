@@ -9,9 +9,6 @@ public abstract class InteractionPanel : MonoBehaviour
 
 	private BoxCollider[] childColliders;
 
-	public delegate void TriggerEvent();
-	public event TriggerEvent OnAction;
-
 	void Awake() {
 		calculateBounds();
 	}

@@ -181,8 +181,8 @@ public class ArcMeshDrawer : MonoBehaviour {
 		arcBody.transform.localPosition = Vector3.zero;
 		arcBody.transform.localScale = Vector3.one;
 		arcBody.transform.localRotation = Quaternion.identity;
-		MeshFilter arcBodyMeshFilter = arcBody.AddComponent<MeshFilter> ();
-		MeshCollider arcBodyCollider = arcBody.AddComponent<MeshCollider> ();
+		arcBody.AddComponent<MeshFilter> ();
+		arcBody.AddComponent<MeshCollider> ();
 		MeshRenderer arcBodyRenderer = arcBody.AddComponent<MeshRenderer> ();
 		RadialMenuItemSelection arcBodySelector = arcBody.AddComponent<RadialMenuItemSelection> ();
 		arcBodySelector.selectionObjectName = selectionObjectName;
@@ -195,8 +195,8 @@ public class ArcMeshDrawer : MonoBehaviour {
 		arcRim.transform.localPosition = Vector3.zero;
 		arcRim.transform.localScale = Vector3.one;
 		arcRim.transform.localRotation = Quaternion.identity;
-		MeshFilter arcRimMeshFilter = arcRim.AddComponent<MeshFilter> ();
-		MeshCollider arcRimCollider = arcRim.AddComponent<MeshCollider> ();
+		arcRim.AddComponent<MeshFilter> ();
+		arcRim.AddComponent<MeshCollider> ();
 		MeshRenderer arcRimRenderer = arcRim.AddComponent<MeshRenderer> ();
 		arcRimRenderer.material = arcRimMaterial;
 	}

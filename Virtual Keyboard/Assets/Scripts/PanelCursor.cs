@@ -17,10 +17,7 @@ public class PanelCursor : MonoBehaviour
 
 	private Controller controller;
 	private BoxCollider collider;
-	private Vector3 interactionPanelSize = Vector3.zero;
-	private Vector3 interactionPanelCenter = Vector3.zero;
-
-	private float prevXYMagnitude = 0f;
+	
 	private float prevX = 0f;
 	private float prevY = 0f;
 	private float accelX = 1f;
@@ -28,7 +25,6 @@ public class PanelCursor : MonoBehaviour
 	public float pointerAcceleration = 0.1f;
 	public float maxSpeedModifier = 2f;
 	public float minSpeedModifier = 0.5f;
-	private bool trackingPaused = false;
 
 	public Material handOpenedCursor;
 	public Material handHalfClosedCursor;
@@ -96,12 +92,10 @@ public class PanelCursor : MonoBehaviour
 		if(renderer != null) {
 			renderer.sharedMaterial = handOpenedCursor;
 		}
-		trackingPaused = true;
 	}
 
 	IEnumerator unpauseHandTracking(float pauseTime) {
 		yield return new WaitForSeconds(pauseTime);
-		trackingPaused = false;
 	}
 
 	// Calculate how much the cursor should move, based on how much the user moved their hands.
@@ -123,7 +117,6 @@ public class PanelCursor : MonoBehaviour
 				accelY = 1;
 			}
 
-			prevXYMagnitude = xyMagnitude;
 			float movementIncrementX = accelX*xRatio*0.001f*sensitivityX;
 			float movementIncrementY = accelY*yRatio*0.001f*sensitivityY;
 			prevX = movementIncrementX;
@@ -133,13 +126,11 @@ public class PanelCursor : MonoBehaviour
 		} else {
 			accelX = 1;
 			accelY = 1;
-			prevXYMagnitude = 0;
 			return new Vector3(0,0,0);
 		}
 	}
 
 	// Helper function to translate the cursor by a position determined by the leap motion
-	static int outOfBoundsCount = 0;
 	void TranslateCursor(Vector3 translation) {
 
  		// Calculate cursor size and the position of the cursor

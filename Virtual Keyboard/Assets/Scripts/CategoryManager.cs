@@ -5,7 +5,6 @@ using System.Collections.Generic;
 public class CategoryManager : MonoBehaviour {
 
 	private float listItemHeight = 0.1f;
-	private float listItemSpacing = 0.05f;
 	private List<GameObject> categories;
 	private GameObject categoryList;
 
