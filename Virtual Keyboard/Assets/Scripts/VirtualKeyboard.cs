@@ -25,9 +25,9 @@ public class VirtualKeyboard : InteractionPanel
 		study = studyObject.GetComponent<Study>();
 		KeyActivator.OnKeyLeapFocus += onKeyLeapFocus;
 		KeyActivator.OnKeyLeapFocusLost += onKeyLeapFocusLost;
-		LeapGestures.HandClosedGestureTriggered += disableTyping;
-		LeapGestures.HandHalfClosedGestureTriggered += enableTyping;
-		LeapGestures.HandOpenedGestureTriggered += enableTyping;
+		//LeapGestures.HandClosedGestureTriggered += disableTyping;
+		//LeapGestures.HandHalfClosedGestureTriggered += enableTyping;
+		//LeapGestures.HandOpenedGestureTriggered += enableTyping;
 		LeapGestures.KeyTapGestureTriggered += onKeyTap;
 	}
 
@@ -61,10 +61,10 @@ public class VirtualKeyboard : InteractionPanel
 				Debug.Log ("Spurious Key Tap");
 			}
 		}
-
 	}
 
 	void onKeyLeapFocus(KeyActivator key) {
+		Debug.Log("FOCUS: " + key.keyId);
 		if(activeKey != null ) activeKey.setActive (false);
 		key.setActive(true);
 		activeKey = key;

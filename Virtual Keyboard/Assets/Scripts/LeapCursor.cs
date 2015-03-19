@@ -32,5 +32,6 @@ public class LeapCursor : HandModel
 			cursor.transform.position = GetPalmPosition();
 		}
 	}
+
 }
 

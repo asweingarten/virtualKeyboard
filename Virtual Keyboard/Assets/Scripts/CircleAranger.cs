@@ -7,13 +7,12 @@ public class CircleAranger : MonoBehaviour
 
 	public float radius = 1.5f;
 	[ContextMenu("Arrange children as circle")]
-	void arrageCircle() {
+	public void arrageCircle() {
 		int childCount = transform.childCount;
 		float angleIncrement = (2*Mathf.PI)/childCount;
 		for( int i = 0; i < childCount; i++ ) {
 			Transform child = transform.GetChild(i);
-			//float lerp =  Mathf.LerpAngle(0, childCount, i);
-			//Debug.Log (lerp);
+
 			float x = radius*Mathf.Cos(i*angleIncrement);
 			float y = radius*Mathf.Sin(i*angleIncrement);
 

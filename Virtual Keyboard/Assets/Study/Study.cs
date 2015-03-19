@@ -200,7 +200,7 @@ public class Study : MonoBehaviour {
 	}
 
 	public void updateStudyText(char keyPressed) {
-		//Debug.Log("key pressed: " + keyPressed + "|");
+		Debug.Log("key pressed: " + keyPressed + "|");
 		if (startTime < 0) startTime = Time.time;
 		if (untypedText.Length == 0) return;
 
