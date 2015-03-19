@@ -15,6 +15,7 @@ public class VirtualKeyboard : InteractionPanel
 	public float hoverActivationTime = 0.15f;
 	public float typingDelayMultiplier = 2.5f;
 	public float debounceTime = 0.3f;
+	public AudioSource clickSound = null;
 	private KeyActivator debouncedKey;
 
 	private enum TypingState {Enabled, Disabled, Delayed};
@@ -45,6 +46,7 @@ public class VirtualKeyboard : InteractionPanel
 			Debug.Log ("Key Tap");
 			StartCoroutine(TypingDebounce(activeKey));
 			typeStudyText(activeKey.keyId);
+			if (clickSound != null) { clickSound.Play(); }
 		} else {
 			if( activeKey == null ) {
 				Debug.Log ("Spurious Key Tap");
