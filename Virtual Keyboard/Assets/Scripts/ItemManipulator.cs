@@ -66,6 +66,10 @@ public class ItemManipulator : MonoBehaviour
 
 	}
 
+	public bool isAnythingSelected(){
+		return selectedItem != null;
+	}
+
 	void translateItem() {
 		Frame currentFrame = controller.Frame ();
 		Frame oldFrame = controller.Frame (1);

@@ -67,8 +67,11 @@ public class NestedRadialSwitcher : MonoBehaviour {
 		nestedMenu.SetActive (true);
 
 		//Remove current menu
-		Destroy (transform.root.gameObject);
-
+		if (transform.root.gameObject.tag != "RootMenu") {
+			Destroy (transform.root.gameObject);
+		} else {
+			transform.root.gameObject.SetActive(false);
+		}
 
 	}
 }

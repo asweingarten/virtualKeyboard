@@ -28,7 +28,13 @@ public class MenuShortcuts : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if( !isSelected() ) return;
+		if (!isSelected ()) {
+			if (Input.GetKeyDown (clockwiseMenuKey) || Input.GetKeyDown (counterClockwiseMenuKey)) {
+				Debug.Log ("SPAWN FURNITURE MENU");
+			}
+			return;
+
+		}
 
 		if (Input.GetKeyDown (clockwiseMenuKey)) {
 			toggleClockwiseMenu();
