@@ -22,7 +22,7 @@ public class LeapCursor : HandModel
 		FingerList fingerList = controller_.GetFrame().Fingers.Extended();
 		int count = 0;
 		foreach( Finger finger in fingerList ) {
-			if( finger.Type != Finger.FingerType.TYPE_THUMB ) {
+			if( finger.Type() != Leap.Finger.FingerType.TYPE_THUMB ) {
 				count++;
 			}
 		}
