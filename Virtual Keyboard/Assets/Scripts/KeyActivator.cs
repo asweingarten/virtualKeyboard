@@ -16,7 +16,6 @@ public class KeyActivator : MonoBehaviour
 
 	private TextMesh textMesh;
 	private Color baseColor;
-	// Use this for initialization
 
 	private BoxCollider collider;
 	private Vector3 initialColliderSize;
@@ -34,22 +33,8 @@ public class KeyActivator : MonoBehaviour
 		}
 	}
 
-	// Update is called once per frame
-	void Update ()
-	{
-		/*if (Input.GetKeyDown (keyId)) {
-			OnKeyLeapPressed (keyId);
-			setColor(activeColor);
-		} else if (Input.GetKeyUp (keyId)) 
-		{
-			OnKeyLeapReleased (keyId);
-			setColor(baseColor);
-		}*/
-	}
-
 	void OnTriggerEnter(Collider collision) {
 		Debug.Log("Collsion ENTER!!! " + collision.collider.name);
-		//Debug.Log (collision.gameObject.name +  " hit the " + keyId + " key");
 		if (collision.gameObject.name == "Plane")
 			return;
 		if (OnKeyLeapFocus != null) OnKeyLeapFocus(this);
@@ -92,11 +77,5 @@ public class KeyActivator : MonoBehaviour
 			textMesh.text = text;
 		}
 	}
-
-//	void OnValidate() {
-//		TextMesh textMesh = gameObject.GetComponentInChildren<TextMesh>();
-//		textMesh.text = keyId;
-//		gameObject.name = "Key_" + keyId;
-//	}
 }
 

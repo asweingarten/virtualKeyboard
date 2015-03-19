@@ -49,13 +49,8 @@ public class PanelCursor : MonoBehaviour
 	void Start ()
 	{
 		controller = new Controller();
-		//controller.SetPolicy(Controller.PolicyFlag.POLICY_OPTIMIZE_HMD);
 		// Translate the cursor to the center of the keyboard
 		transform.localPosition = new Vector3(0,0,0);
-
-		//LeapGestures.HandClosedGestureTriggered += onHandClosed;
-		//LeapGestures.HandHalfClosedGestureTriggered += onHandHalfClosed;
-		//LeapGestures.HandOpenedGestureTriggered += onHandOpened;
 
 		// Add support for a HandClosed gesture where the interaction panel is triggered
 		LeapGestures.HandClosedGestureTriggered += HandClosedGestureTriggered;
@@ -66,8 +61,6 @@ public class PanelCursor : MonoBehaviour
 	{
 
 		// Each frame, check the change in hand position from the last frame. Compute how much to move the cursor with this.
-		//Frame currentFrame = controller.Frame();
-		//Frame previousFrame = controller.Frame (1);
 
 		frameBuffer[frameIndex] = controller.Frame ();
 		frameIndex++;
@@ -83,14 +76,6 @@ public class PanelCursor : MonoBehaviour
 			TranslateCursor(translationAverage);
 			frameIndex = 0;
 		}
-
-		/*if (interactionPanel.enabled == true && !trackingPaused) {
-			Vector leapTranslation = currentFrame.Translation(previousFrame);
-			Vector3 unityTranslation = calculateUnityTranslationVector(leapTranslation);
-			TranslateCursor(unityTranslation);
-		}
-		currentFrame.Dispose();
-		previousFrame.Dispose();*/
 	}
 
 	void onHandClosed(object sender, System.EventArgs e) {
@@ -98,8 +83,6 @@ public class PanelCursor : MonoBehaviour
 			renderer.sharedMaterial = handClosedCursor;
 		}
 		StartCoroutine(unpauseHandTracking(0.5f));
-		//trackingPaused = false;
-		//StartCoroutine(pauseHandTracking(0.5f));
 	}
 
 	void onHandHalfClosed(object sender, System.EventArgs e) {
@@ -107,12 +90,9 @@ public class PanelCursor : MonoBehaviour
 			renderer.sharedMaterial = handHalfClosedCursor;
 		}
 		StartCoroutine(unpauseHandTracking(0.5f));
-		//trackingPaused = false;
 	}
 
 	void onHandOpened(object sender, System.EventArgs e) {
-
-
 		if(renderer != null) {
 			renderer.sharedMaterial = handOpenedCursor;
 		}
@@ -151,7 +131,6 @@ public class PanelCursor : MonoBehaviour
 			return new Vector3 (movementIncrementX, movementIncrementY, 0);
 			
 		} else {
-			// speedModifier = 1;
 			accelX = 1;
 			accelY = 1;
 			prevXYMagnitude = 0;
@@ -169,17 +148,14 @@ public class PanelCursor : MonoBehaviour
 		Vector3 nextLocation = cursorPosition + transform.InverseTransformVector(translation);
 
 		if (interactionPanel.withinBounds(nextLocation)) {
-			//transform.Translate(translation, interactionPanel.transform.parent);
 			transform.position = nextLocation;
 
 			if(!interactionPanel.withinBounds(transform.position)) {
 				transform.position = cursorPosition;
-				//Debug.Log ("translation undone");
 			}
 
 		} else {
 			transform.localPosition = new Vector3(0,0,0);
-			//Debug.Log ("Out of bounds");
 		}
 		
 	}
@@ -187,8 +163,5 @@ public class PanelCursor : MonoBehaviour
 	// When a key tap gesture is triggered, call the interaction panel to trigger its action
 	void HandClosedGestureTriggered(object sender, System.EventArgs e) {
 	}
-
-
-
 }
 

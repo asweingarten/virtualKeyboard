@@ -25,19 +25,8 @@ public class VirtualKeyboard : InteractionPanel
 		study = studyObject.GetComponent<Study>();
 		KeyActivator.OnKeyLeapFocus += onKeyLeapFocus;
 		KeyActivator.OnKeyLeapFocusLost += onKeyLeapFocusLost;
-		//LeapGestures.HandClosedGestureTriggered += disableTyping;
-		//LeapGestures.HandHalfClosedGestureTriggered += enableTyping;
-		//LeapGestures.HandOpenedGestureTriggered += enableTyping;
 		LeapGestures.KeyTapGestureTriggered += onKeyTap;
 	}
-
-	
-	// Update is called once per frame
-	void Update ()
-	{
-		//MessageLogger.Instance.updateText(currentString);
-	}
-
 
 	void disableTyping(object sender, System.EventArgs e) {
 		typingState = TypingState.Disabled;
@@ -68,8 +57,6 @@ public class VirtualKeyboard : InteractionPanel
 		if(activeKey != null ) activeKey.setActive (false);
 		key.setActive(true);
 		activeKey = key;
-		//StartCoroutine(WaitAndTriggerKey(key));
-
 	}
 
 	void onKeyLeapFocusLost(KeyActivator key) {
@@ -109,19 +96,7 @@ public class VirtualKeyboard : InteractionPanel
 		char inputChar = (key == "space")
 			? ' '
 			: key.ToCharArray()[0];
-		//Debug.Log("Leap press: " + inputChar);
 		study.updateStudyText(inputChar);
-	}
-
-	void onKeyLeapPressed(object sender, System.EventArgs e) {
-		// Get the active key's value (if there is one) and update the text prompt with the character.
-		/*if (activeKey != null) {
-			char inputChar = (activeKey.keyId == "space")
-					? ' '
-					: activeKey.keyId.ToCharArray()[0];
-			Debug.Log("Leap press: " + inputChar);
-			study.updateStudyText(inputChar);
-		}*/
 	}
 
 	public override void calculateBounds() {

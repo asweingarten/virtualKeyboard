@@ -5,11 +5,10 @@ using Leap;
 public class LeapCursor : HandModel
 {
 	public GameObject cursor;
-	//private const int NUM_FINGERS = 0;
+
 	// Use this for initialization
 	void Start ()
 	{
-		//NUM_FINGERS = 0;
 	}
 
 	// Update is called once per frame
