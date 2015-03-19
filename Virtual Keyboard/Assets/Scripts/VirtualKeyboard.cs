@@ -15,6 +15,7 @@ public class VirtualKeyboard : InteractionPanel
 	public float hoverActivationTime = 0.15f;
 	public float typingDelayMultiplier = 2.5f;
 	public float debounceTime = 0.3f;
+	public AudioSource clickSound = null;
 	private KeyActivator debouncedKey;
 
 	private enum TypingState {Enabled, Disabled, Delayed};
@@ -45,6 +46,7 @@ public class VirtualKeyboard : InteractionPanel
 			StartCoroutine(TypingDebounce(activeKey));
 			typeStudyText(activeKey.keyId);
 			activeKey.setTyped();
+			if (clickSound != null) { clickSound.Play(); }
 		} else {
 			if( activeKey == null ) {
 				Debug.LogWarning ("Spurious Key Tap: You may want to adjust threshold values");
