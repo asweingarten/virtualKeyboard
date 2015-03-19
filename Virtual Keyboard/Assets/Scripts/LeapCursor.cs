@@ -6,6 +6,11 @@ public class LeapCursor : HandModel
 {
 	public GameObject cursor;
 
+	public delegate void FingerCountChangeAction(int fingerCount);
+	public static event FingerCountChangeAction OnFingerCountChanged;
+
+	private int fingerCount;
+
 	// Use this for initialization
 	void Start ()
 	{
@@ -36,6 +41,14 @@ public class LeapCursor : HandModel
 
 	public override void UpdateHand() {
 		SetPositions();
+		if( OnFingerCountChanged != null ) {
+			int count = getFingerCount();
+			if( count != fingerCount ) {
+				fingerCount = count;
+				OnFingerCountChanged( fingerCount );
+			}
+		}
+
 	}
 
 	protected virtual void SetPositions() {
