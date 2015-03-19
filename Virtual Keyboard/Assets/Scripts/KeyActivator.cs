@@ -37,14 +37,12 @@ public class KeyActivator : MonoBehaviour
 	}
 
 	void OnTriggerEnter(Collider collision) {
-		Debug.Log("Collsion ENTER!!! " + collision.collider.name);
 		if (collision.gameObject.name == "Plane")
 			return;
 		if (OnKeyLeapFocus != null) OnKeyLeapFocus(this);
 	}
 
 	void OnTriggerExit(Collider collision) {
-		Debug.Log("Collsion EXIT!!! " + collision.collider.name);
 		if (collision.gameObject.name == "Plane")
 			return;
 		if (OnKeyLeapFocusLost != null) OnKeyLeapFocusLost(this);
