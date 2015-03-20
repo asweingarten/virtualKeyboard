@@ -5,7 +5,8 @@ public class LotusFingerCountKeyboard : MonoBehaviour {
 	 
 	public GameObject studyObject;
 	private Study study;
-	
+	public AudioSource clickSound = null;
+
 	void Awake() {
 		LotusClusterFingerCountBoundary.LotusClusterSelected += onLotusClusterSelected;
 	}
@@ -35,6 +36,7 @@ public class LotusFingerCountKeyboard : MonoBehaviour {
 		char inputChar = (key == "space")
 			? ' '
 				: key.ToCharArray()[0];
+		if (clickSound != null) { clickSound.Play(); }
 		study.updateStudyText(inputChar);
 	}
 }
