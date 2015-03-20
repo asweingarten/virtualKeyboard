@@ -8,7 +8,8 @@ public class LotusKeyboard : MonoBehaviour {
 	private Study study;
 	KeyActivator activeKey;
 	public bool deactiveClusterAfterKeyType = false;
-	
+	public AudioSource clickSound = null;
+
 	void Awake() {
 		LotusClusterBoundary.LotusClusterSelected += updateActiveLotusCluster;
 		KeyActivator.OnKeyLeapFocus += onKeyLeapFocus;
@@ -55,6 +56,7 @@ public class LotusKeyboard : MonoBehaviour {
 		activeKey = key;
 		key.setActive(true);
 		typeStudyText(key.keyId);
+		if (clickSound != null) { clickSound.Play(); }
 		if(deactiveClusterAfterKeyType) deactiveActiveLotusCluster();
 	}
 	
@@ -70,6 +72,7 @@ public class LotusKeyboard : MonoBehaviour {
 		char inputChar = (key == "space")
 			? ' '
 				: key.ToCharArray()[0];
+		if (clickSound != null) { clickSound.Play(); }
 		study.updateStudyText(inputChar);
 	}
 }
