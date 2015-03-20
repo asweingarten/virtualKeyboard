@@ -4,26 +4,15 @@ using System.Collections;
 public class LotusKeyboard : MonoBehaviour {
 	
 	GameObject activeCluster;
-	public GameObject studyObject;
-	private Study study;
 	KeyActivator activeKey;
 	public bool deactiveClusterAfterKeyType = false;
 	public AudioSource clickSound = null;
+	public TextReceiver textReceiver = null;
 
 	void Awake() {
 		LotusClusterBoundary.LotusClusterSelected += updateActiveLotusCluster;
 		KeyActivator.OnKeyLeapFocus += onKeyLeapFocus;
 		KeyActivator.OnKeyLeapFocusLost += onKeyLeapFocusLost;
-	}
-	
-	// Use this for initialization
-	void Start () {
-		study = studyObject.GetComponent<Study>();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
 	}
 	
 	void updateActiveLotusCluster(GameObject lotusCluster) {
@@ -55,7 +44,7 @@ public class LotusKeyboard : MonoBehaviour {
 
 		activeKey = key;
 		key.setActive(true);
-		typeStudyText(key.keyId);
+		typeText(key.keyId);
 		if (clickSound != null) { clickSound.Play(); }
 		if(deactiveClusterAfterKeyType) deactiveActiveLotusCluster();
 	}
@@ -67,12 +56,16 @@ public class LotusKeyboard : MonoBehaviour {
 		activeKey = null;
 	}
 
-	private void typeStudyText(string key) {
+	private void typeText(string key) {
 		key = key.ToLower();
 		char inputChar = (key == "space")
 			? ' '
 				: key.ToCharArray()[0];
 		if (clickSound != null) { clickSound.Play(); }
-		study.updateStudyText(inputChar);
+		if (textReceiver != null) {
+			textReceiver.receiveText(inputChar.ToString());
+		} else {
+			Debug.LogWarning("No text receiver specified!");
+		}
 	}
 }

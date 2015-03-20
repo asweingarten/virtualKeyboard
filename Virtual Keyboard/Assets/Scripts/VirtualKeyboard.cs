@@ -6,16 +6,14 @@ public class VirtualKeyboard : InteractionPanel
 	private KeyActivator activeKey = null;
 	private KeyActivator prevActiveKey = null;
 
-	//private string currentString = "";
 	private Mesh mesh;
 	private Bounds bounds;
-	public GameObject studyObject;
-	private Study study;
 
 	public float hoverActivationTime = 0.15f;
 	public float typingDelayMultiplier = 2.5f;
 	public float debounceTime = 0.3f;
 	public AudioSource clickSound = null;
+	public TextReceiver textReceiver = null;
 	private KeyActivator debouncedKey;
 
 	private enum TypingState {Enabled, Disabled, Delayed};
@@ -23,7 +21,6 @@ public class VirtualKeyboard : InteractionPanel
 	// Use this for initialization
 	void Start ()
 	{
-		study = studyObject.GetComponent<Study>();
 		KeyActivator.OnKeyLeapFocus += onKeyLeapFocus;
 		KeyActivator.OnKeyLeapFocusLost += onKeyLeapFocusLost;
 		LeapGestures.KeyTapGestureTriggered += onKeyTap;
@@ -97,7 +94,11 @@ public class VirtualKeyboard : InteractionPanel
 		char inputChar = (key == "space")
 			? ' '
 			: key.ToCharArray()[0];
-		study.updateStudyText(inputChar);
+		if (textReceiver != null) {
+			textReceiver.receiveText(inputChar.ToString());
+		} else {
+			Debug.LogWarning("No text receiver specified!");
+		}
 	}
 
 	public override void calculateBounds() {

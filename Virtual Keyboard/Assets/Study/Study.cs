@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine.UI;
 using System.Collections.Generic;
 
-public class Study : MonoBehaviour {
+public class Study : TextReceiver {
 	string untypedText;
 	string typedText;
 	private UnityEngine.UI.Text untypedTextbox;
@@ -271,5 +271,11 @@ public class Study : MonoBehaviour {
 
 	private void displayResults() {
 		results.text = ("RESULTS:: m: " + mistakeCount + "   t: " + (endTime - startTime));
+	}
+
+	public override void receiveText(string text) {
+		foreach (char c in text) {
+			updateStudyText(c);
+		}
 	}
 }

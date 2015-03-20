@@ -4,21 +4,11 @@ using System.Collections;
 public class LotusFingerCountKeyboard : MonoBehaviour {
 	 
 	public GameObject studyObject;
-	private Study study;
 	public AudioSource clickSound = null;
+	public TextReceiver textReceiver = null;
 
 	void Awake() {
 		LotusClusterFingerCountBoundary.LotusClusterSelected += onLotusClusterSelected;
-	}
-	
-	// Use this for initialization
-	void Start () {
-		study = studyObject.GetComponent<Study>();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
 	}
 
 	void onLotusClusterSelected(GameObject cluster) {
@@ -26,17 +16,21 @@ public class LotusFingerCountKeyboard : MonoBehaviour {
 		if( fingerCountCluster != null ) {
 			KeyActivator activeKey = fingerCountCluster.getActiveKey();
 			if( activeKey != null ) {
-				typeStudyText(activeKey.keyId);
+				typeText(activeKey.keyId);
 			}
 		}
 	}
 
-	private void typeStudyText(string key) {
+	private void typeText(string key) {
 		key = key.ToLower();
 		char inputChar = (key == "space")
 			? ' '
 				: key.ToCharArray()[0];
 		if (clickSound != null) { clickSound.Play(); }
-		study.updateStudyText(inputChar);
+		if (textReceiver != null) {
+			textReceiver.receiveText(inputChar.ToString());
+		} else {
+			Debug.LogWarning("No text receiver specified!");
+		}
 	}
 }
