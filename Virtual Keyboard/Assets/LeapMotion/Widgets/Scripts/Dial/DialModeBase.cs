@@ -28,7 +28,7 @@ namespace LMWidgets
         target_ = other.gameObject;
         pivot_ = transform.InverseTransformPoint(target_.transform.position) - transform.localPosition;
         pivot_.z = 0.0f;
-        transform.rigidbody.angularVelocity = Vector3.zero;
+        transform.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
       }
     }
 
@@ -39,7 +39,7 @@ namespace LMWidgets
         target_ = null;
         float FPS_INVERSE = 1.0f / Time.deltaTime;
         float angular_velocity = (next_angle_ - curr_angle_) * FPS_INVERSE;
-        transform.rigidbody.AddRelativeTorque(new Vector3(0.0f, 0.0f, angular_velocity));
+        transform.GetComponent<Rigidbody>().AddRelativeTorque(new Vector3(0.0f, 0.0f, angular_velocity));
       }
     }
 

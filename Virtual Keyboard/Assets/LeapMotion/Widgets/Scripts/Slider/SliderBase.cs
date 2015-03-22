@@ -31,7 +31,7 @@ namespace LMWidgets
       local_position.y = 0.0f;
       local_position.z = Mathf.Clamp(local_position.z, min_distance_, max_distance_);
       transform.localPosition = local_position;
-      transform.rigidbody.velocity = Vector3.zero;
+      transform.GetComponent<Rigidbody>().velocity = Vector3.zero;
     }
   }
 }

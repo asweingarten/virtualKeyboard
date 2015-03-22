@@ -102,10 +102,10 @@ public class VirtualKeyboard : InteractionPanel
 	}
 
 	public override void calculateBounds() {
-		if (renderer == null) {
+		if (GetComponent<Renderer>() == null) {
 			gameObject.AddComponent<MeshRenderer>();
 		}
-		bounds = renderer.bounds;
+		bounds = GetComponent<Renderer>().bounds;
 
 		 
 		foreach (Renderer r in GetComponentsInChildren<Renderer>()) {
