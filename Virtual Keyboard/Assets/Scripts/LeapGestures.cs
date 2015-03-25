@@ -42,28 +42,34 @@ public class LeapGestures : MonoBehaviour {
 		leapController = new Controller ();
 	}
 
-	//KeyTap Config
+	//Circle Gesture Config
+	public float circleMinRadius = 10.0f;
+	public float circleMinArc = 0.5f;
+
+	//KeyTap Gesture Config
 	public float keyTapMinVelocity = 30.0f;
 	public float keyTapHistorySeconds = 0.3f;
 	public float keyTapMinDistance = 0.7f;
 
-	//Swipe Config
+	//Swipe Gesture Config
 	public float swipeMinLength = 200.0f;
 	public float swipeMinVelocity = 750.0f;
 
 	// Use this for initialization
 	void Start () {
 
+		//Circle Gesture Config
 		leapController.EnableGesture (Leap.Gesture.GestureType.TYPECIRCLE);
+		leapController.Config.SetFloat("Gesture.Circle.MinRadius", circleMinRadius);
+		leapController.Config.SetFloat("Gesture.Circle.MinArc", circleMinArc);
 
-
-		//Key Tap config
+		//KeyTap Gesture config
 		leapController.EnableGesture (Leap.Gesture.GestureType.TYPE_KEY_TAP);
 		leapController.Config.SetFloat("Gesture.KeyTap.MinDownVelocity", keyTapMinVelocity);
 		leapController.Config.SetFloat("Gesture.KeyTap.HistorySeconds", keyTapHistorySeconds);
 		leapController.Config.SetFloat("Gesture.KeyTap.MinDistance", keyTapMinDistance);
 
-		//Swipe config
+		//Swipe Gesture config
 		leapController.EnableGesture(Gesture.GestureType.TYPE_SWIPE);
 		leapController.Config.SetFloat("Gesture.Swipe.MinLength", swipeMinLength);
 		leapController.Config.SetFloat("Gesture.Swipe.MinVelocity", swipeMinVelocity);
