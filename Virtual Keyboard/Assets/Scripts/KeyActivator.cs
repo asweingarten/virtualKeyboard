@@ -39,7 +39,6 @@ public class KeyActivator : MonoBehaviour
 	void OnTriggerEnter(Collider collision) {
 		if (collision.gameObject.name == "Plane")
 			return;
-		Debug.Log ("LEAP KEY FOCUS: " + collision.name);
 		if (OnKeyLeapFocus != null) OnKeyLeapFocus(this);
 	}
 
