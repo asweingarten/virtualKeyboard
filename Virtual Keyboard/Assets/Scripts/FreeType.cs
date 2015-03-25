@@ -158,7 +158,7 @@ public class FreeType : TextReceiver {
 	}
 
 	public void updateText(char keyPressed) {
-		Debug.Log("key pressed: " + keyPressed);
+		//Debug.Log("key pressed: " + keyPressed);
 
 		typedText += keyPressed;
 		typedTextbox.text = typedText;
