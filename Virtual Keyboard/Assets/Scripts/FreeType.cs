@@ -4,15 +4,21 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 
 public class FreeType : TextReceiver {
-	string typedText;
+	string typedText = "";
 	private UnityEngine.UI.Text typedTextbox;
-	
+	private UnityEngine.UI.Text underline;
+	private string startingUnderline = "";
+
 	public bool allowKeyboardInput = false;
+	public float underlineBlinkSpeed = 0.5f;
 
 	static Dictionary<string,bool> isKeyDownArray = new Dictionary<string,bool>();
 
 	void Awake() {
 		typedTextbox = GameObject.Find("TypedText").GetComponent("Text") as Text;
+		underline = GameObject.Find("Underline").GetComponent("Text") as Text;
+		startingUnderline = underline.text;
+		StartCoroutine(blinkUnderline());
 
 		isKeyDownArray[KeyCode.A.ToString()] = false;
 		
@@ -77,6 +83,26 @@ public class FreeType : TextReceiver {
 		isKeyDownArray[getStringRepresentationOfKey(KeyCode.Minus)] = false;
 
 		isKeyDownArray[getStringRepresentationOfKey(KeyCode.Quote)] = false;
+	}
+
+	private void updateUnderline() {
+		if( underline == null ) return;
+		if( typedText.EndsWith(" ") ) {
+			underline.text = " " + startingUnderline;
+		} else {
+			underline.text = startingUnderline;
+		}
+	}
+
+	private IEnumerator blinkUnderline() {
+		while( underline != null ) {
+			underline.enabled = !underline.enabled;
+			yield return new WaitForSeconds(underlineBlinkSpeed);
+		}
+	}
+
+	void OnDestroy() {
+		StopAllCoroutines();
 	}
 
 	// Use this for initialization
@@ -155,6 +181,7 @@ public class FreeType : TextReceiver {
 		onKeyUp(KeyCode.Minus);
 		onKeyUp(KeyCode.Quote);
 
+		updateUnderline();
 	}
 
 	public void updateText(char keyPressed) {
@@ -209,10 +236,36 @@ public class FreeType : TextReceiver {
 		}
 	}
 
+	private void backspace() {
+		if( typedText.Length == 0 ) return;
+		typedText = typedText.Remove(typedText.Length - 1, 1);
+		typedTextbox.text = typedText;
+	}
+
+	private void space() {
+		typedText = typedText + " ";
+		typedTextbox.text = typedText;
+	}
+
+	public override void receiveText(KeyCode keyCode) {
+		switch(keyCode) {
+			case KeyCode.Backspace: 
+				backspace(); 
+				break;
+			case KeyCode.Space:
+				space();
+				break;
+			default:
+				receiveText(getStringRepresentationOfKey(keyCode));
+				break;
+		}
+		updateUnderline();
+	}
 
 	public override void receiveText(string text) {
 		foreach (char c in text) {
 			updateText(c);
 		}
+		updateUnderline();
 	}
 }

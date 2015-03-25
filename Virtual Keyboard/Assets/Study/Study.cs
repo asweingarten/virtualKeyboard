@@ -273,6 +273,10 @@ public class Study : TextReceiver {
 		results.text = ("RESULTS:: m: " + mistakeCount + "   t: " + (endTime - startTime));
 	}
 
+	public override void receiveText(KeyCode keyCode) {
+		receiveText(getStringRepresentationOfKey(keyCode));
+	}
+
 	public override void receiveText(string text) {
 		foreach (char c in text) {
 			updateStudyText(c);
