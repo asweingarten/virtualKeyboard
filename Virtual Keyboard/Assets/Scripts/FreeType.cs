@@ -147,6 +147,7 @@ public class FreeType : TextReceiver {
 		onKeyDown(KeyCode.Semicolon);
 		onKeyDown(KeyCode.Minus);
 		onKeyDown(KeyCode.Quote);
+		onKeyDown(KeyCode.Backspace);
 
 		onKeyUp(KeyCode.A);
 		onKeyUp(KeyCode.B);
@@ -180,6 +181,7 @@ public class FreeType : TextReceiver {
 		onKeyUp(KeyCode.Semicolon);
 		onKeyUp(KeyCode.Minus);
 		onKeyUp(KeyCode.Quote);
+		onKeyDown(KeyCode.Backspace);
 
 		updateUnderline();
 	}
@@ -197,8 +199,13 @@ public class FreeType : TextReceiver {
 		if (isKeyDownArray[keyPressed]) {
 			return;
 		} else if (Input.GetKeyDown(key)){
-			updateText(keyPressed.ToLower()[0]);
-			isKeyDownArray[keyPressed] = true;;
+			isKeyDownArray[keyPressed] = true;
+			if( key == KeyCode.Backspace ) {
+				backspace();
+			} else {
+				updateText(keyPressed.ToLower()[0]);
+
+			}
 		}
 	}
 
