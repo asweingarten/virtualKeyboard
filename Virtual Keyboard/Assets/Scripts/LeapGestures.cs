@@ -26,11 +26,14 @@ public class LeapGestures : MonoBehaviour {
 	public delegate void HandClosedGestureAction(object sender, System.EventArgs e);
 	public delegate void HandHalfClosedGestureAction(object sender, System.EventArgs e);
 	public delegate void HandOpenedGestureAction(object sender, System.EventArgs e);
+	public delegate void SwipeGestureAction(SwipeGesture swipe);
 	public static event CircularGestureAction CircularGestureTriggered;
 	public static event KeyTapGestureAction KeyTapGestureTriggered;
 	public static event HandClosedGestureAction HandClosedGestureTriggered;
 	public static event HandHalfClosedGestureAction HandHalfClosedGestureTriggered;
 	public static event HandOpenedGestureAction HandOpenedGestureTriggered;
+	public static event SwipeGestureAction SwipeGestureTriggered;
+
 
 	private enum HandStates {Open, HalfClosed, Closed};
 	private HandStates handState = HandStates.Open;
@@ -45,12 +48,13 @@ public class LeapGestures : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-
+		leapController.EnableGesture(Gesture.GestureType.TYPE_SWIPE);
 		leapController.EnableGesture (Leap.Gesture.GestureType.TYPECIRCLE);
 		leapController.EnableGesture (Leap.Gesture.GestureType.TYPE_KEY_TAP);
 		leapController.Config.SetFloat("Gesture.KeyTap.MinDownVelocity", keyTapMinVelocity);
 		leapController.Config.SetFloat("Gesture.KeyTap.HistorySeconds", keyTapHistorySeconds);
 		leapController.Config.SetFloat("Gesture.KeyTap.MinDistance", keyTapMinDistance);
+
 		leapController.Config.Save();
 		grabTimer.Start();
 	}
@@ -73,6 +77,9 @@ public class LeapGestures : MonoBehaviour {
 			} 
 		 	else if (gesture.Type == Gesture.GestureType.TYPECIRCLE && gesture.State.Equals(Gesture.GestureState.STATESTOP)) {
 				OnCircularGestureCompleted(this, null);
+			} else if ( gesture.Type == Gesture.GestureType.TYPE_SWIPE && gesture.State.Equals(Gesture.GestureState.STATESTOP)){
+				SwipeGesture swipe = new SwipeGesture(gesture);
+				OnSwipeGesture(swipe);
 			}
 		}
 		//gestures.Dispose();//gestureList realted to memory leak?
@@ -129,6 +136,12 @@ public class LeapGestures : MonoBehaviour {
 	private void OnHandOpenedGesture(object sender, System.EventArgs e) {
 		if (HandOpenedGestureTriggered != null) {
 			HandOpenedGestureTriggered(sender, e);
+		}
+	}
+
+	private void OnSwipeGesture(SwipeGesture swipe) {
+		if (SwipeGestureTriggered != null) {
+			SwipeGestureTriggered(swipe);
 		}
 	}
 
