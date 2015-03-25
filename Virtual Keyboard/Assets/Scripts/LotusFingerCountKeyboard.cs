@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Leap;
 
 public class LotusFingerCountKeyboard : MonoBehaviour {
@@ -8,6 +9,11 @@ public class LotusFingerCountKeyboard : MonoBehaviour {
 	public AudioSource clickSound = null;
 	public TextReceiver textReceiver = null;
 	public float swipeTimeout = 1.0f;
+
+	public long swipeStartDebounceMilliseconds = 500;
+	private Stopwatch swipeStartTimer = new Stopwatch();
+	public long swipeStopDebounceMilliseconds = 500;
+	private Stopwatch swipeStopTimer = new Stopwatch();
 	private enum SwipeState {None, Started };
 	private SwipeState swipeState = SwipeState.None;
 
@@ -18,7 +24,12 @@ public class LotusFingerCountKeyboard : MonoBehaviour {
 		LeapGestures.SwipeGestureTriggered += onSwipeGesture;
 		typedKeys = new List<KeyActivator>();
 	}
-	
+
+	void Start() {
+		swipeStartTimer.Start();
+		swipeStopTimer.Start();
+	}
+
 	void onLotusClusterSelected(GameObject cluster) {
 		LotusFingerCountCluster fingerCountCluster = cluster.GetComponent<LotusFingerCountCluster>();
 		if( fingerCountCluster != null ) {
@@ -38,22 +49,28 @@ public class LotusFingerCountKeyboard : MonoBehaviour {
 		if( lastFrame != null && swipeGesture.Frame.Equals(lastFrame) ) return;
 		switch(swipeGesture.State) {
 			case Gesture.GestureState.STATESTART:
+				if( swipeStartTimer.ElapsedMilliseconds < swipeStartDebounceMilliseconds ) return;
+				swipeStartTimer.Reset();
+				swipeStartTimer.Start();
 				lastFrame = swipeGesture.Frame;
-				Debug.Log("SwipeGesture: " + swipeGesture.Id);
+				UnityEngine.Debug.Log("SwipeGesture: " + swipeGesture.Id);
 				StopCoroutine("swipeGestureStarted");
 				swipeGestureStarted(swipeGesture);
 				StartCoroutine(swipeGestureStarted(swipeGesture));
 				break;
 			case Gesture.GestureState.STATESTOP:
+				if( swipeStopTimer.ElapsedMilliseconds < swipeStopDebounceMilliseconds ) return;
+				swipeStopTimer.Reset();
+				swipeStopTimer.Start();
 				StopCoroutine("swipeGestureStarted");
 				swipeState = SwipeState.None;
-				Debug.Log("SwipeGesture: " + swipeGesture.Id + " " + swipeGesture.Direction);
+				UnityEngine.Debug.Log("SwipeGesture: " + swipeGesture.Id + " " + swipeGesture.Direction);
 
 				if( Mathf.Abs(swipeGesture.Direction.x) > Mathf.Abs(swipeGesture.Direction.y) ) {
 					if( swipeGesture.Direction.x > 0 ) {
-						typeText("-");
+						typeText(KeyCode.Space);
 					} else {
-						typeText("_");
+						typeText(KeyCode.Backspace);
 					}
 				}
 				//Want left swipe to be back space
@@ -73,16 +90,26 @@ public class LotusFingerCountKeyboard : MonoBehaviour {
 		}
 	}
 
+	private void typeText(KeyCode keyCode) {
+		if (clickSound != null) { 
+			clickSound.Play(); 
+		}
+		if (textReceiver != null) {
+			textReceiver.receiveText(keyCode);
+		}
+	}
+
 	private void typeText(string key) {
 		key = key.ToLower();
 		char inputChar = (key == "space")
 			? ' '
 				: key.ToCharArray()[0];
+		KeyCode id = new KeyCode();
 		if (clickSound != null) { clickSound.Play(); }
 		if (textReceiver != null) {
 			textReceiver.receiveText(inputChar.ToString());
 		} else {
-			Debug.LogWarning("No text receiver specified!");
+			UnityEngine.Debug.LogWarning("No text receiver specified!");
 		}
 	}
 }
