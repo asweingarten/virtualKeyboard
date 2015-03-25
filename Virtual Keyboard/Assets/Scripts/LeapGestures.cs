@@ -96,7 +96,7 @@ public class LeapGestures : MonoBehaviour {
 			} 
 		 	else if (gesture.Type == Gesture.GestureType.TYPECIRCLE && gesture.State.Equals(Gesture.GestureState.STATESTOP)) {
 				OnCircularGestureCompleted(this, null);
-			} else if ( gesture.Type == Gesture.GestureType.TYPE_SWIPE && gesture.State.Equals(Gesture.GestureState.STATESTOP)){
+			} else if ( gesture.Type == Gesture.GestureType.TYPE_SWIPE && (gesture.State.Equals(Gesture.GestureState.STATESTART) || gesture.State.Equals(Gesture.GestureState.STATESTOP) ) ){
 				SwipeGesture swipe = new SwipeGesture(gesture);
 				OnSwipeGesture(swipe);
 			}
