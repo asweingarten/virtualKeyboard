@@ -3,7 +3,6 @@ using System.Collections;
 
 public class LotusFingerCountKeyboard : MonoBehaviour {
 	 
-	public GameObject studyObject;
 	public AudioSource clickSound = null;
 	public TextReceiver textReceiver = null;
 
