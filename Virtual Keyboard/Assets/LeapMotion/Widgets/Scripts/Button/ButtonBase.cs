@@ -57,7 +57,7 @@ namespace LMWidgets
 
     protected void ApplySpring()
     {
-      rigidbody.AddRelativeForce(new Vector3(0.0f, 0.0f, -scaled_spring_ * (transform.localPosition.z)));
+      GetComponent<Rigidbody>().AddRelativeForce(new Vector3(0.0f, 0.0f, -scaled_spring_ * (transform.localPosition.z)));
     }
 
     protected void CheckTrigger()

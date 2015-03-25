@@ -26,11 +26,14 @@ public class LeapGestures : MonoBehaviour {
 	public delegate void HandClosedGestureAction(object sender, System.EventArgs e);
 	public delegate void HandHalfClosedGestureAction(object sender, System.EventArgs e);
 	public delegate void HandOpenedGestureAction(object sender, System.EventArgs e);
+	public delegate void SwipeGestureAction(SwipeGesture swipe);
 	public static event CircularGestureAction CircularGestureTriggered;
 	public static event KeyTapGestureAction KeyTapGestureTriggered;
 	public static event HandClosedGestureAction HandClosedGestureTriggered;
 	public static event HandHalfClosedGestureAction HandHalfClosedGestureTriggered;
 	public static event HandOpenedGestureAction HandOpenedGestureTriggered;
+	public static event SwipeGestureAction SwipeGestureTriggered;
+
 
 	private enum HandStates {Open, HalfClosed, Closed};
 	private HandStates handState = HandStates.Open;
@@ -39,18 +42,38 @@ public class LeapGestures : MonoBehaviour {
 		leapController = new Controller ();
 	}
 
+	//Circle Gesture Config
+	public float circleMinRadius = 10.0f;
+	public float circleMinArc = 0.5f;
+
+	//KeyTap Gesture Config
 	public float keyTapMinVelocity = 30.0f;
 	public float keyTapHistorySeconds = 0.3f;
 	public float keyTapMinDistance = 0.7f;
 
+	//Swipe Gesture Config
+	public float swipeMinLength = 200.0f;
+	public float swipeMinVelocity = 750.0f;
+
 	// Use this for initialization
 	void Start () {
 
+		//Circle Gesture Config
 		leapController.EnableGesture (Leap.Gesture.GestureType.TYPECIRCLE);
+		leapController.Config.SetFloat("Gesture.Circle.MinRadius", circleMinRadius);
+		leapController.Config.SetFloat("Gesture.Circle.MinArc", circleMinArc);
+
+		//KeyTap Gesture config
 		leapController.EnableGesture (Leap.Gesture.GestureType.TYPE_KEY_TAP);
 		leapController.Config.SetFloat("Gesture.KeyTap.MinDownVelocity", keyTapMinVelocity);
 		leapController.Config.SetFloat("Gesture.KeyTap.HistorySeconds", keyTapHistorySeconds);
 		leapController.Config.SetFloat("Gesture.KeyTap.MinDistance", keyTapMinDistance);
+
+		//Swipe Gesture config
+		leapController.EnableGesture(Gesture.GestureType.TYPE_SWIPE);
+		leapController.Config.SetFloat("Gesture.Swipe.MinLength", swipeMinLength);
+		leapController.Config.SetFloat("Gesture.Swipe.MinVelocity", swipeMinVelocity);
+
 		leapController.Config.Save();
 		grabTimer.Start();
 	}
@@ -73,6 +96,9 @@ public class LeapGestures : MonoBehaviour {
 			} 
 		 	else if (gesture.Type == Gesture.GestureType.TYPECIRCLE && gesture.State.Equals(Gesture.GestureState.STATESTOP)) {
 				OnCircularGestureCompleted(this, null);
+			} else if ( gesture.Type == Gesture.GestureType.TYPE_SWIPE && (gesture.State.Equals(Gesture.GestureState.STATESTART) || gesture.State.Equals(Gesture.GestureState.STATESTOP) ) ){
+				SwipeGesture swipe = new SwipeGesture(gesture);
+				OnSwipeGesture(swipe);
 			}
 		}
 		//gestures.Dispose();//gestureList realted to memory leak?
@@ -129,6 +155,12 @@ public class LeapGestures : MonoBehaviour {
 	private void OnHandOpenedGesture(object sender, System.EventArgs e) {
 		if (HandOpenedGestureTriggered != null) {
 			HandOpenedGestureTriggered(sender, e);
+		}
+	}
+
+	private void OnSwipeGesture(SwipeGesture swipe) {
+		if (SwipeGestureTriggered != null) {
+			SwipeGestureTriggered(swipe);
 		}
 	}
 

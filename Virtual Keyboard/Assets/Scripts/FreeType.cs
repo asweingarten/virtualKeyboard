@@ -3,36 +3,22 @@ using System.Collections;
 using UnityEngine.UI;
 using System.Collections.Generic;
 
-public class Study : TextReceiver {
-	string untypedText;
-	string typedText;
-	private UnityEngine.UI.Text untypedTextbox;
+public class FreeType : TextReceiver {
+	string typedText = "";
 	private UnityEngine.UI.Text typedTextbox;
-	private UnityEngine.UI.Text results;
+	private UnityEngine.UI.Text underline;
+	private string startingUnderline = "";
 
-	private enum StudyType {
-		ENGLISH_PHYSICAL,
-		ENGLISH_VIRTUAL,
-		LATIN_PHYSICAL,
-		LATIN_VIRTUAL,
-		DEBUG
-	}
-	[SerializeField]
-	private StudyType studyType;
-
-	int mistakeCount;
-	bool studyFinished = false;
-	float startTime = -1f;
-	float endTime = 0;
+	public bool allowKeyboardInput = false;
+	public float underlineBlinkSpeed = 0.5f;
 
 	static Dictionary<string,bool> isKeyDownArray = new Dictionary<string,bool>();
 
 	void Awake() {
-		untypedText = getStudyText();
 		typedTextbox = GameObject.Find("TypedText").GetComponent("Text") as Text;
-		untypedTextbox = GameObject.Find("UntypedText").GetComponent("Text") as Text;
-		results = GameObject.Find ("Results").GetComponent ("Text") as Text;
-		untypedTextbox.text = untypedText;
+		underline = GameObject.Find("Underline").GetComponent("Text") as Text;
+		startingUnderline = underline.text;
+		StartCoroutine(blinkUnderline());
 
 		isKeyDownArray[KeyCode.A.ToString()] = false;
 		
@@ -99,17 +85,36 @@ public class Study : TextReceiver {
 		isKeyDownArray[getStringRepresentationOfKey(KeyCode.Quote)] = false;
 	}
 
+	private void updateUnderline() {
+		if( underline == null ) return;
+		if( typedText.EndsWith(" ") ) {
+			underline.text = " " + startingUnderline;
+		} else {
+			underline.text = startingUnderline;
+		}
+	}
+
+	private IEnumerator blinkUnderline() {
+		while( underline != null ) {
+			underline.enabled = !underline.enabled;
+			yield return new WaitForSeconds(underlineBlinkSpeed);
+		}
+	}
+
+	void OnDestroy() {
+		StopAllCoroutines();
+	}
+
 	// Use this for initialization
 	void Start () {
-		Debug.Log(getStudyText());
-		startTime = Time.time;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		if (studyFinished || studyType == StudyType.ENGLISH_VIRTUAL || studyType == StudyType.LATIN_VIRTUAL) {
+		if (!allowKeyboardInput) {
 			return;
 		}
+
 		onKeyDown(KeyCode.A);
 		onKeyDown(KeyCode.B);
 		onKeyDown(KeyCode.C);
@@ -142,6 +147,7 @@ public class Study : TextReceiver {
 		onKeyDown(KeyCode.Semicolon);
 		onKeyDown(KeyCode.Minus);
 		onKeyDown(KeyCode.Quote);
+		onKeyDown(KeyCode.Backspace);
 
 		onKeyUp(KeyCode.A);
 		onKeyUp(KeyCode.B);
@@ -175,52 +181,16 @@ public class Study : TextReceiver {
 		onKeyUp(KeyCode.Semicolon);
 		onKeyUp(KeyCode.Minus);
 		onKeyUp(KeyCode.Quote);
+		onKeyDown(KeyCode.Backspace);
 
+		updateUnderline();
 	}
 
-	private string getStudyText() {
-		switch(studyType) {
-			case StudyType.ENGLISH_PHYSICAL:
-			return "and how nobly it raises our conceit of the mighty, misty monster, to behold him solemnly s";
-			//return "and how nobly it raises our conceit of the mighty, misty monster, to behold him solemnly sailing through a calm tropical sea; his vast, mild head overhung by a canopy of vapour, en";
-			
-			case StudyType.ENGLISH_VIRTUAL:
-			return "reckoning the largest sized sperm whale's tail to begin at that point of the trunk where i";
-			//return "reckoning the largest sized sperm whale's tail to begin at that point of the trunk where it tapers to about the girth of a man, it comprises upon its upper surface alone, an area o";
-			
-			case StudyType.LATIN_PHYSICAL:
-			return "consectetur adipiscing elit. nunc a quam elementum velit aliquam porta. nunc eu blandit au";
-			//return "consectetur adipiscing elit. nunc a quam elementum velit aliquam porta. nunc eu blandit augue, a tempus risus. etiam dignissim porttitor neque, ut ullamcorper lectus ullamcorper at";
-			
-			case StudyType.LATIN_VIRTUAL:
-			return "nam dictum ligula nisl, nec dapibus massa fermentum a. phasellus et eleifend est, vel rutr";
-			//return "nam dictum ligula nisl, nec dapibus massa fermentum a. phasellus et eleifend est, vel rutrum nibh. cras sit amet sagittis quam, ut accumsan magna. integer sit amet eros in nisl ege";
-		}
-		return "the quick, brown fox jumped over the lazy, black dog's tail.";
-	}
+	public void updateText(char keyPressed) {
+		//Debug.Log("key pressed: " + keyPressed);
 
-	public void updateStudyText(char keyPressed) {
-		Debug.Log("key pressed: " + keyPressed + "|");
-		if (startTime < 0) startTime = Time.time;
-		if (untypedText.Length == 0) return;
-
-		if (keyPressed == untypedText[0]) {
-			typedText += keyPressed;
-			untypedText = untypedText.Substring(1);
-			typedTextbox.text = typedText;
-			untypedTextbox.text = untypedText;
-		} else {
-			mistakeCount++;
-		}
-
-		if (untypedText.Length == 0) {
-			endTime = Time.time;
-			studyFinished = true;
-			displayResults();
-			Debug.Log ("Study over!");
-			Debug.Log ("Mistake count: " + mistakeCount);
-			Debug.Log("Time taken (in seconds): " + (endTime - startTime));
-		}
+		typedText += keyPressed;
+		typedTextbox.text = typedText;
 	}
 
 	private void onKeyDown(KeyCode key) {
@@ -229,9 +199,13 @@ public class Study : TextReceiver {
 		if (isKeyDownArray[keyPressed]) {
 			return;
 		} else if (Input.GetKeyDown(key)){
-			updateStudyText(keyPressed.ToLower()[0]);
-			Debug.Log("Key down: " + key.ToString());
-			isKeyDownArray[keyPressed] = true;;
+			isKeyDownArray[keyPressed] = true;
+			if( key == KeyCode.Backspace ) {
+				backspace();
+			} else {
+				updateText(keyPressed.ToLower()[0]);
+
+			}
 		}
 	}
 
@@ -269,17 +243,36 @@ public class Study : TextReceiver {
 		}
 	}
 
-	private void displayResults() {
-		results.text = ("RESULTS:: m: " + mistakeCount + "   t: " + (endTime - startTime));
+	private void backspace() {
+		if( typedText.Length == 0 ) return;
+		typedText = typedText.Remove(typedText.Length - 1, 1);
+		typedTextbox.text = typedText;
+	}
+
+	private void space() {
+		typedText = typedText + " ";
+		typedTextbox.text = typedText;
 	}
 
 	public override void receiveText(KeyCode keyCode) {
-		receiveText(getStringRepresentationOfKey(keyCode));
+		switch(keyCode) {
+			case KeyCode.Backspace: 
+				backspace(); 
+				break;
+			case KeyCode.Space:
+				space();
+				break;
+			default:
+				receiveText(getStringRepresentationOfKey(keyCode));
+				break;
+		}
+		updateUnderline();
 	}
 
 	public override void receiveText(string text) {
 		foreach (char c in text) {
-			updateStudyText(c);
+			updateText(c);
 		}
+		updateUnderline();
 	}
 }
